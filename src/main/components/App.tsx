@@ -5,10 +5,12 @@ import '../styles/app.less';
 import { Content } from './Content';
 import { Sidebar } from './Sidebar';
 import { Database } from '../lib/db';
+import { Feed } from '../lib/types';
 
 export const database = new Database();
 
 export const App = () => {
+  const [feedId, setFeedId] = useState(null as string | null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,7 +21,7 @@ export const App = () => {
 
   return <>
     {loading && <p>Loading...</p>}
-    {!loading && <Sidebar />}
-    {!loading && <Content />}
+    {!loading && <Sidebar selectFeed={setFeedId} />}
+    {feedId && <Content feedId={feedId} />}
   </>;
 };

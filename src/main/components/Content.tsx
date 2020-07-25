@@ -1,18 +1,22 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { Feed } from '../lib/types';
 import { database } from './App';
 import { FeedComponent } from './Feed';
-import { useState } from 'react';
-import { Feed } from '../lib/types';
 
-export const Content = () => {
+interface Props {
+  feedId: string;
+}
+
+export const Content = ({ feedId }: Props) => {
   const [feed, setFeed] = useState(null as Feed | null);
 
-  React.useEffect(() => {
-    database.loadFeed('1').then(feed => {
+  useEffect(() => {
+    database.loadFeed(feedId).then(feed => {
       if (!feed) throw 'could not find feed with id 1';
       setFeed(feed);
     });
-  }, []);
+  });
 
   return <div className="content">
     {!feed && <div>Loading ... </div>}
