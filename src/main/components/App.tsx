@@ -13,11 +13,9 @@ export const App = () => {
 
   useEffect(() => {
     database.initialize().then(async _ => {
-
       const url = 'news.ycombinator.com/rss';
       const rss = await loadFeed(url);
       await database.insertFeed('1', rss);
-      //await database.updateFeed('1', rss);
 
       setLoading(false);
     });
