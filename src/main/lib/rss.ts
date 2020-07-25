@@ -34,7 +34,7 @@ export async function loadFeed(url: string): Promise<RSSFeed> {
         comments,
         description,
         contentEncoded,
-      }
+      };
     });
 
   return {

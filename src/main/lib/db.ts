@@ -1,6 +1,6 @@
 import Dexie from 'dexie';
 import { RSSFeed, RSSFeedItem, loadFeed } from './rss';
-import { Feed } from './types';
+import { Feed, FeedItem } from './types';
 
 const dbName = 'RSS-Reader-DB';
 let db: DixieNonSense;
@@ -8,6 +8,9 @@ let db: DixieNonSense;
 export class Database {
   constructor() {
     db = new DixieNonSense();
+
+    // dev mode
+    (window as any).db = db;
   }
 
   public async initialize(): Promise<void> {
@@ -30,6 +33,10 @@ export class Database {
       await loadFeed('https://lordofthegadflies.tumblr.com/rss'));
     await this.insertFeed('1111',
       await loadFeed('apod.nasa.gov/apod.rss'));
+  }
+
+  public async markAsRead(feedItemId: string): Promise<void> {
+    await db.items.update(feedItemId, { read: 'true' });
   }
 
   public async loadFeeds(): Promise<Feed[]> {
@@ -118,7 +125,7 @@ export class Database {
 }
 
 function rssFeedItemKey(item: RSSFeedItem): string {
-  return `${item.title}_${item.pubDate}`;
+  return `${item.title.trim()}_${item.pubDate}`;
 }
 
 interface DBFeed {
