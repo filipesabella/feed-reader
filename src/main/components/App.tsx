@@ -1,11 +1,9 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { loadFeed } from '../lib/rss';
+import { Database } from '../lib/db';
 import '../styles/app.less';
 import { Content } from './Content';
 import { Sidebar } from './Sidebar';
-import { Database } from '../lib/db';
-import { Feed } from '../lib/types';
 
 export const database = new Database();
 
