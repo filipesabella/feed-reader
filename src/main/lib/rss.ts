@@ -48,7 +48,6 @@ function cleanUp(s: string): string {
 }
 
 function htmlDecode(input: string) {
-  let e = document.createElement('textarea');
-  e.innerHTML = input;
-  return e.childNodes.length === 0 ? '' : e.childNodes[0].nodeValue || '';
+  const doc = new DOMParser().parseFromString(input, 'text/html');
+  return doc.documentElement.textContent;
 }
