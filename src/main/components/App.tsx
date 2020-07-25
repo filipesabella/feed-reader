@@ -16,12 +16,17 @@ export const App = () => {
   useEffect(() => {
     database.initialize().then(async _ => {
       setLoading(false);
+
+      // dev mode
+      setFeedId('1');
     });
   }, []);
 
   return <>
     {loading && <p>Loading...</p>}
-    {!loading && <Sidebar selectFeed={setFeedId} />}
+    {!loading && <Sidebar
+      selectFeed={setFeedId}
+      feedId={feedId} />}
     {feedId && <Content feedId={feedId} />}
   </>;
 };
