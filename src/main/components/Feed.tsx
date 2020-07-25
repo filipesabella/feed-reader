@@ -11,8 +11,8 @@ export const FeedComponent = ({ feed }: Props) => {
   return <div className="feed">
     <h1>{feed.title}</h1>
     <div className="items">
-      {feed.items.map((item, i) =>
-        <FeedItemComponent key={i} feedItem={item} />)}
+      {feed.items.map(item =>
+        <FeedItemComponent key={item.id} feedItem={item} />)}
     </div>
   </div>;
 };
