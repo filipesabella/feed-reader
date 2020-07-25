@@ -11,6 +11,8 @@ export const FeedItemComponent = ({ feedItem }: Props) => {
   const [read, setRead] = useState(feedItem.read);
 
   const markAsRead = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    // this garbage is here because the button is inside the div, and this
+    // event was firing twice
     const read = (e.target as HTMLElement).className === 'markUnreadButton'
       ? false
       : true;
