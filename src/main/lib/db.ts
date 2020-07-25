@@ -1,5 +1,5 @@
 import Dexie from 'dexie';
-import { RSSFeed, RSSFeedItem } from './rss';
+import { RSSFeed, RSSFeedItem, loadFeed } from './rss';
 import { Feed } from './types';
 
 const dbName = 'RSS-Reader-DB';
@@ -16,6 +16,14 @@ export class Database {
 
     db = new DixieNonSense();
     await db.open();
+
+    // next lines for dev mode
+    await this.insertData();
+  }
+
+  private async insertData(): Promise<void> {
+    // await this.insertFeed('11', await loadFeed('news.ycombinator.com/rss'));
+    await this.insertFeed('1', await loadFeed('http://www.booooooom.com/feed/'));
   }
 
   public async loadFeed(feedId: string): Promise<Feed | undefined> {
@@ -32,6 +40,7 @@ export class Database {
         pubDate: i.pubDate,
         comments: i.comments,
         description: i.description,
+        contentEncoded: i.contentEncoded,
         read: i.read,
       }))
     };
@@ -114,6 +123,7 @@ interface DBFeedItem {
   pubDate: Date;
   comments: string;
   description: string;
+  contentEncoded: string;
   read: boolean;
 }
 

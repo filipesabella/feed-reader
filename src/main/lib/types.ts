@@ -13,5 +13,6 @@ export interface FeedItem {
   pubDate: Date;
   comments: string;
   description: string;
+  contentEncoded: string;
   read: boolean;
 }

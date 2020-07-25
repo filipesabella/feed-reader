@@ -19,6 +19,7 @@ export async function loadFeed(url: string): Promise<RSSFeed> {
       pubDate: new Date(item.querySelector('pubDate')?.innerHTML ?? ''),
       comments: item.querySelector('comments')?.innerHTML ?? '',
       description: item.querySelector('description')?.innerHTML ?? '',
+      contentEncoded: item.querySelector('encoded')?.innerHTML ?? '',
     }));
 
   return {
@@ -39,4 +40,5 @@ export interface RSSFeedItem {
   pubDate: Date;
   comments: string;
   description: string;
+  contentEncoded: string;
 }
