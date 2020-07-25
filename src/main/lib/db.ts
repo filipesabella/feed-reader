@@ -22,8 +22,15 @@ export class Database {
   }
 
   private async insertData(): Promise<void> {
-    // await this.insertFeed('11', await loadFeed('news.ycombinator.com/rss'));
     await this.insertFeed('1', await loadFeed('http://www.booooooom.com/feed/'));
+    await this.insertFeed('11', await loadFeed('news.ycombinator.com/rss'));
+  }
+
+  public async loadFeeds(): Promise<Feed[]> {
+    return (await db.feeds.toArray()).map(f => ({
+      ...f,
+      items: [],
+    }));
   }
 
   public async loadFeed(feedId: string): Promise<Feed | undefined> {
