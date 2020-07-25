@@ -8,13 +8,14 @@
     margin: 1em 0;
     padding: 1em;
     background-color: var(--bg-color-lighter);
+    border-left: .3em solid;
 
     &.unread {
-      border-left: .3em solid var(--border-color);
+      border-left-color: var(--border-color);
     }
 
     &.read {
-      border-left: .3em solid transparent;
+      border-left-color: transparent;
     }
 
     h2 {
