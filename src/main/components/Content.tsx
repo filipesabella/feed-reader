@@ -16,7 +16,7 @@ export const Content = ({ feedId }: Props) => {
       if (!feed) throw 'could not find feed with id 1';
       setFeed(feed);
     });
-  });
+  }, [feedId]);
 
   return <div className="content">
     {!feed && <div>Loading ... </div>}
