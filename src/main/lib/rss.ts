@@ -13,14 +13,29 @@ export async function loadFeed(url: string): Promise<RSSFeed> {
     ?.innerHTML ?? '';
 
   const items = Array.from(rss.querySelectorAll('rss > channel > item'))
-    .map(item => ({
-      title: item.querySelector('title')?.innerHTML ?? '',
-      link: item.querySelector('link')?.innerHTML ?? '',
-      pubDate: new Date(item.querySelector('pubDate')?.innerHTML ?? ''),
-      comments: item.querySelector('comments')?.innerHTML ?? '',
-      description: htmlDecode(item.querySelector('description')?.innerHTML ?? ''),
-      contentEncoded: cleanUp(item.querySelector('encoded')?.innerHTML ?? ''),
-    }));
+    .map(item => {
+      const title =
+        item.querySelector('title')?.innerHTML ?? '';
+      const link =
+        item.querySelector('link')?.innerHTML ?? '';
+      const pubDate =
+        new Date(item.querySelector('pubDate')?.innerHTML ?? '');
+      const comments =
+        item.querySelector('comments')?.innerHTML ?? '';
+      const description =
+        htmlDecode(item.querySelector('description')?.innerHTML ?? '');
+      const contentEncoded =
+        cleanUp(item.querySelector('encoded')?.innerHTML ?? '');
+
+      return {
+        title: title || link,
+        link,
+        pubDate,
+        comments,
+        description,
+        contentEncoded,
+      }
+    });
 
   return {
     title, link, description, items
