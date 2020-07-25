@@ -1,23 +1,19 @@
 body {
-
   &.light {
     --bg-color: rgb(238, 238, 238);
+    --bg-color-lighter: rgb(250, 250, 250);
     --text-color: rgb(34, 40, 49);
     --intense-color: rgb(181, 84, 0);
-    --bg-color-transparent: rgba(34, 40, 49, .5);
     --border-color: rgba(34, 40, 49, .5);
   }
 
   &.dark {
-    --bg-color: rgb(20, 20, 20);
+    --bg-color: rgb(50, 50, 50);
+    --bg-color-lighter: rgb(20, 20, 20);
     --text-color: rgb(212, 212, 212);
     --intense-color: rgb(181, 84, 0);
-    --bg-color-transparent: rgba(34, 40, 49, .5);
-    --border-color: rgba(238, 238, 238, .1);
+    --border-color: rgb(0, 0, 0);
   }
-
-  --sidebar-width: 15em;
-  --sidebar-width-current: var(--sidebar-width);
 }
 
 html,
@@ -27,6 +23,8 @@ body,
   font-family: 'Barlow';
   width: 100%;
   height: 100%;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 #app {

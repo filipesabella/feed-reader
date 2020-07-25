@@ -7,10 +7,14 @@
   .feed-item {
     margin: 1em 0;
     padding: 1em;
-    background-color: var(--bg-color);
+    background-color: var(--bg-color-lighter);
 
     &.unread {
       border-left: .3em solid var(--border-color);
+    }
+
+    &.read {
+      border-left: .3em solid transparent;
     }
 
     h2 {
