@@ -18,7 +18,7 @@ export async function loadFeed(url: string): Promise<RSSFeed> {
       link: item.querySelector('link')?.innerHTML ?? '',
       pubDate: new Date(item.querySelector('pubDate')?.innerHTML ?? ''),
       comments: item.querySelector('comments')?.innerHTML ?? '',
-      description: item.querySelector('description')?.innerHTML ?? '',
+      description: htmlDecode(item.querySelector('description')?.innerHTML ?? ''),
       contentEncoded: cleanUp(item.querySelector('encoded')?.innerHTML ?? ''),
     }));
 
@@ -45,4 +45,10 @@ export interface RSSFeedItem {
 
 function cleanUp(s: string): string {
   return s.replace('<![CDATA[', '').replace(']]>', '');
+}
+
+function htmlDecode(input: string) {
+  let e = document.createElement('textarea');
+  e.innerHTML = input;
+  return e.childNodes.length === 0 ? '' : e.childNodes[0].nodeValue || '';
 }
