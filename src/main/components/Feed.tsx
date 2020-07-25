@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { Feed } from '../types/Feed';
-import { FeedItemComponent } from './FeedItemComponent';
-
 import '../styles/feed.less';
+import { FeedItemComponent } from './FeedItemComponent';
+import { Feed } from '../lib/types';
 
 interface Props {
   feed: Feed;

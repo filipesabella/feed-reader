@@ -1,7 +1,7 @@
-import { Feed } from '../types/Feed';
-
-export async function loadFeed(url: string): Promise<Feed> {
+export async function loadFeed(url: string): Promise<RSSFeed> {
   const response = await fetch(`https://cors-anywhere.herokuapp.com/${url}`);
+  if (response.status !== 200) throw 'could not load the feeed';
+
   const xml = await response.text();
   const rss = new DOMParser().parseFromString(xml, 'text/xml');
 
@@ -16,7 +16,7 @@ export async function loadFeed(url: string): Promise<Feed> {
     .map(item => ({
       title: item.querySelector('title')?.innerHTML ?? '',
       link: item.querySelector('link')?.innerHTML ?? '',
-      pubDate: item.querySelector('pubDate')?.innerHTML ?? '',
+      pubDate: new Date(item.querySelector('pubDate')?.innerHTML ?? ''),
       comments: item.querySelector('comments')?.innerHTML ?? '',
       description: item.querySelector('description')?.innerHTML ?? '',
     }));
@@ -24,4 +24,19 @@ export async function loadFeed(url: string): Promise<Feed> {
   return {
     title, link, description, items
   };
+}
+
+export interface RSSFeed {
+  title: string;
+  link: string;
+  description: string;
+  items: RSSFeedItem[];
+}
+
+export interface RSSFeedItem {
+  title: string;
+  link: string;
+  pubDate: Date;
+  comments: string;
+  description: string;
 }

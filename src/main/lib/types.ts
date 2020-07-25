@@ -1,4 +1,5 @@
 export interface Feed {
+  id: string;
   title: string;
   link: string;
   description: string;
@@ -6,9 +7,11 @@ export interface Feed {
 }
 
 export interface FeedItem {
+  id: string;
   title: string;
   link: string;
-  pubDate: string;
+  pubDate: Date;
   comments: string;
   description: string;
+  read: boolean;
 }

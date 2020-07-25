@@ -1,14 +1,17 @@
 import * as React from 'react';
-import { Feed } from '../types/Feed';
+import { database } from './App';
 import { FeedComponent } from './Feed';
-import { loadFeed } from '../lib/rss';
+import { useState } from 'react';
+import { Feed } from '../lib/types';
 
 export const Content = () => {
-  const [feed, setFeed] = React.useState(null as Feed | null);
+  const [feed, setFeed] = useState(null as Feed | null);
 
   React.useEffect(() => {
-    const url = 'news.ycombinator.com/rss';
-    loadFeed(url).then(setFeed);
+    database.loadFeed('1').then(feed => {
+      if (!feed) throw 'could not find feed with id 1';
+      setFeed(feed);
+    });
   }, []);
 
   return <div className="content">
