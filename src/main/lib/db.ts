@@ -15,13 +15,13 @@ export class Database {
 
   public async initialize(): Promise<void> {
     // next lines for dev mode
-    Dexie.delete(dbName);
+    // Dexie.delete(dbName);
 
     db = new DixieNonSense();
     await db.open();
 
     // next lines for dev mode
-    await this.insertData();
+    // await this.insertData();
   }
 
   private async insertData(): Promise<void> {
@@ -35,8 +35,8 @@ export class Database {
       await loadFeed('apod.nasa.gov/apod.rss'));
   }
 
-  public async markAsRead(feedItemId: string): Promise<void> {
-    await db.items.update(feedItemId, { read: 'true' });
+  public async markAsRead(feedItemId: string, read: boolean): Promise<void> {
+    await db.items.update(feedItemId, { read: read });
   }
 
   public async loadFeeds(): Promise<Feed[]> {

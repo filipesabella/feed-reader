@@ -9,6 +9,7 @@
     padding: 1em;
     background-color: var(--bg-color-lighter);
     border-left: .3em solid;
+    position: relative;
 
     &.unread {
       border-left-color: var(--border-color);
@@ -34,6 +35,17 @@
 
     p {
       margin-top: 1em;
+    }
+
+    &:hover .actions {
+      display: block;
+    }
+
+    .actions {
+      display: none;
+      position: absolute;
+      right: 1em;
+      bottom: 1em;
     }
   }
 }
