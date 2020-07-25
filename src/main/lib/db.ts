@@ -28,6 +28,8 @@ export class Database {
       await loadFeed('news.ycombinator.com/rss'));
     await this.insertFeed('111',
       await loadFeed('https://lordofthegadflies.tumblr.com/rss'));
+    await this.insertFeed('1111',
+      await loadFeed('apod.nasa.gov/apod.rss'));
   }
 
   public async loadFeeds(): Promise<Feed[]> {

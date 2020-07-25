@@ -11,6 +11,7 @@ export const FeedItemComponent = ({ feedItem }: Props) => {
     <div dangerouslySetInnerHTML={{ __html: unescape(feedItem.description) }}>
     </div>
     <div dangerouslySetInnerHTML={{ __html: feedItem.contentEncoded }}></div>
-    <p><a href={feedItem.comments} target="blank">Comments</a></p>
+    {feedItem.comments &&
+      <p><a href={feedItem.comments} target="blank">Comments</a></p>}
   </div>;
 };
