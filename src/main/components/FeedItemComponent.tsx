@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Feed, FeedItem } from '../types/Feed';
+import { FeedItem } from '../types/Feed';
 
 interface Props {
   feedItem: FeedItem;
@@ -7,6 +7,7 @@ interface Props {
 
 export const FeedItemComponent = ({ feedItem }: Props) => {
   return <div className="feed-item">
-    <h2>{feedItem.title}</h2>
+    <h2><a href={feedItem.link} target="blank">{feedItem.title}</a></h2>
+    <p><a href={feedItem.comments} target="blank">Comments</a></p>
   </div>;
 };
