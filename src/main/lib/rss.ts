@@ -1,8 +1,8 @@
 import { Feed } from '../types/Feed';
 
 export async function loadFeed(url: string): Promise<Feed> {
-  const r = await fetch(`https://cors-anywhere.herokuapp.com/${url}`);
-  const xml = await r.text();
+  const response = await fetch(`https://cors-anywhere.herokuapp.com/${url}`);
+  const xml = await response.text();
   const rss = new DOMParser().parseFromString(xml, 'text/xml');
 
   const title = rss.querySelector('rss > channel > title')
