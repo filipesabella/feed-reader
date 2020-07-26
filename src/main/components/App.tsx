@@ -16,7 +16,14 @@ export const App = () => {
       setLoading(false);
 
       // dev mode
-      setFeedId('11');
+      const resetDb = window.location.hash.startsWith('#reset');
+      if (resetDb) {
+        const resetId = window.location.hash.split('=');
+        if (resetId.length > 1) setFeedId(resetId[1]);
+        else setFeedId((await database.loadFeeds())[0].id);
+      } else {
+        setFeedId((await database.loadFeeds())[0].id);
+      }
     });
   }, []);
 
