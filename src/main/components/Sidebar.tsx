@@ -25,9 +25,10 @@ export const Sidebar = ({ selectFeed, feedId }: Props) => {
   }, []);
 
   const feed = (f: Feed) => {
-    return <li key={f.id}
-      className={f.id === feedId ? 'selected' : ''}>
-      <span onClick={_ => selectFeed(f.id)}>{f.title}</span>
+    return <li key={f.id}>
+      <span
+        className={f.id === feedId ? 'selected' : ''}
+        onClick={_ => selectFeed(f.id)}>{f.title}</span>
     </li>;
   };
 
