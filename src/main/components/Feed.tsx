@@ -31,7 +31,11 @@ export const FeedComponent = ({ feed }: Props) => {
       }
     };
 
-    const handler = (e: KeyboardEvent) => handlers[e.which]?.();
+    const handler = (e: KeyboardEvent) => {
+      handlers[e.which]?.();
+      // react doesn't like this type of stuff
+      document.querySelector('.feed-item.selected')?.scrollIntoView(true);
+    };
     window.addEventListener('keypress', handler);
 
     return () => {
