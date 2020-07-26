@@ -37,7 +37,7 @@ export const Sidebar = ({ selectFeed, feedId }: Props) => {
     if (category === noCategory) {
       return items.map(feed);
     } else {
-      return <li key={category}><span>{category}</span>
+      return <li key={category}><span className="category">{category}</span>
         <ul>
           {items.map(feed)}
         </ul>
