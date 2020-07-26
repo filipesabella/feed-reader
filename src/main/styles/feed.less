@@ -1,51 +1,65 @@
 .feed {
-  display: flex;
-  flex-direction: column;
   max-width: 1250px;
   margin: auto;
+  height: 100%;
+  overflow: hidden;
 
-  .feed-item {
-    margin: 1em 0;
-    padding: 1em;
-    background-color: var(--bg-color-lighter);
-    border-left: .3em solid;
-    position: relative;
+  h1 {
+    font-weight: 600;
+    margin-bottom: 1em;
+  }
 
-    &.unread {
-      border-left-color: var(--border-color);
+  .items {
+    overflow: auto;
+    height: 100%;
+
+    .feed-item:first-child {
+      margin-top: 0;
     }
 
-    &.read {
-      border-left-color: transparent;
-    }
+    .feed-item {
+      margin: 1em 0;
+      padding: 1em;
+      background-color: var(--bg-color-lighter);
+      border-left: .3em solid;
+      position: relative;
 
-    h2 {
-      font-weight: 500;
-      font-size: 1.1em;
+      &.unread {
+        border-left-color: var(--border-color);
+      }
 
-      a {
-        color: inherit;
-        text-decoration: inherit;
+      &.read {
+        border-left-color: transparent;
+      }
 
-        &:hover {
-          text-decoration: underline;
+      h2 {
+        font-weight: 500;
+        font-size: 1.1em;
+
+        a {
+          color: inherit;
+          text-decoration: inherit;
+
+          &:hover {
+            text-decoration: underline;
+          }
         }
       }
-    }
 
-    p {
-      margin-top: 1em;
-    }
+      p {
+        margin-top: 1em;
+      }
 
-    &:hover .actions {
-      display: block;
-    }
+      &:hover .actions {
+        display: block;
+      }
 
-    .actions {
-      display: none;
-      position: absolute;
-      right: 1em;
-      bottom: 1em;
+      .actions {
+        display: none;
+        position: absolute;
+        right: 1em;
+        bottom: 1em;
+      }
     }
   }
 }
