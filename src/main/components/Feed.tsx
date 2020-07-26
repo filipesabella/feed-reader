@@ -16,13 +16,20 @@ export const FeedComponent = ({ feed }: Props) => {
   }, [feed]);
 
   useEffect(() => {
+    const scrollIntoView = () => {
+      // react doesn't like this type of stuff
+      document.querySelector('.feed-item.selected')?.scrollIntoView(true);
+    };
+
     const handlers: { [key: number]: () => void } = {
       106: () => { // j
         setSelectedItemIndex(
           Math.min(feed.items.length - 1, selectedItemIndex + 1));
+        scrollIntoView();
       },
       107: () => { // k
         setSelectedItemIndex(Math.max(0, selectedItemIndex - 1));
+        scrollIntoView();
       },
       13: () => { // enter
         if (selectedItemIndex >= 0) {
@@ -33,8 +40,6 @@ export const FeedComponent = ({ feed }: Props) => {
 
     const handler = (e: KeyboardEvent) => {
       handlers[e.which]?.();
-      // react doesn't like this type of stuff
-      document.querySelector('.feed-item.selected')?.scrollIntoView(true);
     };
     window.addEventListener('keypress', handler);
 
