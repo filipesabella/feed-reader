@@ -25,13 +25,13 @@ export class Database {
   }
 
   private async insertData(): Promise<void> {
-    await this.insertFeed('1',
+    await this.insertFeed('1', 'photography',
       await loadFeed('http://www.booooooom.com/feed/'));
-    await this.insertFeed('11',
+    await this.insertFeed('11', 'programming',
       await loadFeed('https://news.ycombinator.com/rss'));
-    await this.insertFeed('111',
+    await this.insertFeed('111', null,
       await loadFeed('https://lordofthegadflies.tumblr.com/rss'));
-    await this.insertFeed('1111',
+    await this.insertFeed('1111', 'photography',
       await loadFeed('apod.nasa.gov/apod.rss'));
   }
 
@@ -66,13 +66,17 @@ export class Database {
     };
   }
 
-  public async insertFeed(feedId: string, rssFeed: RSSFeed): Promise<void> {
+  public async insertFeed(
+    feedId: string,
+    category: string | null,
+    rssFeed: RSSFeed): Promise<void> {
     await db.transaction('rw', db.feeds, db.items, async () => {
       await db.feeds.put({
         id: feedId,
         title: rssFeed.title,
         link: rssFeed.link,
         description: rssFeed.description,
+        category,
       });
 
       await rssFeed.items
@@ -87,7 +91,7 @@ export class Database {
     });
   }
 
-  public async updateFeed(feedId: string, rssFeed: RSSFeed): Promise<void> {
+  /*public async updateFeed(feedId: string, rssFeed: RSSFeed): Promise<void> {
     await db.transaction('rw', db.feeds, db.items, async () => {
       db.feeds.update(feedId, {
         title: rssFeed.title,
@@ -121,7 +125,7 @@ export class Database {
         }
       });
     });
-  }
+  }*/
 }
 
 function rssFeedItemKey(item: RSSFeedItem): string {
@@ -133,6 +137,7 @@ interface DBFeed {
   title: string;
   link: string;
   description: string;
+  category: string | null;
 }
 
 interface DBFeedItem {
@@ -154,7 +159,7 @@ class DixieNonSense extends Dexie {
   constructor() {
     super(dbName);
     this.version(1).stores({
-      feeds: '&id, title, link, description',
+      feeds: '&id, title, link, description, category',
       items: '&id, feedId, title, link, pubDate, comments, description, read',
     });
   }

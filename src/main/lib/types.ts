@@ -4,6 +4,7 @@ export interface Feed {
   link: string;
   description: string;
   items: FeedItem[];
+  category: string | null;
 }
 
 export interface FeedItem {

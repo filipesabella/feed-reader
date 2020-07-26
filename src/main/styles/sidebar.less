@@ -3,17 +3,23 @@
 
   ul {
     line-height: 2em;
+  }
 
-    li {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      cursor: pointer;
+  ul>li>ul>li {
+    margin-left: 1em;
+  }
 
-      &:hover,
-      &.selected {
-        color: var(--intense-color);
-      }
+  span {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    display: inline-block;
+
+    &:hover,
+    &.selected {
+      color: var(--intense-color);
     }
   }
 }
