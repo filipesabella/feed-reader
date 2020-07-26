@@ -15,23 +15,27 @@ export class Database {
 
   public async initialize(): Promise<void> {
     // next lines for dev mode
-    // Dexie.delete(dbName);
+    const resetDb = window.location.hash.startsWith('#reset');
+    resetDb && await Dexie.delete(dbName);
 
     db = new DixieNonSense();
     await db.open();
 
     // next lines for dev mode
-    // await this.insertData();
+    resetDb && await this.insertData();
   }
 
   private async insertData(): Promise<void> {
-    await this.insertFeed('1', 'photography',
+    const resetId = window.location.hash.split('=');
+    const only = (id: string) => resetId.length < 2 || resetId[1] === id;
+
+    only('1') && await this.insertFeed('1', 'photography',
       await loadFeed('http://www.booooooom.com/feed/'));
-    await this.insertFeed('11', 'programming',
+    only('11') && await this.insertFeed('11', 'programming',
       await loadFeed('https://news.ycombinator.com/rss'));
-    await this.insertFeed('111', null,
+    only('111') && await this.insertFeed('111', null,
       await loadFeed('https://lordofthegadflies.tumblr.com/rss'));
-    await this.insertFeed('1111', 'photography',
+    only('1111') && await this.insertFeed('1111', 'photography',
       await loadFeed('apod.nasa.gov/apod.rss'));
   }
 
