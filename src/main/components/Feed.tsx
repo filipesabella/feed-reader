@@ -24,6 +24,11 @@ export const FeedComponent = ({ feed }: Props) => {
       107: () => { // k
         setSelectedItemIndex(Math.max(0, selectedItemIndex - 1));
       },
+      13: () => { // enter
+        if (selectedItemIndex >= 0) {
+          window.open(feed.items[selectedItemIndex].link, '_blank');
+        }
+      }
     };
 
     const handler = (e: KeyboardEvent) => handlers[e.which]?.();
