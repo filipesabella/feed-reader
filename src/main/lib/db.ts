@@ -28,7 +28,7 @@ export class Database {
     await this.insertFeed('1',
       await loadFeed('http://www.booooooom.com/feed/'));
     await this.insertFeed('11',
-      await loadFeed('news.ycombinator.com/rss'));
+      await loadFeed('https://news.ycombinator.com/rss'));
     await this.insertFeed('111',
       await loadFeed('https://lordofthegadflies.tumblr.com/rss'));
     await this.insertFeed('1111',

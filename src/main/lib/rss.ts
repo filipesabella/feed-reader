@@ -23,7 +23,7 @@ export async function loadFeed(url: string): Promise<RSSFeed> {
       const comments =
         item.querySelector('comments')?.innerHTML ?? '';
       const description =
-        htmlDecode(item.querySelector('description')?.innerHTML ?? '');
+        htmlDecode(cleanUp(item.querySelector('description')?.innerHTML ?? ''));
       const contentEncoded =
         cleanUp(item.querySelector('encoded')?.innerHTML ?? '');
 

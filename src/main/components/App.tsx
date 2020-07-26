@@ -16,7 +16,7 @@ export const App = () => {
       setLoading(false);
 
       // dev mode
-      setFeedId('1111');
+      setFeedId('11');
     });
   }, []);
 
