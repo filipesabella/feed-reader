@@ -50,7 +50,10 @@ export class Database {
     const feed = await db.feeds.get(feedId);
     if (!feed) return;
 
-    const items = await db.items.where('feedId').equals(feedId).toArray();
+    const items = await db.items
+      .where({ feedId, read: 'false' })
+      .toArray();
+
     return {
       ...feed,
       items: items.map(i => ({
@@ -61,7 +64,7 @@ export class Database {
         comments: i.comments,
         description: i.description,
         contentEncoded: i.contentEncoded,
-        read: i.read,
+        read: i.read === 'true',
       }))
     };
   }
@@ -84,7 +87,7 @@ export class Database {
           await db.items.put({
             id: rssFeedItemKey(rssFeedItem),
             feedId: feedId,
-            read: false,
+            read: 'false',
             ...rssFeedItem,
           });
         });
@@ -149,7 +152,8 @@ interface DBFeedItem {
   comments: string;
   description: string;
   contentEncoded: string;
-  read: boolean;
+  // dexie doesn't index booleans
+  read: string;
 }
 
 class DixieNonSense extends Dexie {
@@ -160,7 +164,7 @@ class DixieNonSense extends Dexie {
     super(dbName);
     this.version(1).stores({
       feeds: '&id, title, link, description, category',
-      items: '&id, feedId, title, link, pubDate, comments, description, read',
+      items: '&id, feedId, [feedId+read], title, link, pubDate, comments, description',
     });
   }
 }
