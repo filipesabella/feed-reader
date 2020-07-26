@@ -16,7 +16,8 @@ export const Sidebar = ({ selectFeed, feedId }: Props) => {
   useEffect(() => {
     database.loadFeeds().then(feeds => {
       const grouped = feeds.reduce((acc, f) => {
-        acc[f.category || noCategory] = (acc[f.category || noCategory] || []).concat(f);
+        acc[f.category || noCategory] = (acc[f.category || noCategory] || [])
+          .concat(f);
         return acc;
       }, {} as { [key: string]: Feed[] });
       setFeeds(grouped);
