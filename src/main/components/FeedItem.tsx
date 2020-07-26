@@ -5,9 +5,10 @@ import { database } from './App';
 
 interface Props {
   feedItem: FeedItem;
+  selected: boolean;
 }
 
-export const FeedItemComponent = ({ feedItem }: Props) => {
+export const FeedItemComponent = ({ feedItem, selected }: Props) => {
   const [read, setRead] = useState(feedItem.read);
 
   const markAsRead = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -20,7 +21,9 @@ export const FeedItemComponent = ({ feedItem }: Props) => {
     database.markAsRead(feedItem.id, read);
   };
 
-  const className = 'feed-item ' + (read ? 'read' : 'unread');
+  const className = 'feed-item'
+    + (selected ? ' selected' : '')
+    + (read ? ' read' : ' unread');
 
   return <div className={className} onClick={e => markAsRead(e)}>
     <h2><a href={feedItem.link} target="blank">{feedItem.title}</a></h2>
