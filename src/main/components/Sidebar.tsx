@@ -5,13 +5,13 @@ import '../styles/sidebar.less';
 import { database } from './App';
 
 interface Props {
-  feedId: string | null;
-  selectFeed: (feedId: string) => void;
+  feedIds: string[] | null;
+  selectFeed: (feedIds: string[]) => void;
 }
 
 const noCategory = '_';
 
-export const Sidebar = ({ selectFeed, feedId }: Props) => {
+export const Sidebar = ({ selectFeed, feedIds }: Props) => {
   const [feeds, setFeeds] = useState(null as { [key: string]: Feed[] } | null);
   useEffect(() => {
     database.loadFeeds().then(feeds => {
@@ -27,9 +27,9 @@ export const Sidebar = ({ selectFeed, feedId }: Props) => {
   const feed = (f: Feed) => {
     return <li key={f.id}>
       <span
-        className={f.id === feedId ? 'selected' : ''}
-        onClick={_ => selectFeed(f.id)}>{f.title}</span>
-    </li>;
+        className={feedIds?.includes(f.id) ? 'selected' : ''}
+        onClick={_ => selectFeed([f.id])}>{f.title}</span>
+    </li >;
   };
 
   const feedComponents = feeds && Object.keys(feeds).sort().map(category => {
@@ -37,7 +37,11 @@ export const Sidebar = ({ selectFeed, feedId }: Props) => {
     if (category === noCategory) {
       return items.map(feed);
     } else {
-      return <li key={category}><span className="category">{category}</span>
+      const feedIds = items.map(f => f.id);
+      return <li key={category}>
+        <span
+          className="category"
+          onClick={_ => selectFeed(feedIds)}>{category}</span>
         <ul>
           {items.map(feed)}
         </ul>

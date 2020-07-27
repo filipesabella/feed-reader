@@ -8,7 +8,7 @@ import { Sidebar } from './Sidebar';
 export const database = new Database();
 
 export const App = () => {
-  const [feedId, setFeedId] = useState(null as string | null);
+  const [feedIds, setFeedIds] = useState(null as string[] | null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,10 +19,10 @@ export const App = () => {
       const resetDb = window.location.hash.startsWith('#reset');
       if (resetDb) {
         const resetId = window.location.hash.split('=');
-        if (resetId.length > 1) setFeedId(resetId[1]);
-        else setFeedId((await database.loadFeeds())[0].id);
+        if (resetId.length > 1) setFeedIds([resetId[1]]);
+        else setFeedIds([(await database.loadFeeds())[0].id]);
       } else {
-        setFeedId((await database.loadFeeds())[0].id);
+        setFeedIds([(await database.loadFeeds())[0].id]);
       }
     });
   }, []);
@@ -30,8 +30,8 @@ export const App = () => {
   return <>
     {loading && <p>Loading...</p>}
     {!loading && <Sidebar
-      selectFeed={setFeedId}
-      feedId={feedId} />}
-    {feedId && <Content feedId={feedId} />}
+      selectFeed={setFeedIds}
+      feedIds={feedIds} />}
+    {feedIds && <Content feedIds={feedIds} />}
   </>;
 };

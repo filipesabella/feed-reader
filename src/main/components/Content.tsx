@@ -5,18 +5,18 @@ import { database } from './App';
 import { FeedComponent } from './Feed';
 
 interface Props {
-  feedId: string;
+  feedIds: string[];
 }
 
-export const Content = ({ feedId }: Props) => {
+export const Content = ({ feedIds }: Props) => {
   const [feed, setFeed] = useState(null as Feed | null);
 
   useEffect(() => {
-    database.loadFeed(feedId).then(feed => {
+    database.loadFeedsById(feedIds).then(feed => {
       if (!feed) throw 'could not find feed with id 1';
       setFeed(feed);
     });
-  }, [feedId]);
+  }, [feedIds]);
 
   return <div className="content">
     {!feed && <div>Loading ... </div>}

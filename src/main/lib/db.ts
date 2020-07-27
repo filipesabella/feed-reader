@@ -36,7 +36,9 @@ export class Database {
     only('111') && await this.insertFeed('111', null,
       await loadFeed('https://lordofthegadflies.tumblr.com/rss'));
     only('1111') && await this.insertFeed('1111', 'photography',
-      await loadFeed('apod.nasa.gov/apod.rss'));
+      await loadFeed('https://apod.nasa.gov/apod.rss'));
+    only('11111') && await this.insertFeed('11111', 'programming',
+      await loadFeed('https://www.reddit.com/r/programming.rss'));
   }
 
   public async markAsRead(feedItemId: string, read: boolean): Promise<void> {
@@ -50,17 +52,16 @@ export class Database {
     }));
   }
 
-  public async loadFeed(feedId: string): Promise<Feed | undefined> {
-    const feed = await db.feeds.get(feedId);
-    if (!feed) return;
+  public async loadFeedsById(feedIds: string[]): Promise<Feed | undefined> {
+    const feeds = await db.feeds.where('id').anyOf(feedIds).toArray();
 
-    const items = await db.items
-      .where({ feedId, read: 'false' })
-      .toArray();
-
-    return {
-      ...feed,
-      items: items.map(i => ({
+    const items = (await Promise.all(
+      feeds.map(feed => db.items
+        .where({ feedId: feed.id, read: 'false' })
+        .toArray())))
+      .reduce((acc, e) => acc.concat(e), [])
+      .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime())
+      .map(i => ({
         id: i.id,
         title: i.title,
         link: i.link,
@@ -69,8 +70,23 @@ export class Database {
         description: i.description,
         contentEncoded: i.contentEncoded,
         read: i.read === 'true',
-      }))
-    };
+      }));
+
+    if (feedIds.length > 1) {
+      return {
+        id: '',
+        title: '',
+        category: '',
+        description: '',
+        link: '',
+        items,
+      };
+    } else {
+      return {
+        ...feeds[0],
+        items,
+      };
+    }
   }
 
   public async insertFeed(
