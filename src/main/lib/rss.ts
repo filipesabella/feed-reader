@@ -5,41 +5,82 @@ export async function loadFeed(url: string): Promise<RSSFeed> {
   const xml = await response.text();
   const rss = new DOMParser().parseFromString(xml, 'text/xml');
 
-  const title = rss.querySelector('rss > channel > title')
-    ?.innerHTML ?? '';
-  const link = rss.querySelector('rss > channel > link')
-    ?.innerHTML ?? '';
-  const description = rss.querySelector('rss > channel > description')
-    ?.innerHTML ?? '';
+  const isAtom = rss.firstElementChild?.tagName === 'feed';
 
-  const items = Array.from(rss.querySelectorAll('rss > channel > item'))
-    .map(item => {
-      const title =
-        item.querySelector('title')?.innerHTML ?? '';
-      const link =
-        item.querySelector('link')?.innerHTML ?? '';
-      const pubDate =
-        new Date(item.querySelector('pubDate')?.innerHTML ?? '');
-      const comments =
-        item.querySelector('comments')?.innerHTML ?? '';
-      const description =
-        htmlDecode(cleanUp(item.querySelector('description')?.innerHTML ?? ''));
-      const contentEncoded =
-        cleanUp(item.querySelector('encoded')?.innerHTML ?? '');
+  if (isAtom) {
+    const title = rss.querySelector('feed > title')
+      ?.innerHTML ?? '';
+    const link = rss.querySelector('feed > link[rel="self"]')
+      ?.getAttribute('href') ?? '';
+    const description = rss.querySelector('feed > subtitle')
+      ?.innerHTML ?? '';
 
-      return {
-        title: title || link,
-        link,
-        pubDate,
-        comments,
-        description,
-        contentEncoded,
-      };
-    });
+    const items = Array.from(rss.querySelectorAll('feed > entry'))
+      .map(item => {
+        const title =
+          item.querySelector('title')?.innerHTML ?? '';
+        const link =
+          item.querySelector('link')?.getAttribute('href') ?? '';
+        const pubDate =
+          new Date(item.querySelector('updated')?.innerHTML ?? '');
+        const comments = '';
+        const description = '';
+        const contentEncoded =
+          htmlDecode(item.querySelector('content')?.innerHTML ?? '');
 
-  return {
-    title, link, description, items
-  };
+        return {
+          title,
+          link,
+          pubDate,
+          comments,
+          description,
+          contentEncoded,
+        };
+      });
+
+    return {
+      title,
+      link,
+      description,
+      items,
+    };
+  } else {
+    const title = rss.querySelector('rss > channel > title')
+      ?.innerHTML ?? '';
+    const link = rss.querySelector('rss > channel > link')
+      ?.innerHTML ?? '';
+    const description = rss.querySelector('rss > channel > description')
+      ?.innerHTML ?? '';
+
+    const items = Array.from(rss.querySelectorAll('rss > channel > item'))
+      .map(item => {
+        const title =
+          item.querySelector('title')?.innerHTML ?? '';
+        const link =
+          item.querySelector('link')?.innerHTML ?? '';
+        const pubDate =
+          new Date(item.querySelector('pubDate')?.innerHTML ?? '');
+        const comments =
+          item.querySelector('comments')?.innerHTML ?? '';
+        const description =
+          htmlDecode(cleanUp(item.querySelector('description')?.innerHTML ?? ''));
+        const contentEncoded =
+          cleanUp(item.querySelector('encoded')?.innerHTML ?? '');
+
+        return {
+          title: title || link,
+          link,
+          pubDate,
+          comments,
+          description,
+          contentEncoded,
+        };
+      });
+
+    return {
+      title, link, description, items
+    };
+  }
 }
 
 export interface RSSFeed {
