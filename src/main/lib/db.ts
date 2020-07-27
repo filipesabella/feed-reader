@@ -1,6 +1,7 @@
 import Dexie from 'dexie';
 import { loadFeed, RSSFeed, rssFeedItemToDbFeedItemId } from './rss';
 import { Feed } from './types';
+import { database } from '../components/App';
 
 const dbName = 'RSS-Reader-DB';
 let db: DixieNonSense;
@@ -48,14 +49,13 @@ export class Database {
 
   public async markAsRead(feedItemId: string, feedId: string, read: boolean)
     : Promise<void> {
-    if (read) {
-      await db.readItems.put({
-        id: feedItemId,
-        feedId: feedId,
-      });
-    } else {
-      await db.readItems.delete(feedItemId);
-    }
+    const feed = (await db.feeds.get(feedId))!;
+    await db.feeds.put({
+      ...feed,
+      readItemsIds: read
+        ? feed.readItemsIds.concat(feedItemId)
+        : feed.readItemsIds.filter(i => i !== feedItemId)
+    });
   }
 
   public async loadFeeds(): Promise<Feed[]> {
@@ -65,17 +65,8 @@ export class Database {
     }));
   }
 
-  public async loadFeedsById(feedIds: string[])
-    : Promise<[DBFeed[], DBFeedItem[]]> {
-    const feeds = await db.feeds.where('id').anyOf(feedIds).toArray();
-
-    const items = (await Promise.all(
-      feeds.map(feed => db.readItems
-        .where({ feedId: feed.id })
-        .toArray())))
-      .reduce((acc, e) => acc.concat(e), []);
-
-    return [feeds, items];
+  public loadFeedsById(feedIds: string[]): Promise<DBFeed[]> {
+    return db.feeds.where('id').anyOf(feedIds).toArray();
   }
 
   public async insertFeed(
@@ -90,6 +81,7 @@ export class Database {
       link: rssFeed.link,
       description: rssFeed.description,
       category,
+      readItemsIds: [],
     });
   }
 }
@@ -101,22 +93,16 @@ export interface DBFeed {
   link: string; // link is just random metadata
   description: string;
   category: string | null; // this is our app's category, nothing to do with RSS
-}
-
-export interface DBFeedItem {
-  id: string;
-  feedId: string;
+  readItemsIds: string[];
 }
 
 class DixieNonSense extends Dexie {
   feeds: Dexie.Table<DBFeed, string>;
-  readItems: Dexie.Table<DBFeedItem, string>;
 
   constructor() {
     super(dbName);
     this.version(1).stores({
-      feeds: '&id, title, url, link, description, category',
-      readItems: '&id, feedId',
+      feeds: '&id, title, url, link, description, category, *readItemsIds',
     });
   }
 }

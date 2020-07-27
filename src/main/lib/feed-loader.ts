@@ -1,18 +1,17 @@
-import { Database, DBFeed, DBFeedItem } from './db';
-import { CategoryFeed, Feed, FeedItem, } from './types';
+import { Database, DBFeed } from './db';
 import { loadFeedItems, RSSFeedItem, rssFeedItemToDbFeedItemId } from './rss';
+import { CategoryFeed, Feed, FeedItem } from './types';
 
 export async function loadFeeds(
   database: Database,
   feedIds: string[]): Promise<Feed> {
-  const [dbFeeds, dbFeedItems] = await database.loadFeedsById(feedIds);
+  const dbFeeds = await database.loadFeedsById(feedIds);
   const rssFeedItems = await Promise.all(
     dbFeeds.map(feed => loadFeedItems(feed.url)));
 
   const feeds = dbFeeds.map(feed =>
     merge(
       feed,
-      dbFeedItems.filter(i => i.feedId = feed.id),
       rssFeedItems.find(([url, _]) => url === feed.url)![1]));
 
   if (feedIds.length > 1) {
@@ -36,7 +35,6 @@ export async function loadFeeds(
 
 function merge(
   dbFeed: DBFeed,
-  dbFeedItems: DBFeedItem[],
   rssFeedItems: RSSFeedItem[]): Feed {
   const items: FeedItem[] = rssFeedItems.map(rss => {
     const id = rssFeedItemToDbFeedItemId(rss);
@@ -44,7 +42,7 @@ function merge(
       ...rss,
       id,
       feedId: dbFeed.id,
-      read: !!dbFeedItems.find(i => i.id === id),
+      read: dbFeed.readItemsIds.includes(id),
     };
   });
 
