@@ -53,7 +53,8 @@ export class Database {
     await db.feeds.put({
       ...feed,
       readItemsIds: read
-        ? feed.readItemsIds.concat(feedItemId)
+        // only store the past 100 read items, no need for more
+        ? feed.readItemsIds.concat(feedItemId).slice(-100)
         : feed.readItemsIds.filter(i => i !== feedItemId)
     });
   }
