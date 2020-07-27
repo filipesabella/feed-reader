@@ -19,10 +19,10 @@ export const App = () => {
       const resetDb = window.location.hash.startsWith('#reset');
       if (resetDb) {
         const resetId = window.location.hash.split('=');
-        if (resetId.length > 1) setFeedIds([resetId[1]]);
-        else setFeedIds([(await database.loadFeeds())[0].id]);
+        // if (resetId.length > 1) setFeedIds([resetId[1]]);
+        // else setFeedIds([(await database.loadFeeds())[0].id]);
       } else {
-        setFeedIds([(await database.loadFeeds())[0].id]);
+        // setFeedIds([(await database.loadFeeds())[0].id]);
       }
     });
   }, []);

@@ -1,13 +1,21 @@
+export interface RSSFeed {
+  title: string;
+  link: string;
+  description: string;
+}
+
+export interface RSSFeedItem {
+  title: string;
+  link: string;
+  pubDate: Date;
+  comments: string;
+  description: string;
+  contentEncoded: string;
+}
+
 export async function loadFeed(url: string): Promise<RSSFeed> {
-  const response = await fetch(`https://cors-anywhere.herokuapp.com/${url}`);
-  if (response.status !== 200) throw 'could not load the feeed';
-
-  const xml = await response.text();
-  const rss = new DOMParser().parseFromString(xml, 'text/xml');
-
-  const isAtom = rss.firstElementChild?.tagName === 'feed';
-
-  if (isAtom) {
+  const rss = await loadRSS(url);
+  if (isAtom(rss)) {
     const title = rss.querySelector('feed > title')
       ?.innerHTML ?? '';
     const link = rss.querySelector('feed > link[rel="self"]')
@@ -15,7 +23,43 @@ export async function loadFeed(url: string): Promise<RSSFeed> {
     const description = rss.querySelector('feed > subtitle')
       ?.innerHTML ?? '';
 
-    const items = Array.from(rss.querySelectorAll('feed > entry'))
+    return {
+      title,
+      link,
+      description,
+    };
+  } else {
+    const title = rss.querySelector('rss > channel > title')
+      ?.innerHTML ?? '';
+    const link = rss.querySelector('rss > channel > link')
+      ?.innerHTML ?? '';
+    const description = rss.querySelector('rss > channel > description')
+      ?.innerHTML ?? '';
+
+    return {
+      title,
+      link,
+      description,
+    };
+  }
+}
+
+export async function loadFeedItems(url: string)
+  : Promise<[string, RSSFeedItem[]]> {
+  const rss = await loadRSS(url);
+  return [url, parseFeedItems(rss)];
+}
+
+async function loadRSS(url: string): Promise<Document> {
+  const response = await fetch(`https://cors-anywhere.herokuapp.com/${url}`);
+  if (response.status !== 200) throw 'could not load the feeed';
+  const xml = await response.text();
+  return new DOMParser().parseFromString(xml, 'text/xml');
+}
+
+function parseFeedItems(rss: Document): RSSFeedItem[] {
+  if (isAtom(rss)) {
+    return Array.from(rss.querySelectorAll('feed > entry'))
       .map(item => {
         const title =
           item.querySelector('title')?.innerHTML ?? '';
@@ -37,22 +81,8 @@ export async function loadFeed(url: string): Promise<RSSFeed> {
           contentEncoded,
         };
       });
-
-    return {
-      title,
-      link,
-      description,
-      items,
-    };
   } else {
-    const title = rss.querySelector('rss > channel > title')
-      ?.innerHTML ?? '';
-    const link = rss.querySelector('rss > channel > link')
-      ?.innerHTML ?? '';
-    const description = rss.querySelector('rss > channel > description')
-      ?.innerHTML ?? '';
-
-    const items = Array.from(rss.querySelectorAll('rss > channel > item'))
+    return Array.from(rss.querySelectorAll('rss > channel > item'))
       .map(item => {
         const title =
           item.querySelector('title')?.innerHTML ?? '';
@@ -63,7 +93,9 @@ export async function loadFeed(url: string): Promise<RSSFeed> {
         const comments =
           item.querySelector('comments')?.innerHTML ?? '';
         const description =
-          htmlDecode(cleanUp(item.querySelector('description')?.innerHTML ?? ''));
+          htmlDecode(cleanUp(item.querySelector('description')
+            ?.innerHTML ?? ''));
+
         const contentEncoded =
           cleanUp(item.querySelector('encoded')?.innerHTML ?? '');
 
@@ -76,27 +108,15 @@ export async function loadFeed(url: string): Promise<RSSFeed> {
           contentEncoded,
         };
       });
-
-    return {
-      title, link, description, items
-    };
   }
 }
 
-export interface RSSFeed {
-  title: string;
-  link: string;
-  description: string;
-  items: RSSFeedItem[];
+export function rssFeedItemToDbFeedItemId(item: RSSFeedItem): string {
+  return `${item.title.trim()}_${item.title}_${item.pubDate}`;
 }
 
-export interface RSSFeedItem {
-  title: string;
-  link: string;
-  pubDate: Date;
-  comments: string;
-  description: string;
-  contentEncoded: string;
+function isAtom(rss: Document): boolean {
+  return rss.firstElementChild?.tagName === 'feed';
 }
 
 function cleanUp(s: string): string {

@@ -18,7 +18,7 @@ export const FeedItemComponent = ({ feedItem, selected }: Props) => {
       ? false
       : true;
     setRead(read);
-    database.markAsRead(feedItem.id, read);
+    database.markAsRead(feedItem.id, feedItem.feedId, read);
   };
 
   const className = 'feed-item'

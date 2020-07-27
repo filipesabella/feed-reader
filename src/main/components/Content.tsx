@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Feed } from '../lib/types';
 import { database } from './App';
 import { FeedComponent } from './Feed';
+import { loadFeeds } from '../lib/feed-loader';
 
 interface Props {
   feedIds: string[];
@@ -12,8 +13,7 @@ export const Content = ({ feedIds }: Props) => {
   const [feed, setFeed] = useState(null as Feed | null);
 
   useEffect(() => {
-    database.loadFeedsById(feedIds).then(feed => {
-      if (!feed) throw `could not find feed with ids ${feedIds}`;
+    loadFeeds(database, feedIds).then(feed => {
       setFeed(feed);
     });
 
