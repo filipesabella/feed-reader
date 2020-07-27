@@ -39,7 +39,7 @@ export const FeedComponent = ({ feed }: Props) => {
       .querySelectorAll<HTMLDivElement>('.feed-item[data-read=false]'))
       .forEach(e => {
         const elementFullyInView = e.offsetTop + e.clientHeight - 10 <
-          container.scrollTop + container.clientHeight;
+          container.scrollTop + (container.clientHeight / 2);
         if (elementFullyInView) {
           // should NOT be doing this here and use react instead
           e.setAttribute('data-read', 'true');
