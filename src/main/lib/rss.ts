@@ -48,9 +48,9 @@ export async function loadFeed(url: string, page: number): Promise<RSSFeed> {
 }
 
 export async function loadFeedItems(url: string, page: number)
-  : Promise<[string, RSSFeedItem[]]> {
+  : Promise<RSSFeedItem[]> {
   const rss = await loadRSS(url, page);
-  return [url, parseFeedItems(rss)];
+  return parseFeedItems(rss);
 }
 
 async function loadRSS(url: string, page: number): Promise<Document> {

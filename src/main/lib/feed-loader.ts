@@ -1,5 +1,5 @@
 import { Database, DBFeed } from './db';
-import { loadFeedItems, RSSFeedItem, rssFeedItemToDbFeedItemId } from './rss';
+import { loadFeedItems, RSSFeedItem, rssFeedItemToDbFeedItemId, RSSFeed } from './rss';
 import { Feed, FeedItem } from './types';
 
 export async function loadFeedsItems(
@@ -7,38 +7,21 @@ export async function loadFeedsItems(
   feedIds: string[],
   page = 1): Promise<FeedItem[]> {
   const dbFeeds = await database.loadFeedsById(feedIds);
-  const rssFeedItems = await Promise.all(
-    dbFeeds.map(feed => loadFeedItems(feed.url, page)));
+  const feedItems = (await Promise.all(
+    dbFeeds.map(dbFeed => loadFeedItems(dbFeed.url, page)
+      .then(rssFeedItems => rssFeedItems.map(rssToFeedItem(dbFeed))))))
+    .reduce((acc, a) => acc.concat(a), [] as FeedItem[])
+    .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
 
-  const items = dbFeeds.map(feed =>
-    merge(
-      feed,
-      rssFeedItems.find(([url, _]) => url === feed.url)![1]));
-
-  if (feedIds.length > 1) {
-    // when more than 1 id has been passed, the user has selected a `category`
-    // to load. in this case we create a "fake" feed with empty attributes
-    // and a concatenation of all feed items contained in those feeds.
-    return items
-      .reduce((acc, [_, items]) => acc.concat(items), [] as FeedItem[])
-      .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
-  } else {
-    return items[0];
-  }
+  return feedItems;
 }
 
-function merge(
-  dbFeed: DBFeed,
-  rssFeedItems: RSSFeedItem[]): FeedItem[] {
-  const items: FeedItem[] = rssFeedItems.map(rss => {
-    const id = rssFeedItemToDbFeedItemId(rss);
+const rssToFeedItem = (dbFeed: DBFeed) =>
+  (rssFeedItem: RSSFeedItem): FeedItem => {
     return {
-      ...rss,
-      id,
+      ...rssFeedItem,
+      id: rssFeedItemToDbFeedItemId(rssFeedItem),
       feedId: dbFeed.id,
-      read: dbFeed.readItemsIds.includes(id),
+      read: dbFeed.readItemsIds.includes(rssFeedItemToDbFeedItemId(rssFeedItem)),
     };
-  });
-
-  return items;
-}
+  };
