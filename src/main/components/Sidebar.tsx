@@ -25,11 +25,12 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
   }, []);
 
   const feed = (f: Feed) => {
-    return <li key={f.id}>
+    return <li key={f.id} className="feed-item">
       <span
-        className={feedIds?.includes(f.id) ? 'selected' : ''}
+        className={'title' + (feedIds?.includes(f.id) ? ' selected' : '')}
         onClick={_ => selectFeed([f.id])}>{f.title}</span>
-    </li >;
+      <span className="edit">edit</span>
+    </li>;
   };
 
   const feedComponents = feeds && Object.keys(feeds).sort().map(category => {

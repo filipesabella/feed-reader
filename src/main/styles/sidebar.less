@@ -12,7 +12,8 @@
     }
   }
 
-  span {
+  span.title,
+  span.category {
     width: 100%;
     display: inline-block;
     white-space: nowrap;
@@ -26,7 +27,32 @@
     }
 
     &.category {
-      font-size: .9em
+      font-size: .9em;
+    }
+  }
+
+  .feed-item {
+    position: relative;
+
+    span.edit {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 0;
+      cursor: pointer;
+      background-color: var(--bg-color);
+      padding-left: 1em;
+      font-size: .8em;
+
+      &:hover {
+        color: var(--intense-color);
+      }
+    }
+
+    &:hover {
+      span.edit {
+        display: block;
+      }
     }
   }
 }
