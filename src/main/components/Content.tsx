@@ -16,6 +16,8 @@ export const Content = ({ feedIds }: Props) => {
       if (!feed) throw 'could not find feed with id 1';
       setFeed(feed);
     });
+
+    document.querySelector('.content')?.scrollTo(0, 0);
   }, [feedIds]);
 
   return <div className="content">
