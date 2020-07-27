@@ -11,17 +11,21 @@ interface Props {
 
 export const Content = ({ feedIds }: Props) => {
   const [feed, setFeed] = useState(null as Feed | null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadFeeds(database, feedIds).then(feed => {
-      setFeed(feed);
-    });
+    loadFeeds(database, feedIds)
+      .then(f => {
+        setFeed(f);
+        setLoading(false);
+      });
 
     document.querySelector('.content')?.scrollTo(0, 0);
+    setLoading(true);
   }, [feedIds]);
 
   return <div className="content">
-    {!feed && <div>Loading ... </div>}
-    {feed && <FeedComponent feed={feed} />}
+    {loading && <div>Loading ... </div>}
+    {!loading && feed && <FeedComponent feed={feed} />}
   </div>;
 };
