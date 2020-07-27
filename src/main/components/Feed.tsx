@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Feed } from '../lib/types';
 import '../styles/feed.less';
 import { FeedItemComponent } from './FeedItem';
+import { useKeys, Keys } from './useKeys';
 
 interface Props {
   feed: Feed;
@@ -15,37 +16,20 @@ export const FeedComponent = ({ feed }: Props) => {
     setSelectedItemIndex(-1);
   }, [feed]);
 
-  useEffect(() => {
-    const scrollIntoView = () => {
-      // react doesn't like this type of stuff
-      document.querySelector('.feed-item.selected')?.scrollIntoView(true);
-    };
-
-    const handlers: { [key: number]: () => void } = {
-      106: () => { // j
-        setSelectedItemIndex(
-          Math.min(feed.items.length - 1, selectedItemIndex + 1));
-        scrollIntoView();
-      },
-      107: () => { // k
-        setSelectedItemIndex(Math.max(0, selectedItemIndex - 1));
-        scrollIntoView();
-      },
-      13: () => { // enter
-        if (selectedItemIndex >= 0) {
-          window.open(feed.items[selectedItemIndex].link, '_blank');
-        }
-      }
-    };
-
-    const handler = (e: KeyboardEvent) => {
-      handlers[e.which]?.();
-    };
-    window.addEventListener('keypress', handler);
-
-    return () => {
-      window.removeEventListener('keypress', handler);
-    };
+  useKeys({
+    [Keys.J]: () => {
+      setSelectedItemIndex(
+        Math.min(feed.items.length - 1, selectedItemIndex + 1));
+      scrollIntoView();
+    },
+    [Keys.K]: () => {
+      setSelectedItemIndex(Math.max(0, selectedItemIndex - 1));
+      scrollIntoView();
+    },
+    [Keys.ENTER]: () => {
+      selectedItemIndex >= 0 &&
+        window.open(feed.items[selectedItemIndex].link, '_blank');
+    }
   });
 
   return <div className="feed">
@@ -58,4 +42,9 @@ export const FeedComponent = ({ feed }: Props) => {
         />)}
     </div>
   </div>;
+};
+
+const scrollIntoView = () => {
+  // react doesn't like this type of stuff
+  document.querySelector('.feed-item.selected')?.scrollIntoView(true);
 };

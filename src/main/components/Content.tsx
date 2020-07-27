@@ -13,7 +13,7 @@ export const Content = ({ feedIds }: Props) => {
 
   useEffect(() => {
     database.loadFeedsById(feedIds).then(feed => {
-      if (!feed) throw 'could not find feed with id 1';
+      if (!feed) throw `could not find feed with ids ${feedIds}`;
       setFeed(feed);
     });
 
