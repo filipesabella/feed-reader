@@ -24,23 +24,26 @@ export class Database {
 
   private async insertData(): Promise<void> {
     const resetId = window.location.hash.split('=');
-    const only = (id: string) => resetId.length < 2 || resetId[1] === id;
 
-    only('1') && await this.insertFeed('1',
-      'http://www.booooooom.com/feed/', 'photography',
-      await loadFeed('http://www.booooooom.com/feed/'));
-    only('11') && await this.insertFeed('11',
-      'https://news.ycombinator.com/rss', 'programming',
-      await loadFeed('https://news.ycombinator.com/rss'));
-    only('111') && await this.insertFeed('111',
-      'https://lordofthegadflies.tumblr.com/rss', null,
-      await loadFeed('https://lordofthegadflies.tumblr.com/rss'));
-    only('1111') && await this.insertFeed('1111',
-      'https://apod.nasa.gov/apod.rss', 'photography',
-      await loadFeed('https://apod.nasa.gov/apod.rss'));
-    only('11111') && await this.insertFeed('11111',
-      'https://www.reddit.com/r/programming.rss', 'programming',
-      await loadFeed('https://www.reddit.com/r/programming.rss'));
+    const shouldInsert = ([id]: string[]) =>
+      resetId.length < 2 || resetId[1] === id;
+
+    const toInsert = [
+      ['1', 'http://www.booooooom.com/feed/', 'photography'],
+      ['2', 'https://news.ycombinator.com/rss', 'programming'],
+      ['3', 'https://lordofthegadflies.tumblr.com/rss', ''],
+      ['4', 'https://apod.nasa.gov/apod.rss', 'photography'],
+      ['5', 'https://www.reddit.com/r/programming.rss', 'programming']];
+
+    const rssFeeds = await Promise.all(
+      toInsert
+        .filter(shouldInsert)
+        .map(a => loadFeed(a[1])));
+
+    await Promise.all(rssFeeds.map(f => {
+      const data = toInsert.find(i => i[1] === f.url)!;
+      return this.insertFeed(data[0], data[1], data[2] || null, f);
+    }));
   }
 
   public async markAsRead(feedItemId: string, feedId: string, read: boolean)

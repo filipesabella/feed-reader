@@ -1,4 +1,5 @@
 export interface RSSFeed {
+  url: string;
   title: string;
   link: string;
   description: string;
@@ -24,6 +25,7 @@ export async function loadFeed(url: string): Promise<RSSFeed> {
       ?.innerHTML ?? '';
 
     return {
+      url,
       title,
       link,
       description,
@@ -37,6 +39,7 @@ export async function loadFeed(url: string): Promise<RSSFeed> {
       ?.innerHTML ?? '';
 
     return {
+      url,
       title,
       link,
       description,
