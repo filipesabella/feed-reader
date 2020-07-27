@@ -1,15 +1,16 @@
 import { Database, DBFeed } from './db';
 import { loadFeedItems, RSSFeedItem, rssFeedItemToDbFeedItemId } from './rss';
-import { CategoryFeed, Feed, FeedItem } from './types';
+import { Feed, FeedItem } from './types';
 
-export async function loadFeeds(
+export async function loadFeedsItems(
   database: Database,
-  feedIds: string[]): Promise<Feed> {
+  feedIds: string[],
+  page = 1): Promise<FeedItem[]> {
   const dbFeeds = await database.loadFeedsById(feedIds);
   const rssFeedItems = await Promise.all(
-    dbFeeds.map(feed => loadFeedItems(feed.url)));
+    dbFeeds.map(feed => loadFeedItems(feed.url, page)));
 
-  const feeds = dbFeeds.map(feed =>
+  const items = dbFeeds.map(feed =>
     merge(
       feed,
       rssFeedItems.find(([url, _]) => url === feed.url)![1]));
@@ -18,24 +19,17 @@ export async function loadFeeds(
     // when more than 1 id has been passed, the user has selected a `category`
     // to load. in this case we create a "fake" feed with empty attributes
     // and a concatenation of all feed items contained in those feeds.
-    return {
-      ...CategoryFeed,
-      items: feeds.reduce((acc, f) => acc
-        .concat(f.items)
-        .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime()),
-        [] as FeedItem[]),
-    };
+    return items
+      .reduce((acc, [_, items]) => acc.concat(items), [] as FeedItem[])
+      .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
   } else {
-    return {
-      ...feeds[0],
-      items: feeds[0].items,
-    };
+    return items[0];
   }
 }
 
 function merge(
   dbFeed: DBFeed,
-  rssFeedItems: RSSFeedItem[]): Feed {
+  rssFeedItems: RSSFeedItem[]): FeedItem[] {
   const items: FeedItem[] = rssFeedItems.map(rss => {
     const id = rssFeedItemToDbFeedItemId(rss);
     return {
@@ -46,8 +40,5 @@ function merge(
     };
   });
 
-  return {
-    ...dbFeed,
-    items,
-  };
+  return items;
 }

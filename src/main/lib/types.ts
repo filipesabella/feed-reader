@@ -4,7 +4,6 @@ export const CategoryFeed: Feed = {
   link: '',
   description: '',
   category: '',
-  items: [],
 };
 
 export interface Feed {
@@ -12,7 +11,6 @@ export interface Feed {
   title: string;
   link: string;
   description: string;
-  items: FeedItem[];
   category: string | null;
 }
 

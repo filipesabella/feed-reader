@@ -22,7 +22,7 @@ export const App = () => {
         if (resetId.length > 1) setFeedIds([resetId[1]]);
         else setFeedIds([(await database.loadFeeds())[0].id]);
       } else {
-        setFeedIds([(await database.loadFeeds())[3].id]);
+        setFeedIds([(await database.loadFeeds())[0].id]);
       }
     });
   }, []);

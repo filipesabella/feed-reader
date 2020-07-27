@@ -14,8 +14,8 @@ export interface RSSFeedItem {
   contentEncoded: string;
 }
 
-export async function loadFeed(url: string): Promise<RSSFeed> {
-  const rss = await loadRSS(url);
+export async function loadFeed(url: string, page: number): Promise<RSSFeed> {
+  const rss = await loadRSS(url, page);
   if (isAtom(rss)) {
     const title = rss.querySelector('feed > title')
       ?.innerHTML ?? '';
@@ -47,14 +47,15 @@ export async function loadFeed(url: string): Promise<RSSFeed> {
   }
 }
 
-export async function loadFeedItems(url: string)
+export async function loadFeedItems(url: string, page: number)
   : Promise<[string, RSSFeedItem[]]> {
-  const rss = await loadRSS(url);
+  const rss = await loadRSS(url, page);
   return [url, parseFeedItems(rss)];
 }
 
-async function loadRSS(url: string): Promise<Document> {
-  const response = await fetch(`https://cors-anywhere.herokuapp.com/${url}`);
+async function loadRSS(url: string, page: number): Promise<Document> {
+  const corsUrl = `https://cors-anywhere.herokuapp.com/${url}?paged=${page}`;
+  const response = await fetch(corsUrl);
   if (response.status !== 200) throw 'could not load the feeed';
   const xml = await response.text();
   return new DOMParser().parseFromString(xml, 'text/xml');

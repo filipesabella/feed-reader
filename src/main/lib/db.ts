@@ -39,7 +39,7 @@ export class Database {
     const rssFeeds = await Promise.all(
       toInsert
         .filter(shouldInsert)
-        .map(a => loadFeed(a[1])));
+        .map(a => loadFeed(a[1], 1)));
 
     await Promise.all(rssFeeds.map(f => {
       const data = toInsert.find(i => i[1] === f.url)!;

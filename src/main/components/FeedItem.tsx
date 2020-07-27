@@ -18,7 +18,7 @@ export const FeedItemComponent = ({ feedItem, selected }: Props) => {
       ? false
       : true;
     setRead(read);
-    database.markAsRead(feedItem.id, feedItem.feedId, read);
+    // database.markAsRead(feedItem.id, feedItem.feedId, read);
   };
 
   const className = 'feed-item'
@@ -29,11 +29,12 @@ export const FeedItemComponent = ({ feedItem, selected }: Props) => {
     className={className}
     onClick={e => markAsRead(e)}
     data-id={feedItem.id}
+    data-feed-id={feedItem.feedId}
     data-read={feedItem.read}>
     <h2><a href={feedItem.link} target="blank">{feedItem.title}</a></h2>
     <div dangerouslySetInnerHTML={{ __html: unescape(feedItem.description) }}>
     </div>
-    <div dangerouslySetInnerHTML={{ __html: feedItem.contentEncoded }}></div>
+    {/* <div dangerouslySetInnerHTML={{ __html: feedItem.contentEncoded }}></div> */}
     {feedItem.comments &&
       <p><a href={feedItem.comments} target="blank">Comments</a></p>}
 
