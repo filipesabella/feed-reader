@@ -25,7 +25,11 @@ export const FeedItemComponent = ({ feedItem, selected }: Props) => {
     + (selected ? ' selected' : '')
     + (read ? ' read' : ' unread');
 
-  return <div className={className} onClick={e => markAsRead(e)}>
+  return <div
+    className={className}
+    onClick={e => markAsRead(e)}
+    data-id={feedItem.id}
+    data-read={feedItem.read}>
     <h2><a href={feedItem.link} target="blank">{feedItem.title}</a></h2>
     <div dangerouslySetInnerHTML={{ __html: unescape(feedItem.description) }}>
     </div>
