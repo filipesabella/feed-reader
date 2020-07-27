@@ -72,8 +72,7 @@ export const FeedComponent = ({ feedIds }: Props) => {
     hasReachedEnd() && nextPage();
   };
 
-  return <div className="feed"
-    onScroll={() => scrolled()}>
+  return <div className="feed" onScroll={() => scrolled()}>
     {loading && <div>Loading ... </div>}
     {!loading && currentItems.filter(i => !i.read).map((item, i) =>
       <FeedItemComponent
@@ -81,6 +80,7 @@ export const FeedComponent = ({ feedIds }: Props) => {
         feedItem={item}
         selected={i === selectedItemIndex}
       />)}
+    {loadingNextPage && <div>Loading more ... </div>}
   </div>;
 };
 
@@ -111,7 +111,9 @@ function markScrolledItemsAsRead(): void {
 function hasReachedEnd(): boolean {
   const container = document.querySelector<HTMLDivElement>('.feed')!;
   const lastItem = document
-    .querySelector<HTMLDivElement>('.feed .feed-item:last-child')!;
+    .querySelector<HTMLDivElement>('.feed .feed-item:last-child');
+
+  if (!lastItem) return false;
 
   const elementFullyInView = lastItem.offsetTop + lastItem.clientHeight - 10 <
     container.scrollTop + container.clientHeight;
