@@ -20,7 +20,6 @@ export const Content = ({ feedIds }: Props) => {
         setLoading(false);
       });
 
-    document.querySelector('.content')?.scrollTo(0, 0);
     setLoading(true);
   }, [feedIds]);
 
