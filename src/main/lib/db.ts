@@ -1,6 +1,7 @@
 import Dexie from 'dexie';
 import { loadFeed, RSSFeed, rssFeedItemToDbFeedItemId } from './rss';
 import { Feed } from './types';
+import { seed } from './seedData';
 
 const dbName = 'RSS-Reader-DB';
 let db: DixieNonSense;
@@ -19,7 +20,7 @@ export class Database {
     await db.open();
 
     // next lines for dev mode
-    resetDb && await this.seedData();
+    resetDb && await seed(db);
   }
 
   public async markAsRead(feedItemId: string, feedId: string, read: boolean)
@@ -67,95 +68,6 @@ export class Database {
     await db.feeds.put({
       ...dbFeed,
       ...feed,
-    });
-  }
-
-  private async seedData(): Promise<void> {
-    const resetId = window.location.hash.split('=');
-
-    const shouldInsert = ([id]: string[]) =>
-      resetId.length < 2 || resetId[1] === id;
-
-    const toInsert = [
-      ['1', 'http://www.booooooom.com/feed/', 'photography'],
-      ['2', 'https://news.ycombinator.com/rss', 'programming'],
-      ['3', 'https://lordofthegadflies.tumblr.com/rss', ''],
-      ['4', 'https://apod.nasa.gov/apod.rss', 'photography'],
-      ['5', 'https://www.reddit.com/r/programming.rss', 'programming'],
-    ];
-
-    const rssFeeds = await Promise.all(
-      toInsert
-        .filter(shouldInsert)
-        .map(a => loadFeed(a[1])));
-
-    await Promise.all(rssFeeds.map(f => {
-      const data = toInsert.find(i => i[1] === f.url)!;
-      return this.insertFeed(data[0], data[1], data[2] || null, f);
-    }));
-
-    await db.feeds.put({
-      id: '6',
-      title: 'APOD',
-      url: 'https://apod.nasa.gov/apod/archivepix.html',
-      link: 'https://apod.nasa.gov/apod/archivepix.html',
-      description: 'aaa',
-      category: null,
-      readItemsIds: [],
-      scriptToParse: `
-const maxItems = 3;
-const currentPage = url.includes('page=')
-  ? parseInt(url.split('=').slice(-1)[0]) - 1
-  : 0;
-
-const doc = new DOMParser().parseFromString(body, 'text/html');
-const links = Array.from(doc.querySelectorAll('body > b > a'));
-return links.slice(currentPage * maxItems, currentPage * maxItems + maxItems)
-  .map(link => {
-    return {
-      link: \`https://apod.nasa.gov/apod/\${link.getAttribute('href')}\`,
-      title: link.innerHTML.replace('\\n', ''),
-      pubDate: new Date(link.previousSibling?.textContent?.trim().slice(0, -1) || ''),
-      comments: '',
-      description: '',
-      contentEncoded: '',
-    };
-  });
-`,
-      scriptToPaginate: `
-if (url.includes('page=')) {
-  return url.replace(/(page=)(\\d+)/,
-    (_, prefix, n) => prefix + (parseInt(n) + 1));
-} else {
-  return url + '?page=2';
-}
-`,
-      scriptToInline: `
-return fetch('https://cors-anywhere.herokuapp.com/' + url)
-  .then(r => r.text())
-  .then(body => {
-    const doc = new DOMParser().parseFromString(body, 'text/html');
-    const baseUrl = 'https://apod.nasa.gov/apod/';
-    doc.querySelectorAll('a').forEach(e => {
-      const href = e.getAttribute('href');
-      if (!href.startsWith('http')) {
-        e.setAttribute('href', baseUrl + href);
-      }
-    })
-    doc.querySelectorAll('img').forEach(e => {
-      const src = e.getAttribute('src');
-      if (!src.startsWith('http')) {
-        e.setAttribute('src', baseUrl + src);
-      }
-    });
-
-    // remove header and footer
-    doc.querySelector('center p')?.remove();
-    doc.querySelector('center:last-child').remove();
-    doc.querySelectorAll('script').forEach(e => e.remove());
-    return doc.body.outerHTML;
-  });
-`,
     });
   }
 }
