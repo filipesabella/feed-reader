@@ -97,8 +97,8 @@ function parseRSS(rss: Document): RSSFeedItem[] {
       const comments = item.querySelector('comments')?.innerHTML ?? '';
       const description = htmlDecode(cleanUp(item.querySelector('description')
         ?.innerHTML ?? ''));
-
-      const contentEncoded = cleanUp(item.querySelector('encoded')?.innerHTML ?? '');
+      const contentEncoded = cleanUp(
+        item.querySelector('encoded')?.innerHTML ?? '');
 
       return {
         title: title || link,
@@ -128,7 +128,8 @@ function parseAtom(rss: Document): RSSFeedItem[] {
       const pubDate = new Date(item.querySelector('updated')?.innerHTML ?? '');
       const comments = '';
       const description = '';
-      const contentEncoded = htmlDecode(item.querySelector('content')?.innerHTML ?? '');
+      const contentEncoded = htmlDecode(
+        item.querySelector('content')?.innerHTML ?? '');
 
       return {
         title,
