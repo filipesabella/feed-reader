@@ -18,5 +18,5 @@ export interface FeedItem {
   comments: string;
   description: string;
   contentEncoded: string;
-  scriptToInline?: string;
+  scriptToInline: string;
 }
