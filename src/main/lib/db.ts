@@ -54,8 +54,6 @@ export class Database {
       id: feedId,
       title: rssFeed.title,
       url,
-      link: rssFeed.link,
-      description: rssFeed.description,
       category,
       readItemsIds: [],
       scriptToParse: '',
@@ -165,9 +163,7 @@ return fetch('https://cors-anywhere.herokuapp.com/' + url)
 export interface DBFeed {
   id: string;
   title: string;
-  url: string; // the original RSS url for this feed
-  link: string; // link is just random metadata
-  description: string;
+  url: string;
   category: string | null; // this is our app's category, nothing to do with RSS
   readItemsIds: string[];
   scriptToParse: string;
@@ -175,13 +171,13 @@ export interface DBFeed {
   scriptToInline: string;
 }
 
-class DixieNonSense extends Dexie {
+export class DixieNonSense extends Dexie {
   feeds: Dexie.Table<DBFeed, string>;
 
   constructor() {
     super(dbName);
     this.version(1).stores({
-      feeds: '&id, title, url, link, description, category, *readItemsIds',
+      feeds: '&id, title, url, category, *readItemsIds',
     });
   }
 }
