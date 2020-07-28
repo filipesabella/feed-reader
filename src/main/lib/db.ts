@@ -1,7 +1,6 @@
 import Dexie from 'dexie';
 import { loadFeed, RSSFeed, rssFeedItemToDbFeedItemId } from './rss';
 import { Feed } from './types';
-import { database } from '../components/App';
 
 const dbName = 'RSS-Reader-DB';
 let db: DixieNonSense;
@@ -39,7 +38,7 @@ export class Database {
     const rssFeeds = await Promise.all(
       toInsert
         .filter(shouldInsert)
-        .map(a => loadFeed(a[1], 1)));
+        .map(a => loadFeed(a[1])));
 
     await Promise.all(rssFeeds.map(f => {
       const data = toInsert.find(i => i[1] === f.url)!;

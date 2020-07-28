@@ -1,3 +1,5 @@
+import { nextPageUrl } from './rss-pagination';
+
 export interface RSSFeed {
   url: string;
   title: string;
@@ -15,7 +17,7 @@ export interface RSSFeedItem {
 }
 
 // currently only used for seed data
-export async function loadFeed(url: string, page: number): Promise<RSSFeed> {
+export async function loadFeed(url: string): Promise<RSSFeed> {
   const rss = await loadRSS(url);
   if (isAtom(rss)) {
     const title = rss.querySelector('feed > title')
@@ -116,49 +118,8 @@ function parseFeedItems(rss: Document): RSSFeedItem[] {
   }
 }
 
-function nextPageUrl(url: string, rss: Document): string | null {
-  const generator = rss.querySelector('channel > generator')
-    ?.innerHTML.toUpperCase() || '';
-
-  const isWordPress = () => generator.includes('WORDPRESS');
-  const isTumblr = () => generator.includes('TUMBLR');
-  const isReddit = () => url.includes('reddit.com');
-
-  if (isWordPress()) {
-    if (url.includes('paged=')) {
-      const currentPage = url.match(/paged=(\d+)/)![1];
-      return url.replace(/(paged=)(\d+)/, (_, prefix, n) =>
-        `${prefix}${parseInt(currentPage) + 1}`);
-    } else {
-      return `${url}?paged=2`;
-    }
-  } else if (isTumblr()) {
-    if (url.includes('/page/')) {
-      return url.replace(/(\/page\/)(\d+)\//,
-        (_, prefix, n) => `${prefix}${(parseInt(n) + 1)}/`);
-    } else {
-      const currentItems = rss.querySelectorAll('rss > channel > item').length;
-      return url.replace('/rss', `/page/${currentItems + 1}/rss`);
-    }
-  } else if (isReddit()) {
-    const lastItemId = rss
-      .querySelector('feed > entry:last-child > id')?.innerHTML;
-    if (!lastItemId) return null;
-
-    if (url.includes('?after=')) {
-      return url.replace(/after=.*?$/, 'after=' + lastItemId);
-    } else {
-      return url += '?after=' + lastItemId;
-    }
-  }
-
-  console.log('Don\'t know how to page for ' + url);
-  return null;
-}
-
 export function rssFeedItemToDbFeedItemId(item: RSSFeedItem): string {
   const s = `${item.title.trim()}_${item.link}_${item.pubDate}`;
-  // https://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
   let hash = 0;
   for (let i = 0; i < s.length; i++) {
     hash = ((hash << 5) - hash) + s.charCodeAt(i);
