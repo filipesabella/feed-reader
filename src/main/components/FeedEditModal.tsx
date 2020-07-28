@@ -49,12 +49,14 @@ export function FeedEditModal({ feed }: Props): JSX.Element {
     <div className="field-ta">
       <label>Script to parse response</label>
       <textarea
+        spellCheck={false}
         value={scriptToParse}
         onChange={e => setScriptToParse(e.target.value)}></textarea>
     </div>
     <div className="field-ta">
       <label>Script to parse get next page URL</label>
       <textarea
+        spellCheck={false}
         value={scriptToPaginate}
         onChange={e => setScriptToPaginate(e.target.value)}></textarea>
     </div>
