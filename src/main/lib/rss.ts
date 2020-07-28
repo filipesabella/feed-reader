@@ -17,6 +17,8 @@ export interface RSSFeedItem {
   contentEncoded: string;
 }
 
+const corsAnywhere = 'https://cors-anywhere.herokuapp.com';
+
 // currently only used for seed data
 export async function loadFeed(url: string): Promise<RSSFeed> {
   const responseBody = await loadRSS(url);
@@ -64,7 +66,7 @@ export async function loadFeedItems(
 }
 
 async function loadRSS(url: string): Promise<string> {
-  const corsUrl = `https://cors-anywhere.herokuapp.com/${url}`;
+  const corsUrl = `${corsAnywhere}/${url}`;
   const response = await fetch(corsUrl);
   if (response.status !== 200) throw 'could not load the feeed';
   return await response.text();

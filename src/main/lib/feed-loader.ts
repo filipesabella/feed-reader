@@ -71,6 +71,7 @@ const rssToFeedItem = (dbFeed: DBFeed) =>
       id,
       feedId: dbFeed.id,
       read: dbFeed.readItemsIds.includes(id),
+      scriptToInline: dbFeed.scriptToInline,
     };
   };
 

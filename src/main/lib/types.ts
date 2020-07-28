@@ -7,6 +7,7 @@ export interface Feed {
   category: string | null;
   scriptToParse: string;
   scriptToPaginate: string;
+  scriptToInline: string;
 }
 
 export interface FeedItem {
@@ -19,4 +20,5 @@ export interface FeedItem {
   comments: string;
   description: string;
   contentEncoded: string;
+  scriptToInline?: string;
 }

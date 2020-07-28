@@ -16,6 +16,7 @@ export function FeedEditModal({ feed, closeModal }: Props): JSX.Element {
   const [scriptToParse, setScriptToParse] = useState(feed.scriptToParse);
   const [scriptToPaginate, setScriptToPaginate]
     = useState(feed.scriptToPaginate);
+  const [scriptToInline, setScriptToInline] = useState(feed.scriptToInline);
 
   const save = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,6 +28,7 @@ export function FeedEditModal({ feed, closeModal }: Props): JSX.Element {
       category,
       scriptToParse,
       scriptToPaginate,
+      scriptToInline,
     }).then(closeModal);
   };
 
@@ -70,6 +72,13 @@ export function FeedEditModal({ feed, closeModal }: Props): JSX.Element {
         spellCheck={false}
         value={scriptToPaginate}
         onChange={e => setScriptToPaginate(e.target.value)}></textarea>
+    </div>
+    <div className="field-ta">
+      <label>Script to inline content from each item</label>
+      <textarea
+        spellCheck={false}
+        value={scriptToInline}
+        onChange={e => setScriptToInline(e.target.value)}></textarea>
     </div>
     <div className="actions">
       <button>Save</button>

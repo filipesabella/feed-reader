@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FeedItem } from '../lib/types';
 import { database } from './App';
 
@@ -10,6 +10,7 @@ interface Props {
 
 export const FeedItemComponent = ({ feedItem, selected }: Props) => {
   const [read, setRead] = useState(feedItem.read);
+  const [inlineContent, setInlineContent] = useState('');
 
   const markAsRead = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     // this garbage is here because the button is inside the div, and this
@@ -20,6 +21,14 @@ export const FeedItemComponent = ({ feedItem, selected }: Props) => {
     setRead(read);
     database.markAsRead(feedItem.id, feedItem.feedId, read);
   };
+
+  useEffect(() => {
+    if (!feedItem.scriptToInline) return;
+    (window as any)
+      .eval(`function __inline(url) { ${feedItem.scriptToInline} }`);
+    (window as any).__inline(feedItem.link)
+      ?.then((html: string) => setInlineContent(html));
+  }, [feedItem]);
 
   const className = 'feed-item'
     + (selected ? ' selected' : '')
@@ -35,6 +44,9 @@ export const FeedItemComponent = ({ feedItem, selected }: Props) => {
     <div dangerouslySetInnerHTML={{ __html: unescape(feedItem.description) }}>
     </div>
     <div dangerouslySetInnerHTML={{ __html: feedItem.contentEncoded }}></div>
+    <div
+      className="inlineContent"
+      dangerouslySetInnerHTML={{ __html: inlineContent }}></div>
     {feedItem.comments &&
       <p><a href={feedItem.comments} target="blank">Comments</a></p>}
     <div className="actions">
