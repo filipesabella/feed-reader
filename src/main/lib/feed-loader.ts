@@ -51,10 +51,11 @@ export async function loadNextPages(
 function result(feedItems: [FeedItem[], NextPageData | null][])
   : [FeedItem[], NextPageData[]] {
   const result =
-    feedItems.reduce<[FeedItem[], NextPageData[]]>((acc, [feedItems, nextPageData]) => [
-      acc[0].concat(feedItems),
-      nextPageData ? acc[1].concat(nextPageData) : acc[1]],
-      [[], []] as [FeedItem[], NextPageData[]]);
+    feedItems.reduce<[FeedItem[], NextPageData[]]>
+      ((acc, [feedItems, nextPageData]) => [
+        acc[0].concat(feedItems),
+        nextPageData ? acc[1].concat(nextPageData) : acc[1]],
+        [[], []] as [FeedItem[], NextPageData[]]);
 
   // sadness
   result[0].sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
