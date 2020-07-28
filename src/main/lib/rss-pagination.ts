@@ -7,7 +7,7 @@ export function nextPageUrl(url: string, rss: Document): string | null {
   const isReddit = () => url.includes('reddit.com');
 
   if (isWordPress()) {
-    return wordpres(url, rss);
+    return wordpress(url, rss);
   } else if (isTumblr()) {
     return tumblr(url, rss);
   } else if (isReddit()) {
@@ -18,7 +18,7 @@ export function nextPageUrl(url: string, rss: Document): string | null {
   return null;
 }
 
-function wordpres(url: string, rss: Document): string | null {
+function wordpress(url: string, rss: Document): string | null {
   if (url.includes('paged=')) {
     const currentPage = url.match(/paged=(\d+)/)![1];
     return url.replace(/(paged=)(\d+)/, (_, prefix, n) =>
