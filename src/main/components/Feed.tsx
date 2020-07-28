@@ -81,14 +81,23 @@ export const FeedComponent = ({ feedIds }: Props) => {
     hasReachedEnd() && nextPage();
   };
 
+  const feedItemComponents = () => {
+    const eligibleItems = currentItems.filter(i => !i.read);
+    if (eligibleItems.length === 0) {
+      return <div>No new items for this feed.</div>;
+    } else {
+      return eligibleItems.map((item, i) =>
+        <FeedItemComponent
+          key={item.id}
+          feedItem={item}
+          selected={i === selectedItemIndex}
+        />);
+    }
+  };
+
   return <div className="feed" onScroll={() => scrolled()}>
     {loading && <div>Loading ... </div>}
-    {!loading && currentItems.filter(i => !i.read).map((item, i) =>
-      <FeedItemComponent
-        key={item.id}
-        feedItem={item}
-        selected={i === selectedItemIndex}
-      />)}
+    {!loading && feedItemComponents()}
     {loadingNextPage && <div>Loading more ... </div>}
   </div>;
 };
