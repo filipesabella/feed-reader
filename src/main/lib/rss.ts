@@ -14,8 +14,9 @@ export interface RSSFeedItem {
   contentEncoded: string;
 }
 
+// currently only used for seed data
 export async function loadFeed(url: string, page: number): Promise<RSSFeed> {
-  const rss = await loadRSS(url, page);
+  const rss = await loadRSS(url);
   if (isAtom(rss)) {
     const title = rss.querySelector('feed > title')
       ?.innerHTML ?? '';
@@ -47,14 +48,14 @@ export async function loadFeed(url: string, page: number): Promise<RSSFeed> {
   }
 }
 
-export async function loadFeedItems(url: string, page: number)
-  : Promise<RSSFeedItem[]> {
-  const rss = await loadRSS(url, page);
-  return parseFeedItems(rss);
+export async function loadFeedItems(url: string)
+  : Promise<[RSSFeedItem[], string | null]> {
+  const rss = await loadRSS(url);
+  return [parseFeedItems(rss), nextPageUrl(url, rss)];
 }
 
-async function loadRSS(url: string, page: number): Promise<Document> {
-  const corsUrl = `https://cors-anywhere.herokuapp.com/${url}?paged=${page}`;
+async function loadRSS(url: string): Promise<Document> {
+  const corsUrl = `https://cors-anywhere.herokuapp.com/${url}`;
   const response = await fetch(corsUrl);
   if (response.status !== 200) throw 'could not load the feeed';
   const xml = await response.text();
@@ -113,6 +114,35 @@ function parseFeedItems(rss: Document): RSSFeedItem[] {
         };
       });
   }
+}
+
+function nextPageUrl(url: string, rss: Document): string | null {
+  const generator = rss.querySelector('channel > generator')
+    ?.innerHTML.toUpperCase() || '';
+
+  const isWordPress = () => generator.includes('WORDPRESS');
+  const isTumblr = () => generator.includes('TUMBLR');
+
+  if (isWordPress()) {
+    if (url.includes('paged=')) {
+      const currentPage = url.match(/paged=(\d+)/)![1];
+      return url.replace(/(paged=)(\d+)/, (_, prefix, n) =>
+        `${prefix}${parseInt(currentPage) + 1}`);
+    } else {
+      return `${url}?paged=2`;
+    }
+  } else if (isTumblr()) {
+    if (url.includes('/page/')) {
+      return url.replace(/(\/page\/)(\d+)\//,
+        (_, prefix, n) => `${prefix}${(parseInt(n) + 1)}/`);
+    } else {
+      const currentItems = rss.querySelectorAll('rss > channel > item').length;
+      return url.replace('/rss', `/page/${currentItems + 1}/rss`);
+    }
+  }
+
+  console.log('Don\'t know how to page for ' + url);
+  return null;
 }
 
 export function rssFeedItemToDbFeedItemId(item: RSSFeedItem): string {

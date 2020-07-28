@@ -5,7 +5,7 @@ import '../styles/feed.less';
 import { FeedItemComponent } from './FeedItem';
 import { useKeys, Keys } from './useKeys';
 import { database } from './App';
-import { loadFeedsItems } from '../lib/feed-loader';
+import { loadFeedsItems, NextPageData, loadNextPages } from '../lib/feed-loader';
 
 interface Props {
   feedIds: string[];
@@ -13,33 +13,33 @@ interface Props {
 
 export const FeedComponent = ({ feedIds }: Props) => {
   const [selectedItemIndex, setSelectedItemIndex] = useState(-1);
-  const [currentItems, setFeedItems] = useState([] as FeedItem[]);
+  const [currentItems, setCurrentItems] = useState([] as FeedItem[]);
   const [loading, setLoading] = useState(true);
 
   const [loadingNextPage, setLoadingNextPage] = useState(false);
-  const [page, setPage] = useState(1);
+  const [nextPagesUrls, setNextPagesUrls] = useState([] as NextPageData[]);
 
   const nextPage = () => {
     if (loadingNextPage) return;
     setLoadingNextPage(true);
 
-    loadFeedsItems(database, feedIds, page + 1)
-      .then(nextItems => {
-        setFeedItems(currentItems.concat(nextItems));
-        setPage(page + 1);
+    loadNextPages(database, nextPagesUrls)
+      .then(([items, nextPagesUrls]) => {
+        setCurrentItems(currentItems.concat(items));
+        setNextPagesUrls(nextPagesUrls);
         setLoadingNextPage(false);
       });
   };
 
   useEffect(() => {
     loadFeedsItems(database, feedIds)
-      .then(items => {
-        setFeedItems(items);
+      .then(([items, nextPagesUrls]) => {
+        setCurrentItems(items);
+        setNextPagesUrls(nextPagesUrls);
         setLoading(false);
       });
 
     setLoading(true);
-    setPage(1);
   }, [feedIds]);
 
 
@@ -67,6 +67,9 @@ export const FeedComponent = ({ feedIds }: Props) => {
     markScrolledItemsAsRead();
     loadMore();
   };
+  useEffect(() => {
+    scrolled();
+  }, feedIds);
 
   const loadMore = () => {
     hasReachedEnd() && nextPage();

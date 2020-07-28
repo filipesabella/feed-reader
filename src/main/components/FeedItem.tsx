@@ -34,10 +34,9 @@ export const FeedItemComponent = ({ feedItem, selected }: Props) => {
     <h2><a href={feedItem.link} target="blank">{feedItem.title}</a></h2>
     <div dangerouslySetInnerHTML={{ __html: unescape(feedItem.description) }}>
     </div>
-    {/* <div dangerouslySetInnerHTML={{ __html: feedItem.contentEncoded }}></div> */}
+    <div dangerouslySetInnerHTML={{ __html: feedItem.contentEncoded }}></div>
     {feedItem.comments &&
       <p><a href={feedItem.comments} target="blank">Comments</a></p>}
-
     <div className="actions">
       {read && <button className="markUnreadButton">
         Mark as unread</button>}
