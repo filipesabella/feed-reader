@@ -1,27 +1,31 @@
-export function nextPageUrl
-  (url: string, rss: Document, scriptToPaginate: string | null): string | null {
-  const generator = rss.querySelector('channel > generator')
-    ?.innerHTML.toUpperCase() || '';
-
-  const isWordPress = () => generator.includes('WORDPRESS');
-  const isTumblr = () => generator.includes('TUMBLR');
-  const isReddit = () => url.includes('reddit.com');
-
+export function nextPageUrl(
+  url: string,
+  responseBody: string,
+  scriptToPaginate: string | null): string | null {
   if (scriptToPaginate) {
     // lol
-    (window as any).eval(`function __paginate(url, document) {
+    (window as any).eval(`function __paginate(url, body) {
       ${scriptToPaginate}
     }`);
 
-    return (window as any).__paginate(url, document);
-  } else if (isWordPress()) {
-    return wordpress(url, rss);
-  } else if (isTumblr()) {
-    return tumblr(url, rss);
-  } else if (isReddit()) {
-    return reddit(url, rss);
-  }
+    return (window as any).__paginate(url, responseBody);
+  } else {
+    const rss = new DOMParser().parseFromString(responseBody, 'text/xml');
+    const generator = rss.querySelector('channel > generator')
+      ?.innerHTML.toUpperCase() || '';
 
+    const isWordPress = () => generator.includes('WORDPRESS');
+    const isTumblr = () => generator.includes('TUMBLR');
+    const isReddit = () => url.includes('reddit.com');
+
+    if (isWordPress()) {
+      return wordpress(url, rss);
+    } else if (isTumblr()) {
+      return tumblr(url, rss);
+    } else if (isReddit()) {
+      return reddit(url, rss);
+    }
+  }
   console.log('Don\'t know how to page for ' + url);
   return null;
 }

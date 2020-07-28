@@ -19,7 +19,9 @@ export interface RSSFeedItem {
 
 // currently only used for seed data
 export async function loadFeed(url: string): Promise<RSSFeed> {
-  const rss = await loadRSS(url);
+  const responseBody = await loadRSS(url);
+  const rss = new DOMParser().parseFromString(responseBody, 'text/xml');
+
   if (isAtom(rss)) {
     const title = rss.querySelector('feed > title')
       ?.innerHTML ?? '';
@@ -54,77 +56,79 @@ export async function loadFeed(url: string): Promise<RSSFeed> {
 export async function loadFeedItems(
   { scriptToParse, scriptToPaginate }: DBFeed, url: string)
   : Promise<[RSSFeedItem[], string | null]> {
-  const rss = await loadRSS(url);
+  const responseBody = await loadRSS(url);
   return [
-    parseFeedItems(rss, scriptToParse),
-    nextPageUrl(url, rss, scriptToPaginate)
+    parseFeedItems(responseBody, scriptToParse),
+    nextPageUrl(url, responseBody, scriptToPaginate)
   ];
 }
 
-async function loadRSS(url: string): Promise<Document> {
+async function loadRSS(url: string): Promise<string> {
   const corsUrl = `https://cors-anywhere.herokuapp.com/${url}`;
   const response = await fetch(corsUrl);
   if (response.status !== 200) throw 'could not load the feeed';
-  const xml = await response.text();
-  return new DOMParser().parseFromString(xml, 'text/xml');
+  return await response.text();
 }
 
-function parseFeedItems(rss: Document, scriptToParse: string | null)
+function parseFeedItems(responseBody: string, scriptToParse: string | null)
   : RSSFeedItem[] {
   // lol
   if (scriptToParse) {
-    (window as any).eval(`function __parse(document) {\n${scriptToParse}}`);
-    return (window as any).__parse(rss);
-  } else if (isAtom(rss)) {
-    return Array.from(rss.querySelectorAll('feed > entry'))
-      .map(item => {
-        const title =
-          item.querySelector('title')?.innerHTML ?? '';
-        const link =
-          item.querySelector('link')?.getAttribute('href') ?? '';
-        const pubDate =
-          new Date(item.querySelector('updated')?.innerHTML ?? '');
-        const comments = '';
-        const description = '';
-        const contentEncoded =
-          htmlDecode(item.querySelector('content')?.innerHTML ?? '');
-
-        return {
-          title,
-          link,
-          pubDate,
-          comments,
-          description,
-          contentEncoded,
-        };
-      });
+    (window as any).eval(`function __parse(body) {\n${scriptToParse}}`);
+    return (window as any).__parse(responseBody);
   } else {
-    return Array.from(rss.querySelectorAll('rss > channel > item'))
-      .map(item => {
-        const title =
-          item.querySelector('title')?.innerHTML ?? '';
-        const link =
-          item.querySelector('link')?.innerHTML ?? '';
-        const pubDate =
-          new Date(item.querySelector('pubDate')?.innerHTML ?? '');
-        const comments =
-          item.querySelector('comments')?.innerHTML ?? '';
-        const description =
-          htmlDecode(cleanUp(item.querySelector('description')
-            ?.innerHTML ?? ''));
+    const rss = new DOMParser().parseFromString(responseBody, 'text/xml');
+    if (isAtom(rss)) {
+      return Array.from(rss.querySelectorAll('feed > entry'))
+        .map(item => {
+          const title =
+            item.querySelector('title')?.innerHTML ?? '';
+          const link =
+            item.querySelector('link')?.getAttribute('href') ?? '';
+          const pubDate =
+            new Date(item.querySelector('updated')?.innerHTML ?? '');
+          const comments = '';
+          const description = '';
+          const contentEncoded =
+            htmlDecode(item.querySelector('content')?.innerHTML ?? '');
 
-        const contentEncoded =
-          cleanUp(item.querySelector('encoded')?.innerHTML ?? '');
+          return {
+            title,
+            link,
+            pubDate,
+            comments,
+            description,
+            contentEncoded,
+          };
+        });
+    } else {
+      return Array.from(rss.querySelectorAll('rss > channel > item'))
+        .map(item => {
+          const title =
+            item.querySelector('title')?.innerHTML ?? '';
+          const link =
+            item.querySelector('link')?.innerHTML ?? '';
+          const pubDate =
+            new Date(item.querySelector('pubDate')?.innerHTML ?? '');
+          const comments =
+            item.querySelector('comments')?.innerHTML ?? '';
+          const description =
+            htmlDecode(cleanUp(item.querySelector('description')
+              ?.innerHTML ?? ''));
 
-        return {
-          title: title || link,
-          link,
-          pubDate,
-          comments,
-          description,
-          contentEncoded,
-        };
-      });
+          const contentEncoded =
+            cleanUp(item.querySelector('encoded')?.innerHTML ?? '');
+
+          return {
+            title: title || link,
+            link,
+            pubDate,
+            comments,
+            description,
+            contentEncoded,
+          };
+        });
+    }
   }
 }
 

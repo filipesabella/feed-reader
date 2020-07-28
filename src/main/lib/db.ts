@@ -33,7 +33,8 @@ export class Database {
       ['2', 'https://news.ycombinator.com/rss', 'programming'],
       ['3', 'https://lordofthegadflies.tumblr.com/rss', ''],
       ['4', 'https://apod.nasa.gov/apod.rss', 'photography'],
-      ['5', 'https://www.reddit.com/r/programming.rss', 'programming']];
+      ['5', 'https://www.reddit.com/r/programming.rss', 'programming'],
+    ];
 
     const rssFeeds = await Promise.all(
       toInsert
@@ -44,6 +45,31 @@ export class Database {
       const data = toInsert.find(i => i[1] === f.url)!;
       return this.insertFeed(data[0], data[1], data[2] || null, f);
     }));
+
+    await db.feeds.put({
+      id: '6',
+      title: 'APOD',
+      url: 'https://apod.nasa.gov/apod/archivepix.html',
+      link: 'https://apod.nasa.gov/apod/archivepix.html',
+      description: 'aaa',
+      category: null,
+      readItemsIds: [],
+      scriptToParse: `
+const doc = new DOMParser().parseFromString(body, 'text/html');
+const links = Array.from(doc.querySelectorAll('body > b > a'));
+return links.map(link => {
+  return {
+    link: \`https://apod.nasa.gov/apod/\${link.getAttribute('href')}\`,
+    title: link.innerHTML.replace('\\n', ''),
+    pubDate: new Date(link.previousSibling?.textContent?.trim().slice(0, -1) || ''),
+    comments: '',
+    description: '',
+    contentEncoded: '',
+  };
+});
+`,
+      scriptToPaginate: '',
+    });
   }
 
   public async markAsRead(feedItemId: string, feedId: string, read: boolean)
