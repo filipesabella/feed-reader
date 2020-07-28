@@ -82,6 +82,8 @@ export class Database {
       description: rssFeed.description,
       category,
       readItemsIds: [],
+      scriptToPaginate: '',
+      scriptToParse: '',
     });
   }
 }
@@ -94,6 +96,8 @@ export interface DBFeed {
   description: string;
   category: string | null; // this is our app's category, nothing to do with RSS
   readItemsIds: string[];
+  scriptToParse: string;
+  scriptToPaginate: string;
 }
 
 class DixieNonSense extends Dexie {

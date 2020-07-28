@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import ReactModal from 'react-modal';
 import { Feed } from '../lib/types';
 import '../styles/sidebar.less';
 import { database } from './App';
+import { FeedEditModal } from './FeedEditModal';
 
 interface Props {
   feedIds: string[] | null;
@@ -11,8 +13,12 @@ interface Props {
 
 const noCategory = '_';
 
+ReactModal.setAppElement('#app');
+
 export const Sidebar = ({ selectFeed, feedIds }: Props) => {
   const [feeds, setFeeds] = useState(null as { [key: string]: Feed[] } | null);
+  const [feedToEdit, setFeedToEdit] = useState(null as Feed | null);
+
   useEffect(() => {
     database.loadFeeds().then(feeds => {
       const grouped = feeds.reduce((acc, f) => {
@@ -29,7 +35,9 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
       <span
         className={'title' + (feedIds?.includes(f.id) ? ' selected' : '')}
         onClick={_ => selectFeed([f.id])}>{f.title}</span>
-      <span className="edit">edit</span>
+      <span
+        className="edit"
+        onClick={_ => setFeedToEdit(f)}>edit</span>
     </li>;
   };
 
@@ -54,5 +62,21 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
     <ul>
       {feeds && feedComponents}
     </ul>
+    <ReactModal
+      isOpen={!!feedToEdit}
+      onRequestClose={() => setFeedToEdit(null)}
+      parentSelector={() => document.getElementById('app')!}
+      style={{
+        content: {
+          top: '50%',
+          left: '50%',
+          right: 'auto',
+          bottom: 'auto',
+          marginRight: '-50%',
+          transform: 'translate(-50%, -50%)'
+        }
+      }}>
+      <FeedEditModal feed={feedToEdit!} />
+    </ReactModal>
   </div>;
 };

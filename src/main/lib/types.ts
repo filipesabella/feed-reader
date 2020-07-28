@@ -1,17 +1,12 @@
-export const CategoryFeed: Feed = {
-  id: '',
-  title: '',
-  link: '',
-  description: '',
-  category: '',
-};
-
 export interface Feed {
   id: string;
   title: string;
   link: string;
+  url: string;
   description: string;
   category: string | null;
+  scriptToParse: string;
+  scriptToPaginate: string;
 }
 
 export interface FeedItem {
