@@ -24,6 +24,7 @@ export const FeedItemComponent = ({ feedItem, selected }: Props) => {
 
   useEffect(() => {
     if (!feedItem.scriptToInline) return;
+    // lol
     (window as any)
       .eval(`function __inline(url) { ${feedItem.scriptToInline} }`);
     (window as any).__inline(feedItem.link)
