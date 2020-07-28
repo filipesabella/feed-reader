@@ -1,11 +1,15 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { Feed, FeedItem } from '../lib/types';
+import {
+  loadFeedsItems,
+  loadNextPages,
+  NextPageData
+} from '../lib/feed-loader';
+import { FeedItem } from '../lib/types';
 import '../styles/feed.less';
-import { FeedItemComponent } from './FeedItem';
-import { useKeys, Keys } from './useKeys';
 import { database } from './App';
-import { loadFeedsItems, NextPageData, loadNextPages } from '../lib/feed-loader';
+import { FeedItemComponent } from './FeedItem';
+import { Keys, useKeys } from './useKeys';
 
 interface Props {
   feedIds: string[];
