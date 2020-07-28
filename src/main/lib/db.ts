@@ -105,20 +105,33 @@ export class Database {
       category: null,
       readItemsIds: [],
       scriptToParse: `
+const maxItems = 3;
+const currentPage = url.includes('page=')
+  ? parseInt(url.split('=').slice(-1)[0]) - 1
+  : 0;
+
 const doc = new DOMParser().parseFromString(body, 'text/html');
 const links = Array.from(doc.querySelectorAll('body > b > a'));
-return links.slice(0, 3).map(link => {
-  return {
-    link: \`https://apod.nasa.gov/apod/\${link.getAttribute('href')}\`,
-    title: link.innerHTML.replace('\\n', ''),
-    pubDate: new Date(link.previousSibling?.textContent?.trim().slice(0, -1) || ''),
-    comments: '',
-    description: '',
-    contentEncoded: '',
-  };
-});
+return links.slice(currentPage * maxItems, currentPage * maxItems + maxItems)
+  .map(link => {
+    return {
+      link: \`https://apod.nasa.gov/apod/\${link.getAttribute('href')}\`,
+      title: link.innerHTML.replace('\\n', ''),
+      pubDate: new Date(link.previousSibling?.textContent?.trim().slice(0, -1) || ''),
+      comments: '',
+      description: '',
+      contentEncoded: '',
+    };
+  });
 `,
-      scriptToPaginate: ``,
+      scriptToPaginate: `
+if (url.includes('page=')) {
+  return url.replace(/(page=)(\\d+)/,
+    (_, prefix, n) => prefix + (parseInt(n) + 1));
+} else {
+  return url + '?page=2';
+}
+`,
       scriptToInline: `
 return fetch('https://cors-anywhere.herokuapp.com/' + url)
   .then(r => r.text())

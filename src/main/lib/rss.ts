@@ -60,7 +60,7 @@ export async function loadFeedItems(
   : Promise<[RSSFeedItem[], string | null]> {
   const responseBody = await loadRSS(url);
   return [
-    parseFeedItems(responseBody, scriptToParse),
+    parseFeedItems(responseBody, url, scriptToParse),
     nextPageUrl(url, responseBody, scriptToPaginate)
   ];
 }
@@ -72,12 +72,14 @@ async function loadRSS(url: string): Promise<string> {
   return await response.text();
 }
 
-function parseFeedItems(responseBody: string, scriptToParse: string | null)
-  : RSSFeedItem[] {
-  // lol
+function parseFeedItems(
+  responseBody: string,
+  url: string,
+  scriptToParse: string | null): RSSFeedItem[] {
   if (scriptToParse) {
-    (window as any).eval(`function __parse(body) {\n${scriptToParse}}`);
-    return (window as any).__parse(responseBody);
+    // lol
+    (window as any).eval(`function __parse(body, url) {\n${scriptToParse}}`);
+    return (window as any).__parse(responseBody, url);
   } else {
     const rss = new DOMParser().parseFromString(responseBody, 'text/xml');
     if (isAtom(rss)) {
