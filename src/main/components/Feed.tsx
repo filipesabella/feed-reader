@@ -20,20 +20,9 @@ export const FeedComponent = ({ feedIds }: Props) => {
   const [currentItems, setCurrentItems] = useState([] as FeedItem[]);
   const [loading, setLoading] = useState(true);
 
+  const [shouldLoadMorePages, setShouldLoadMorePages] = useState(true);
   const [loadingNextPage, setLoadingNextPage] = useState(false);
   const [nextPagesUrls, setNextPagesUrls] = useState([] as NextPageData[]);
-
-  const nextPage = () => {
-    if (loadingNextPage) return;
-    setLoadingNextPage(true);
-
-    loadNextPages(database, nextPagesUrls)
-      .then(([items, nextPagesUrls]) => {
-        setCurrentItems(currentItems.concat(items));
-        setNextPagesUrls(nextPagesUrls);
-        setLoadingNextPage(false);
-      });
-  };
 
   useEffect(() => {
     loadFeedsItems(database, feedIds)
@@ -44,7 +33,27 @@ export const FeedComponent = ({ feedIds }: Props) => {
       });
 
     setLoading(true);
+    setShouldLoadMorePages(true);
+    scrolled();
   }, [feedIds]);
+
+  const nextPage = () => {
+    if (loadingNextPage || !shouldLoadMorePages) return;
+    setLoadingNextPage(true);
+
+    loadNextPages(database, nextPagesUrls)
+      .then(([nextItems, nextPagesUrls]) => {
+        // this means the pagination has failed and the same page was loaded
+        if (nextItems[0]?.id === currentItems[0].id) {
+          console.log('Pagination failed, not loading more items');
+          setShouldLoadMorePages(false);
+        } else {
+          setCurrentItems(currentItems.concat(nextItems));
+          setNextPagesUrls(nextPagesUrls);
+        }
+        setLoadingNextPage(false);
+      });
+  };
 
 
   useEffect(() => {
@@ -71,7 +80,6 @@ export const FeedComponent = ({ feedIds }: Props) => {
     markScrolledItemsAsRead();
     hasReachedEnd() && nextPage();
   };
-  useEffect(scrolled, [feedIds]);
 
   return <div className="feed" onScroll={() => scrolled()}>
     {loading && <div>Loading ... </div>}
