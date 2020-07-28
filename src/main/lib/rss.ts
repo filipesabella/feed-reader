@@ -122,6 +122,7 @@ function nextPageUrl(url: string, rss: Document): string | null {
 
   const isWordPress = () => generator.includes('WORDPRESS');
   const isTumblr = () => generator.includes('TUMBLR');
+  const isReddit = () => url.includes('reddit.com');
 
   if (isWordPress()) {
     if (url.includes('paged=')) {
@@ -138,6 +139,16 @@ function nextPageUrl(url: string, rss: Document): string | null {
     } else {
       const currentItems = rss.querySelectorAll('rss > channel > item').length;
       return url.replace('/rss', `/page/${currentItems + 1}/rss`);
+    }
+  } else if (isReddit()) {
+    const lastItemId = rss
+      .querySelector('feed > entry:last-child > id')?.innerHTML;
+    if (!lastItemId) return null;
+
+    if (url.includes('?after=')) {
+      return url.replace(/after=.*?$/, 'after=' + lastItemId);
+    } else {
+      return url += '?after=' + lastItemId;
     }
   }
 
