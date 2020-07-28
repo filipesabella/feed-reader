@@ -37,7 +37,7 @@ export class Database {
       ...feed,
       readItemsIds: read
         // only store the past 100 read items, no need for more
-        ? feed.readItemsIds.concat(feedItemId).slice(-100)
+        ? [...new Set(feed.readItemsIds.concat(feedItemId))].slice(-100)
         : feed.readItemsIds.filter(i => i !== feedItemId)
     });
   }
