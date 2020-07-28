@@ -65,15 +65,9 @@ export const FeedComponent = ({ feedIds }: Props) => {
 
   const scrolled = () => {
     markScrolledItemsAsRead();
-    loadMore();
-  };
-  useEffect(() => {
-    scrolled();
-  }, feedIds);
-
-  const loadMore = () => {
     hasReachedEnd() && nextPage();
   };
+  useEffect(scrolled, [feedIds]);
 
   return <div className="feed" onScroll={() => scrolled()}>
     {loading && <div>Loading ... </div>}
