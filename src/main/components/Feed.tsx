@@ -106,7 +106,7 @@ function markScrolledItemsAsRead(): void {
         e.classList.add('read');
         const id = e.getAttribute('data-id')!;
         const feedId = e.getAttribute('data-feed-id')!;
-        // database.markAsRead(id, feedId, true);
+        database.markAsRead(id, feedId, true);
       }
     });
 }
