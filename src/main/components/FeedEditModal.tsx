@@ -2,12 +2,14 @@ import * as React from 'react';
 import { Feed } from '../lib/types';
 import { useState, FormEvent } from 'react';
 import '../styles/feed-edit-modal.less';
+import { database } from './App';
 
 interface Props {
   feed: Feed;
+  closeModal: () => void;
 }
 
-export function FeedEditModal({ feed }: Props): JSX.Element {
+export function FeedEditModal({ feed, closeModal }: Props): JSX.Element {
   const [title, setTitle] = useState(feed.title);
   const [url, setUrl] = useState(feed.url);
   const [category, setCategory] = useState(feed.category);
@@ -17,6 +19,15 @@ export function FeedEditModal({ feed }: Props): JSX.Element {
 
   const save = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    database.updateFeed({
+      ...feed,
+      title,
+      url,
+      category,
+      scriptToParse,
+      scriptToPaginate,
+    }).then(closeModal);
   };
 
   return <form className="feed-edit-form" onSubmit={e => save(e)}>

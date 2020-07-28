@@ -19,16 +19,27 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
   const [feeds, setFeeds] = useState(null as { [key: string]: Feed[] } | null);
   const [feedToEdit, setFeedToEdit] = useState(null as Feed | null);
 
-  useEffect(() => {
+  const load = () => {
     database.loadFeeds().then(feeds => {
       const grouped = feeds.reduce((acc, f) => {
         acc[f.category || noCategory] = (acc[f.category || noCategory] || [])
           .concat(f);
         return acc;
       }, {} as { [key: string]: Feed[] });
+
       setFeeds(grouped);
+
+      // to test the edit modal, delete me
+      // setFeedToEdit(feeds[0]);
     });
-  }, []);
+  };
+
+  const closeModal = () => {
+    load();
+    setFeedToEdit(null);
+  };
+
+  useEffect(load, []);
 
   const feed = (f: Feed) => {
     return <li key={f.id} className="feed-item">
@@ -63,7 +74,7 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
       {feeds && feedComponents}
     </ul>
     <ReactModal
-      isOpen={!!feedToEdit}
+      isOpen={feedToEdit !== null}
       onRequestClose={() => setFeedToEdit(null)}
       parentSelector={() => document.getElementById('app')!}
       style={{
@@ -76,7 +87,9 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
           transform: 'translate(-50%, -50%)'
         }
       }}>
-      <FeedEditModal feed={feedToEdit!} />
+      {feedToEdit && <FeedEditModal
+        feed={feedToEdit}
+        closeModal={closeModal} />}
     </ReactModal>
   </div>;
 };

@@ -86,6 +86,14 @@ export class Database {
       scriptToParse: '',
     });
   }
+
+  public async updateFeed(feed: Feed): Promise<void> {
+    const dbFeed = (await db.feeds.get(feed.id))!;
+    await db.feeds.put({
+      ...dbFeed,
+      ...feed,
+    });
+  }
 }
 
 export interface DBFeed {
