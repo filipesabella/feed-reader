@@ -23,6 +23,13 @@ export class Database {
     resetDb && await seed(db);
   }
 
+  public async markAsReadBatch(feedItemIdAndFeedIds: [string, string][])
+    : Promise<void> {
+    for (let [feedItemId, feedId] of feedItemIdAndFeedIds) {
+      await this.markAsRead(feedItemId, feedId, true);
+    }
+  }
+
   public async markAsRead(feedItemId: string, feedId: string, read: boolean)
     : Promise<void> {
     const feed = (await db.feeds.get(feedId))!;

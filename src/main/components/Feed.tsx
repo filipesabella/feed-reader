@@ -100,21 +100,24 @@ function scrollIntoView(): void {
 
 function markScrolledItemsAsRead(): void {
   const container = document.querySelector('.feed')!;
-  Array.from(document
+  const toMarkAsRead = Array.from(document
     .querySelectorAll<HTMLDivElement>('.feed .feed-item[data-read=false]'))
-    .forEach(e => {
+    .filter(e => {
       const elementFullyInView = e.offsetTop + e.clientHeight - 10 <
         container.scrollTop + (container.clientHeight / 2);
-      if (elementFullyInView) {
-        // should NOT be doing this here and use react instead
-        e.setAttribute('data-read', 'true');
-        e.classList.remove('unread');
-        e.classList.add('read');
-        const id = e.getAttribute('data-id')!;
-        const feedId = e.getAttribute('data-feed-id')!;
-        database.markAsRead(id, feedId, true);
-      }
+      return elementFullyInView;
+    })
+    .map<[string, string]>(e => {
+      // should NOT be doing this here and use react instead
+      e.setAttribute('data-read', 'true');
+      e.classList.remove('unread');
+      e.classList.add('read');
+      const id = e.getAttribute('data-id')!;
+      const feedId = e.getAttribute('data-feed-id')!;
+      return [id, feedId];
     });
+
+  database.markAsReadBatch(toMarkAsRead);
 }
 
 function hasReachedEnd(): boolean {
