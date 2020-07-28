@@ -154,6 +154,7 @@ return fetch('https://cors-anywhere.herokuapp.com/' + url)
     // remove header and footer
     doc.querySelector('center p')?.remove();
     doc.querySelector('center:last-child').remove();
+    doc.querySelectorAll('script').forEach(e => e.remove());
     return doc.body.outerHTML;
   });
 `,
