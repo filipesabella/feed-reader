@@ -59,7 +59,7 @@ async function tumblr(db: DixieNonSense): Promise<void> {
 
 async function redditProgramming(db: DixieNonSense): Promise<void> {
   await db.feeds.put({
-    id: '45',
+    id: '4',
     title: '/r/programming',
     url: 'https://www.reddit.com/r/programming.rss',
     category: 'programming',
