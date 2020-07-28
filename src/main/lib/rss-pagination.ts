@@ -1,4 +1,5 @@
-export function nextPageUrl(url: string, rss: Document): string | null {
+export function nextPageUrl
+  (url: string, rss: Document, scriptToPaginate: string | null): string | null {
   const generator = rss.querySelector('channel > generator')
     ?.innerHTML.toUpperCase() || '';
 
@@ -6,7 +7,14 @@ export function nextPageUrl(url: string, rss: Document): string | null {
   const isTumblr = () => generator.includes('TUMBLR');
   const isReddit = () => url.includes('reddit.com');
 
-  if (isWordPress()) {
+  if (scriptToPaginate) {
+    // lol
+    (window as any).eval(`function __paginate(url, document) {
+      ${scriptToPaginate}
+    }`);
+
+    return (window as any).__paginate(url, document);
+  } else if (isWordPress()) {
     return wordpress(url, rss);
   } else if (isTumblr()) {
     return tumblr(url, rss);

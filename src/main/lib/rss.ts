@@ -1,4 +1,5 @@
 import { nextPageUrl } from './rss-pagination';
+import { DBFeed } from './db';
 
 export interface RSSFeed {
   url: string;
@@ -50,10 +51,14 @@ export async function loadFeed(url: string): Promise<RSSFeed> {
   }
 }
 
-export async function loadFeedItems(url: string)
+export async function loadFeedItems(
+  { scriptToParse, scriptToPaginate }: DBFeed, url: string)
   : Promise<[RSSFeedItem[], string | null]> {
   const rss = await loadRSS(url);
-  return [parseFeedItems(rss), nextPageUrl(url, rss)];
+  return [
+    parseFeedItems(rss, scriptToParse),
+    nextPageUrl(url, rss, scriptToPaginate)
+  ];
 }
 
 async function loadRSS(url: string): Promise<Document> {
@@ -64,8 +69,13 @@ async function loadRSS(url: string): Promise<Document> {
   return new DOMParser().parseFromString(xml, 'text/xml');
 }
 
-function parseFeedItems(rss: Document): RSSFeedItem[] {
-  if (isAtom(rss)) {
+function parseFeedItems(rss: Document, scriptToParse: string | null)
+  : RSSFeedItem[] {
+  // lol
+  if (scriptToParse) {
+    (window as any).eval(`function __parse(document) {\n${scriptToParse}}`);
+    return (window as any).__parse(rss);
+  } else if (isAtom(rss)) {
     return Array.from(rss.querySelectorAll('feed > entry'))
       .map(item => {
         const title =

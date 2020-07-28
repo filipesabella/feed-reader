@@ -11,7 +11,7 @@ export async function loadFeedsItems(
   feedIds: string[]): Promise<[FeedItem[], NextPageData[]]> {
   const dbFeeds = await database.loadFeedsById(feedIds);
   const feedItems = (await Promise.all(
-    dbFeeds.map(dbFeed => loadFeedItems(dbFeed.url)
+    dbFeeds.map(dbFeed => loadFeedItems(dbFeed, dbFeed.url)
       .then<[FeedItem[], NextPageData | null]>(([rssFeedItems, nextPageUrl]) =>
         [rssFeedItems.map(rssToFeedItem(dbFeed)),
         nextPageUrl
@@ -35,7 +35,7 @@ export async function loadNextPages(
     .filter(f => urlForFeedId(f) !== null);
 
   const feedItems = (await Promise.all(
-    dbFeeds.map(dbFeed => loadFeedItems(urlForFeedId(dbFeed).url!)
+    dbFeeds.map(dbFeed => loadFeedItems(dbFeed, urlForFeedId(dbFeed).url!)
       .then<[FeedItem[], NextPageData | null]>(([rssFeedItems, nextPageUrl]) =>
         [rssFeedItems.map(rssToFeedItem(dbFeed)),
         nextPageUrl
