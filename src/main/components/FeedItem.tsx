@@ -6,9 +6,13 @@ import { database } from './App';
 interface Props {
   feedItem: FeedItem;
   selected: boolean;
+  onItemClick: (feedItemId: string) => void;
 }
 
-export const FeedItemComponent = ({ feedItem, selected }: Props) => {
+export const FeedItemComponent = ({
+  feedItem,
+  selected,
+  onItemClick, }: Props) => {
   const [read, setRead] = useState(feedItem.read);
   const [inlineContent, setInlineContent] = useState('');
 
@@ -20,6 +24,8 @@ export const FeedItemComponent = ({ feedItem, selected }: Props) => {
       : true;
     setRead(read);
     database.markAsRead(feedItem.id, feedItem.feedId, read);
+
+    read && onItemClick(feedItem.id);
   };
 
   useEffect(() => {

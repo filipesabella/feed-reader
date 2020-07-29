@@ -87,6 +87,14 @@ export const FeedComponent = ({ feedIds }: Props) => {
     shouldLoadNextPage && nextPage();
   };
 
+  const onItemClick = (feedItemId: string) => {
+    const index = currentItems.findIndex(i => i.id === feedItemId);
+    if (index) {
+      setSelectedItemIndex(index);
+      window.setTimeout(scrollIntoView, 1);
+    }
+  };
+
   const feedItemComponents = () => {
     const eligibleItems = currentItems.filter(i => !i.read);
     if (eligibleItems.length === 0) {
@@ -96,6 +104,7 @@ export const FeedComponent = ({ feedIds }: Props) => {
         <FeedItemComponent
           key={item.id}
           feedItem={item}
+          onItemClick={onItemClick}
           selected={i === selectedItemIndex}
         />);
     }
