@@ -1,7 +1,7 @@
 import Dexie from 'dexie';
-import { loadFeed, RSSFeed, rssFeedItemToDbFeedItemId } from './rss';
-import { Feed } from './types';
+import { RSSFeed } from './rss';
 import { seed } from './seedData';
+import { Feed } from './types';
 
 const dbName = 'RSS-Reader-DB';
 let db: DixieNonSense;
