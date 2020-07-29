@@ -10,20 +10,28 @@ export function nextPageUrl(
 
     return (window as any).__paginate(url, responseBody);
   } else {
-    const rss = new DOMParser().parseFromString(responseBody, 'text/xml');
-    const generator = rss.querySelector('channel > generator')
-      ?.innerHTML.toUpperCase() || '';
+    const isRedditJson = () => !!url.match(/reddit\.com.*\.json/);
 
-    const isWordPress = () => generator.includes('WORDPRESS');
-    const isTumblr = () => generator.includes('TUMBLR');
-    const isReddit = () => url.includes('reddit.com');
+    if (isRedditJson()) {
+      return redditJson(url, responseBody);
+    } else {
+      const rss = new DOMParser().parseFromString(responseBody, 'text/xml');
+      const generator = rss.querySelector('channel > generator')
+        ?.innerHTML.toUpperCase() || '';
 
-    if (isWordPress()) {
-      return wordpress(url, rss);
-    } else if (isTumblr()) {
-      return tumblr(url, rss);
-    } else if (isReddit()) {
-      return reddit(url, rss);
+      const isWordPress = () => generator.includes('WORDPRESS');
+      const isTumblr = () => generator.includes('TUMBLR');
+      const isReddit = () => url.includes('reddit.com');
+
+      if (isWordPress()) {
+        return wordpress(url, rss);
+      } else if (isTumblr()) {
+        return tumblr(url, rss);
+      } else if (isRedditJson()) {
+        return redditJson(url, responseBody);
+      } else if (isReddit()) {
+        return reddit(url, rss);
+      }
     }
   }
   console.log('Don\'t know how to page for ' + url);
@@ -47,6 +55,17 @@ function tumblr(url: string, rss: Document): string | null {
   } else {
     const currentItems = rss.querySelectorAll('rss > channel > item').length;
     return url.replace('/rss', `/page/${currentItems + 1}/rss`);
+  }
+}
+
+function redditJson(url: string, body: string): string | null {
+  const lastItemId = JSON.parse(body).data.after;
+  if (url.includes('after=')) {
+    return url.replace(/after=.*?$/, `after=${lastItemId}`);
+  } else {
+
+    return (!url.includes('?') ? url + '?' : url + '&')
+      + `after=${lastItemId}`;
   }
 }
 

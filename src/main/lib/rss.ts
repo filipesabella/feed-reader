@@ -19,42 +19,6 @@ export interface RSSFeedItem {
 
 const corsAnywhere = 'https://cors-anywhere.herokuapp.com';
 
-// currently only used for seed data
-export async function loadFeed(url: string): Promise<RSSFeed> {
-  const responseBody = await loadRSS(url);
-  const rss = new DOMParser().parseFromString(responseBody, 'text/xml');
-
-  if (isAtom(rss)) {
-    const title = rss.querySelector('feed > title')
-      ?.innerHTML ?? '';
-    const link = rss.querySelector('feed > link[rel="self"]')
-      ?.getAttribute('href') ?? '';
-    const description = rss.querySelector('feed > subtitle')
-      ?.innerHTML ?? '';
-
-    return {
-      url,
-      title,
-      link,
-      description,
-    };
-  } else {
-    const title = rss.querySelector('rss > channel > title')
-      ?.innerHTML ?? '';
-    const link = rss.querySelector('rss > channel > link')
-      ?.innerHTML ?? '';
-    const description = rss.querySelector('rss > channel > description')
-      ?.innerHTML ?? '';
-
-    return {
-      url,
-      title,
-      link,
-      description,
-    };
-  }
-}
-
 export async function loadFeedItems(
   { scriptToParse, scriptToPaginate }: DBFeed, url: string)
   : Promise<[RSSFeedItem[], string | null]> {
@@ -79,11 +43,15 @@ function parseFeedItems(
   if (scriptToParse) {
     return parseCustom(scriptToParse, responseBody, url);
   } else {
-    const rss = new DOMParser().parseFromString(responseBody, 'text/xml');
-    if (isAtom(rss)) {
-      return parseAtom(rss);
+    if (isRedditJson(url)) {
+      return parseRedditJson(url, responseBody);
     } else {
-      return parseRSS(rss);
+      const rss = new DOMParser().parseFromString(responseBody, 'text/xml');
+      if (isAtom(rss)) {
+        return parseAtom(rss);
+      } else {
+        return parseRSS(rss);
+      }
     }
   }
 }
@@ -111,12 +79,50 @@ function parseRSS(rss: Document): RSSFeedItem[] {
     });
 }
 
+function parseRedditJson(url: string, body: string): RSSFeedItem[] {
+  const json = JSON.parse(body);
+  return json.data.children
+    .filter((e: any) => !e.data.stickied) // ignore announcements
+    .map((e: any) => {
+      const imgUrl = (url: string) => {
+        if (url.includes('imgur')) return url + '.png';
+        else return url;
+      };
+
+      const content = () => {
+        if (e.data.url.includes('gfycat')) {
+          const doc = new DOMParser().parseFromString(
+            e.data.secure_media_embed.content, 'text/html');
+          return doc.documentElement.textContent || '';
+        } else {
+          return e.data.secure_media?.reddit_video?.fallback_url
+            ? `<video loop muted controls>
+                <source
+                  src="${e.data.secure_media.reddit_video.fallback_url}
+                  type="video/mp4"/>
+              </video>`
+            : `<img style="max-width: 600px" src="${imgUrl(e.data.url)}"/>`;
+        }
+      };
+
+      const rootUrl = url.split('?')[0].replace('.json', '');
+      return {
+        link: `${rootUrl}/comments/${e.data.id}`,
+        title: e.data.title,
+        pubDate: new Date(e.data.created * 1000),
+        comments: '',
+        description: '',
+        contentEncoded: content(),
+      };
+    });
+}
+
 function parseCustom(
   scriptToParse: string,
   responseBody: string,
   url: string): RSSFeedItem[] {
   // lol
-  (window as any).eval(`function __parse(body, url) {\n${scriptToParse}}`);
+  (window as any).eval(`function __parse(body, url) { ${scriptToParse} } `);
   return (window as any).__parse(responseBody, url);
 }
 
@@ -154,6 +160,10 @@ export function rssFeedItemToDbFeedItemId(item: RSSFeedItem): string {
 
 function isAtom(rss: Document): boolean {
   return rss.firstElementChild?.tagName === 'feed';
+}
+
+function isRedditJson(url: string): boolean {
+  return !!url.match(/reddit\.com.*\.json/);
 }
 
 function cleanUp(s: string): string {
