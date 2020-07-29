@@ -1,14 +1,14 @@
-import { nextPageUrl } from './rss-pagination';
+import { nextPageUrl } from './feed-pagination';
 import { DBFeed } from './db';
 
-export interface RSSFeed {
+export interface UpstreamFeed {
   url: string;
   title: string;
   link: string;
   description: string;
 }
 
-export interface RSSFeedItem {
+export interface UpstreamFeedItem {
   title: string;
   link: string;
   pubDate: Date;
@@ -21,15 +21,15 @@ const corsAnywhere = 'https://cors-anywhere.herokuapp.com';
 
 export async function loadFeedItems(
   { scriptToParse, scriptToPaginate }: DBFeed, url: string)
-  : Promise<[RSSFeedItem[], string | null]> {
-  const responseBody = await loadRSS(url);
+  : Promise<[UpstreamFeedItem[], string | null]> {
+  const responseBody = await loadURL(url);
   return [
     parseFeedItems(responseBody, url, scriptToParse),
     nextPageUrl(url, responseBody, scriptToPaginate)
   ];
 }
 
-async function loadRSS(url: string): Promise<string> {
+async function loadURL(url: string): Promise<string> {
   const corsUrl = `${corsAnywhere}/${url}`;
   const response = await fetch(corsUrl);
   if (response.status !== 200) throw 'could not load the feeed';
@@ -39,25 +39,25 @@ async function loadRSS(url: string): Promise<string> {
 function parseFeedItems(
   responseBody: string,
   url: string,
-  scriptToParse: string | null): RSSFeedItem[] {
+  scriptToParse: string | null): UpstreamFeedItem[] {
   if (scriptToParse) {
     return parseCustom(scriptToParse, responseBody, url);
   } else {
     if (isRedditJson(url)) {
       return parseRedditJson(url, responseBody);
     } else {
-      const rss = new DOMParser().parseFromString(responseBody, 'text/xml');
-      if (isAtom(rss)) {
-        return parseAtom(rss);
+      const xml = new DOMParser().parseFromString(responseBody, 'text/xml');
+      if (isAtom(xml)) {
+        return parseAtom(xml);
       } else {
-        return parseRSS(rss);
+        return parseRSS(xml);
       }
     }
   }
 }
 
-function parseRSS(rss: Document): RSSFeedItem[] {
-  return Array.from(rss.querySelectorAll('rss > channel > item'))
+function parseRSS(xml: Document): UpstreamFeedItem[] {
+  return Array.from(xml.querySelectorAll('rss > channel > item'))
     .map(item => {
       const title = item.querySelector('title')?.innerHTML ?? '';
       const link = item.querySelector('link')?.innerHTML ?? '';
@@ -79,7 +79,7 @@ function parseRSS(rss: Document): RSSFeedItem[] {
     });
 }
 
-function parseRedditJson(url: string, body: string): RSSFeedItem[] {
+function parseRedditJson(url: string, body: string): UpstreamFeedItem[] {
   const json = JSON.parse(body);
 
   const img = (src: string) =>
@@ -131,14 +131,14 @@ function parseRedditJson(url: string, body: string): RSSFeedItem[] {
 function parseCustom(
   scriptToParse: string,
   responseBody: string,
-  url: string): RSSFeedItem[] {
+  url: string): UpstreamFeedItem[] {
   // lol
   (window as any).eval(`function __parse(body, url) { ${scriptToParse} } `);
   return (window as any).__parse(responseBody, url);
 }
 
-function parseAtom(rss: Document): RSSFeedItem[] {
-  return Array.from(rss.querySelectorAll('feed > entry'))
+function parseAtom(xml: Document): UpstreamFeedItem[] {
+  return Array.from(xml.querySelectorAll('feed > entry'))
     .map(item => {
       const title = item.querySelector('title')?.innerHTML ?? '';
       const link = item.querySelector('link')?.getAttribute('href') ?? '';
@@ -159,7 +159,7 @@ function parseAtom(rss: Document): RSSFeedItem[] {
     });
 }
 
-export function rssFeedItemToDbFeedItemId(item: RSSFeedItem): string {
+export function upstreamFeedItemToDbFeedItemId(item: UpstreamFeedItem): string {
   const s = `${item.title.trim()}_${item.link}_${item.pubDate}`;
   let hash = 0;
   for (let i = 0; i < s.length; i++) {
@@ -169,8 +169,8 @@ export function rssFeedItemToDbFeedItemId(item: RSSFeedItem): string {
   return hash.toString();
 }
 
-function isAtom(rss: Document): boolean {
-  return rss.firstElementChild?.tagName === 'feed';
+function isAtom(xml: Document): boolean {
+  return xml.firstElementChild?.tagName === 'feed';
 }
 
 function isRedditJson(url: string): boolean {

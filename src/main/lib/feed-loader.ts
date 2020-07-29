@@ -1,9 +1,9 @@
 import { Database, DBFeed } from './db';
 import {
   loadFeedItems,
-  RSSFeedItem,
-  rssFeedItemToDbFeedItemId
-} from './rss';
+  UpstreamFeedItem,
+  upstreamFeedItemToDbFeedItemId
+} from './feeds';
 import { FeedItem } from './types';
 
 export async function loadFeedsItems(
@@ -12,8 +12,8 @@ export async function loadFeedsItems(
   const dbFeeds = await database.loadFeedsById(feedIds);
   const feedItems = (await Promise.all(
     dbFeeds.map(dbFeed => loadFeedItems(dbFeed, dbFeed.url)
-      .then<[FeedItem[], NextPageData | null]>(([rssFeedItems, nextPageUrl]) =>
-        [rssFeedItems.map(rssToFeedItem(dbFeed)),
+      .then<[FeedItem[], NextPageData | null]>(([upstreamFeedItems, nextPageUrl]) =>
+        [upstreamFeedItems.map(upstreamToFeedItem(dbFeed)),
         nextPageUrl
           ? {
             feedId: dbFeed.id,
@@ -36,8 +36,8 @@ export async function loadNextPages(
 
   const feedItems = (await Promise.all(
     dbFeeds.map(dbFeed => loadFeedItems(dbFeed, urlForFeedId(dbFeed).url!)
-      .then<[FeedItem[], NextPageData | null]>(([rssFeedItems, nextPageUrl]) =>
-        [rssFeedItems.map(rssToFeedItem(dbFeed)),
+      .then<[FeedItem[], NextPageData | null]>(([feedItems, nextPageUrl]) =>
+        [feedItems.map(upstreamToFeedItem(dbFeed)),
         nextPageUrl
           ? {
             feedId: dbFeed.id,
@@ -63,11 +63,11 @@ function result(feedItems: [FeedItem[], NextPageData | null][])
   return result;
 }
 
-const rssToFeedItem = (dbFeed: DBFeed) =>
-  (rssFeedItem: RSSFeedItem): FeedItem => {
-    const id = rssFeedItemToDbFeedItemId(rssFeedItem);
+const upstreamToFeedItem = (dbFeed: DBFeed) =>
+  (upstreamFeedItem: UpstreamFeedItem): FeedItem => {
+    const id = upstreamFeedItemToDbFeedItemId(upstreamFeedItem);
     return {
-      ...rssFeedItem,
+      ...upstreamFeedItem,
       id,
       feedId: dbFeed.id,
       read: dbFeed.readItemsIds.includes(id),

@@ -15,8 +15,8 @@ export function nextPageUrl(
     if (isRedditJson()) {
       return redditJson(url, responseBody);
     } else {
-      const rss = new DOMParser().parseFromString(responseBody, 'text/xml');
-      const generator = rss.querySelector('channel > generator')
+      const xml = new DOMParser().parseFromString(responseBody, 'text/xml');
+      const generator = xml.querySelector('channel > generator')
         ?.innerHTML.toUpperCase() || '';
 
       const isWordPress = () => generator.includes('WORDPRESS');
@@ -24,13 +24,13 @@ export function nextPageUrl(
       const isReddit = () => url.includes('reddit.com');
 
       if (isWordPress()) {
-        return wordpress(url, rss);
+        return wordpress(url);
       } else if (isTumblr()) {
-        return tumblr(url, rss);
+        return tumblr(url, xml);
       } else if (isRedditJson()) {
         return redditJson(url, responseBody);
       } else if (isReddit()) {
-        return reddit(url, rss);
+        return reddit(url, xml);
       }
     }
   }
@@ -38,7 +38,7 @@ export function nextPageUrl(
   return null;
 }
 
-function wordpress(url: string, rss: Document): string | null {
+function wordpress(url: string): string | null {
   if (url.includes('paged=')) {
     const currentPage = url.match(/paged=(\d+)/)![1];
     return url.replace(/(paged=)(\d+)/, (_, prefix, n) =>
@@ -48,12 +48,12 @@ function wordpress(url: string, rss: Document): string | null {
   }
 }
 
-function tumblr(url: string, rss: Document): string | null {
+function tumblr(url: string, xml: Document): string | null {
   if (url.includes('/page/')) {
     return url.replace(/(\/page\/)(\d+)\//,
       (_, prefix, n) => `${prefix}${(parseInt(n) + 1)}/`);
   } else {
-    const currentItems = rss.querySelectorAll('rss > channel > item').length;
+    const currentItems = xml.querySelectorAll('rss > channel > item').length;
     return url.replace('/rss', `/page/${currentItems + 1}/rss`);
   }
 }
@@ -69,8 +69,8 @@ function redditJson(url: string, body: string): string | null {
   }
 }
 
-function reddit(url: string, rss: Document): string | null {
-  const lastItemId = rss
+function reddit(url: string, xml: Document): string | null {
+  const lastItemId = xml
     .querySelector('feed > entry:last-child > id')?.innerHTML;
   if (!lastItemId) return null;
 

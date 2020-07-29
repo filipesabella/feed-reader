@@ -1,9 +1,9 @@
 import Dexie from 'dexie';
-import { RSSFeed } from './rss';
+import { UpstreamFeed } from './feeds';
 import { seed } from './seedData';
 import { Feed } from './types';
 
-const dbName = 'RSS-Reader-DB';
+const dbName = 'Feed-Reader-DB';
 let db: DixieNonSense;
 
 export class Database {
@@ -57,10 +57,10 @@ export class Database {
     feedId: string,
     url: string,
     category: string | null,
-    rssFeed: RSSFeed): Promise<void> {
+    feed: UpstreamFeed): Promise<void> {
     await db.feeds.put({
       id: feedId,
-      title: rssFeed.title,
+      title: feed.title,
       url,
       category,
       readItemsIds: [],
@@ -83,7 +83,7 @@ export interface DBFeed {
   id: string;
   title: string;
   url: string;
-  category: string | null; // this is our app's category, nothing to do with RSS
+  category: string | null; // this is our app's category
   readItemsIds: string[];
   scriptToParse: string;
   scriptToPaginate: string;
