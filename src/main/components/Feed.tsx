@@ -78,7 +78,13 @@ export const FeedComponent = ({ feedIds }: Props) => {
 
   const scrolled = () => {
     markScrolledItemsAsRead();
-    hasReachedEnd() && nextPage();
+    const shouldLoadNextPage = hasReachedEnd() ||
+      // this check is used when the last item is larger than the visible
+      // screen area
+      (currentItems.length > 0
+        && selectedItemIndex === currentItems.length - 1);
+
+    shouldLoadNextPage && nextPage();
   };
 
   const feedItemComponents = () => {

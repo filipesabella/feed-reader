@@ -12,6 +12,7 @@ export async function seed(db: DixieNonSense): Promise<void> {
     ['3', tumblr],
     ['4', redditProgramming],
     ['5', nasa],
+    ['6', redditAww],
   ];
   await Promise.all(feeds
     .filter(shouldInsert)
@@ -69,7 +70,6 @@ async function redditProgramming(db: DixieNonSense): Promise<void> {
     scriptToPaginate: '',
   });
 }
-
 
 async function nasa(db: DixieNonSense): Promise<void> {
   await db.feeds.put({
@@ -132,5 +132,58 @@ return fetch('https://cors-anywhere.herokuapp.com/' + url)
   return doc.body.outerHTML;
 });
 `,
+  });
+}
+
+async function redditAww(db: DixieNonSense): Promise<void> {
+  await db.feeds.put({
+    id: '6',
+    title: '/r/aww',
+    url: 'https://www.reddit.com/r/aww.json?limit=5',
+    category: '',
+    readItemsIds: [],
+    scriptToParse: `
+const json = JSON.parse(body);
+return json.data.children
+  .filter(e => !e.data.stickied) // ignore announcements
+  .map(e => {
+    const imgUrl = url => {
+      if (url.includes('imgur')) return url + '.png';
+      else return url;
+    };
+
+    const content = () => {
+      if (e.data.url.includes('gfycat')) {
+        const doc = new DOMParser().parseFromString(
+          e.data.secure_media_embed.content, 'text/html');
+        return doc.documentElement.textContent || '';
+      } else {
+        return e.data.secure_media?.reddit_video?.fallback_url
+          ? '<video loop muted controls>' +
+              '<source src="' + e.data.secure_media.reddit_video.fallback_url + '" type="video/mp4"/>' +
+            '</video>'
+          : '<img style="max-width: 600px" src="' + imgUrl(e.data.url) + '"/>';
+      }
+    }
+
+    return {
+      link: 'https://www.reddit.com/r/aww/comments/' + e.data.id,
+      title: e.data.title,
+      pubDate: new Date(e.data.created),
+      comments: 'https://www.reddit.com/r/aww/comments/' + e.data.id,
+      description: '',
+      contentEncoded: content(),
+    };
+  });
+`,
+    scriptToPaginate: `
+const lastItemId = JSON.parse(body).data.after;
+if (url.includes('after=')) {
+  return url.replace(/after=.*?$/, 'after=' + lastItemId);
+} else {
+  return url += '&after=' + lastItemId;
+}
+`,
+    scriptToInline: '',
   });
 }
