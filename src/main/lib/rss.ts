@@ -81,14 +81,27 @@ function parseRSS(rss: Document): RSSFeedItem[] {
 
 function parseRedditJson(url: string, body: string): RSSFeedItem[] {
   const json = JSON.parse(body);
+
+  const img = (src: string) =>
+    `<img style="max-width: 600px" src="${src}"/>`;
+
+  const video = (src: string) => `<video loop muted controls>
+      <source
+        src="${src}"
+        type="video/mp4"/>
+    </video>`;
+
+  const imgUrl = (url: string) => {
+    if (url.includes('imgur')) {
+      if (!!url.match(/\.(png|jpg|gif)$/)) return url;
+      return url + '.png';
+    }
+    else return url;
+  };
+
   return json.data.children
     .filter((e: any) => !e.data.stickied) // ignore announcements
     .map((e: any) => {
-      const imgUrl = (url: string) => {
-        if (url.includes('imgur')) return url + '.png';
-        else return url;
-      };
-
       const content = () => {
         if (e.data.url.includes('gfycat')) {
           const doc = new DOMParser().parseFromString(
@@ -96,12 +109,10 @@ function parseRedditJson(url: string, body: string): RSSFeedItem[] {
           return doc.documentElement.textContent || '';
         } else {
           return e.data.secure_media?.reddit_video?.fallback_url
-            ? `<video loop muted controls>
-                <source
-                  src="${e.data.secure_media.reddit_video.fallback_url}
-                  type="video/mp4"/>
-              </video>`
-            : `<img style="max-width: 600px" src="${imgUrl(e.data.url)}"/>`;
+            ? video(e.data.secure_media.reddit_video.fallback_url)
+            : !!(e.data.url?.match(/imgur.*gifv/))
+              ? video(e.data.url.replace('.gifv', '.mp4'))
+              : img(imgUrl(e.data.url));
         }
       };
 
