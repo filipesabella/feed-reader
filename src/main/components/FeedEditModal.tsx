@@ -42,7 +42,6 @@ export function FeedEditModal({ feed, closeModal }: Props): JSX.Element {
     if (confirmDeletion === false) {
       setConfirmDeletion(true);
     } else {
-      // actually delete
       await database.deleteFeed(feed);
       closeModal();
     }
