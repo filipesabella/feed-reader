@@ -71,34 +71,40 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
   });
 
   return <div className="sidebar">
-    <ul>
-      <li className="feed-item">
-        <span
-          className={'title'}
-          onClick={_ => selectFeed([AllFeedsId])}>All</span>
-      </li>
-      {feeds && feedComponents}
-    </ul>
-    <ReactModal
-      isOpen={feedToEdit !== null}
-      onRequestClose={() => setFeedToEdit(null)}
-      parentSelector={() => document.getElementById('app')!}
-      style={{
-        content: {
-          top: '50%',
-          left: '50%',
-          right: 'auto',
-          bottom: 'auto',
-          marginRight: '-50%',
-          transform: 'translate(-50%, -50%)',
-          padding: 0,
-          border: '1px solid var(--border-color)',
-          borderRadius: 0,
-        }
-      }}>
-      {feedToEdit && <FeedEditModal
-        feed={feedToEdit}
-        closeModal={closeModal} />}
-    </ReactModal>
+    <div className="container">
+      <ul>
+        <li className="feed-item">
+          <span
+            className={'title'}
+            onClick={_ => selectFeed([AllFeedsId])}>All</span>
+        </li>
+        {feeds && feedComponents}
+      </ul>
+      <ReactModal
+        isOpen={feedToEdit !== null}
+        onRequestClose={() => setFeedToEdit(null)}
+        parentSelector={() => document.getElementById('app')!}
+        style={{
+          content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+            padding: 0,
+            border: '1px solid var(--border-color)',
+            borderRadius: 0,
+          }
+        }}>
+        {feedToEdit && <FeedEditModal
+          feed={feedToEdit}
+          closeModal={closeModal} />}
+      </ReactModal>
+    </div>
+    <div className="actions">
+      <button title="Settings">⚙️</button>
+      <button title="Add a feed">➕</button>
+    </div>
   </div>;
 };

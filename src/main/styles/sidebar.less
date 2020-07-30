@@ -1,57 +1,76 @@
 .sidebar {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 
-  ul {
-    line-height: 2em;
-  }
-
-  ul>li>ul>li {
-    margin-left: 1em;
-
-    &:first-child {
-      margin-top: -.5em;
-    }
-  }
-
-  span.title,
-  span.category {
-    width: 100%;
-    display: inline-block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    cursor: pointer;
-
-    &:hover,
-    &.selected {
-      color: var(--intense-color);
-    }
-
-    &.category {
-      font-size: .9em;
-    }
-  }
-
-  .feed-item {
-    position: relative;
-
-    span.edit {
-      display: none;
-      position: absolute;
-      right: 0;
-      top: 0;
-      cursor: pointer;
-      background-color: var(--bg-color);
-      padding-left: 1em;
-      font-size: .8em;
+  .actions {
+    button {
+      border-style: none;
 
       &:hover {
-        color: var(--intense-color);
+        color: transparent;
+        text-shadow: 0 0 0 var(--intense-color);
+        cursor: pointer;
+      }
+    }
+  }
+
+  .container {
+    flex: 1;
+
+    ul {
+      line-height: 2em;
+    }
+
+    ul>li>ul>li {
+      margin-left: 1em;
+
+      &:first-child {
+        margin-top: -.5em;
       }
     }
 
-    &:hover {
+    span.title,
+    span.category {
+      width: 100%;
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+
+      &:hover,
+      &.selected {
+        color: var(--intense-color);
+      }
+
+      &.category {
+        font-size: .9em;
+      }
+    }
+
+    .feed-item {
+      position: relative;
+
       span.edit {
-        display: block;
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 0;
+        cursor: pointer;
+        background-color: var(--bg-color);
+        padding-left: 1em;
+        font-size: .8em;
+
+        &:hover {
+          color: var(--intense-color);
+        }
+      }
+
+      &:hover {
+        span.edit {
+          display: block;
+        }
       }
     }
   }
