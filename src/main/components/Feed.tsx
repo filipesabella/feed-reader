@@ -14,9 +14,10 @@ import { Database } from '../lib/db';
 
 interface Props {
   feedIds: string[];
+  scrollTop: number;
 }
 
-export const FeedComponent = ({ feedIds }: Props) => {
+export const FeedComponent = ({ feedIds, scrollTop, }: Props) => {
   const { database, settings } = useAppContext();
 
   const [selectedItemIndex, setSelectedItemIndex] = useState(-1);
@@ -39,12 +40,12 @@ export const FeedComponent = ({ feedIds }: Props) => {
     setShouldLoadMorePages(true);
     scrolled();
     setSelectedItemIndex(-1);
+
   }, [feedIds]);
 
   const nextPage = () => {
     if (loadingNextPage || !shouldLoadMorePages) return;
     setLoadingNextPage(true);
-
     loadNextPages(database, nextPagesUrls, settings.proxyUrl)
       .then(([nextItems, nextPagesUrls]) => {
         // this means the pagination has failed and the same page was loaded
@@ -54,10 +55,24 @@ export const FeedComponent = ({ feedIds }: Props) => {
         } else {
           setCurrentItems(currentItems.concat(nextItems));
           setNextPagesUrls(nextPagesUrls);
+          setShouldLoadMorePages(true);
         }
         setLoadingNextPage(false);
       });
   };
+
+  const scrolled = () => {
+    markScrolledItemsAsRead(database);
+    const shouldLoadNextPage = hasReachedEnd(scrollTop) ||
+      // this check is used when the last item is larger than the visible
+      // screen area
+      (currentItems.length > 0
+        && selectedItemIndex === currentItems.length - 1);
+
+    shouldLoadNextPage && nextPage();
+  };
+
+  useEffect(scrolled, [scrollTop]);
 
   useKeys({
     [Keys.J]: () => {
@@ -74,17 +89,6 @@ export const FeedComponent = ({ feedIds }: Props) => {
         window.open(currentItems[selectedItemIndex].link, '_blank');
     }
   });
-
-  const scrolled = () => {
-    markScrolledItemsAsRead(database);
-    const shouldLoadNextPage = hasReachedEnd() ||
-      // this check is used when the last item is larger than the visible
-      // screen area
-      (currentItems.length > 0
-        && selectedItemIndex === currentItems.length - 1);
-
-    shouldLoadNextPage && nextPage();
-  };
 
   const onItemClick = (feedItemId: string) => {
     const index = currentItems.findIndex(i => i.id === feedItemId);
@@ -109,7 +113,7 @@ export const FeedComponent = ({ feedIds }: Props) => {
     }
   };
 
-  return <div className="feed" onScroll={() => scrolled()}>
+  return <div className="feed">
     {loading && <div>Loading ... </div>}
     {!loading && feedItemComponents()}
     {loadingNextPage && <div>Loading more ... </div>}
@@ -122,9 +126,10 @@ function scrollIntoView(): void {
 }
 
 function markScrolledItemsAsRead(database: Database): void {
-  const container = document.querySelector('.feed')!;
+  const container = document.querySelector('#app > .content')!;
   const toMarkAsRead = Array.from(document
-    .querySelectorAll<HTMLDivElement>('.feed .feed-item[data-read=false]'))
+    .querySelectorAll<HTMLDivElement>(
+      '#app .content .feed .feed-item[data-read=false]'))
     .filter(e => {
       const elementFullyInView = e.offsetTop + e.clientHeight - 10 <
         container.scrollTop + (container.clientHeight / 2);
@@ -143,15 +148,14 @@ function markScrolledItemsAsRead(database: Database): void {
   database.markAsReadBatch(toMarkAsRead);
 }
 
-function hasReachedEnd(): boolean {
-  const container = document.querySelector<HTMLDivElement>('.feed')!;
+function hasReachedEnd(scrollTop: number): boolean {
   const lastItem = document
-    .querySelector<HTMLDivElement>('.feed .feed-item:last-child');
+    .querySelector<HTMLDivElement>('#app .content .feed .feed-item:last-child');
 
   if (!lastItem) return false;
 
   const elementFullyInView = lastItem.offsetTop + lastItem.clientHeight - 10 <
-    container.scrollTop + container.clientHeight;
+    scrollTop;
 
   return elementFullyInView;
 }

@@ -37,6 +37,7 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
 
       // to test the edit modal, delete me
       // setFeedToEdit(feeds[0]);
+      // setShowSettings(true);
     });
   };
   useEffect(load, []);
