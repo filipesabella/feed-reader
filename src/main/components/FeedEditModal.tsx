@@ -61,21 +61,27 @@ export function FeedEditModal({ feed, closeModal }: Props): JSX.Element {
           onChange={e => setCategory(e.target.value)}></input>
       </div>
       <div className="field-ta">
-        <label>Script to parse response</label>
+        <label title="Receives `body: string` and `url: string`">
+          Script to parse response
+        </label>
         <textarea
           spellCheck={false}
           value={scriptToParse}
           onChange={e => setScriptToParse(e.target.value)}></textarea>
       </div>
       <div className="field-ta">
-        <label>Script to parse get next page URL</label>
+        <label title="Receives `url: string` and `body: string`">
+          Script to parse get next page URL
+        </label>
         <textarea
           spellCheck={false}
           value={scriptToPaginate}
           onChange={e => setScriptToPaginate(e.target.value)}></textarea>
       </div>
       <div className="field-ta">
-        <label>Script to inline content from each item</label>
+        <label title="Receives `url: string`">
+          Script to inline content from each item
+        </label>
         <textarea
           spellCheck={false}
           value={scriptToInline}
