@@ -21,7 +21,7 @@ export async function loadFeedsItems(
           }
           : null]))));
 
-  return result(feedItems);
+  return result(dbFeedsById(dbFeeds), feedItems);
 }
 
 export async function loadNextPages(
@@ -45,10 +45,12 @@ export async function loadNextPages(
           }
           : null]))));
 
-  return result(feedItems);
+  return result(dbFeedsById(dbFeeds), feedItems);
 }
 
-function result(feedItems: [FeedItem[], NextPageData | null][])
+function result(
+  feedsById: FeedBlockedWordsById,
+  feedItems: [FeedItem[], NextPageData | null][])
   : [FeedItem[], NextPageData[]] {
   const result =
     feedItems.reduce<[FeedItem[], NextPageData[]]>
@@ -57,10 +59,29 @@ function result(feedItems: [FeedItem[], NextPageData | null][])
         nextPageData ? acc[1].concat(nextPageData) : acc[1]],
         [[], []] as [FeedItem[], NextPageData[]]);
 
-  // sadness
-  result[0].sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
+  const eligibleItems = result[0]
+    .filter(item => {
+      const regexp = feedsById[item.feedId];
+      if (!regexp) return true;
+      return !item.title.match(regexp);
+    })
+    .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
 
-  return result;
+  return [eligibleItems, result[1]];
+}
+
+type FeedBlockedWordsById = { [id: string]: RegExp | null };
+function dbFeedsById(dbFeeds: DBFeed[]): FeedBlockedWordsById {
+  return dbFeeds.reduce(
+    (acc, f) => {
+      if (f.blockedWords) {
+        acc[f.id] = new RegExp(
+          '(' + f.blockedWords.replace(/\s/g, '|') + ')', 'i');
+      }
+      return acc;
+
+    },
+    {} as FeedBlockedWordsById);
 }
 
 const upstreamToFeedItem = (dbFeed: DBFeed) =>

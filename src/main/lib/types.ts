@@ -3,6 +3,7 @@ export interface Feed {
   title: string;
   url: string;
   category: string | null;
+  blockedWords: string | null;
   scriptToParse: string;
   scriptToPaginate: string;
   scriptToInline: string;

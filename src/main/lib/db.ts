@@ -63,6 +63,7 @@ export class Database {
       title: feed.title,
       url,
       category,
+      blockedWords: '',
       readItemsIds: [],
       scriptToParse: '',
       scriptToInline: '',
@@ -84,6 +85,7 @@ export interface DBFeed {
   title: string;
   url: string;
   category: string | null; // this is our app's category
+  blockedWords: string | null;
   readItemsIds: string[];
   scriptToParse: string;
   scriptToPaginate: string;
@@ -96,7 +98,7 @@ export class DixieNonSense extends Dexie {
   constructor() {
     super(dbName);
     this.version(1).stores({
-      feeds: '&id, title, url, category, *readItemsIds',
+      feeds: '&id, title, url, category, blockedWords, *readItemsIds',
     });
   }
 }

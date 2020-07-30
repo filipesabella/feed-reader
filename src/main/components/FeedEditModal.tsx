@@ -13,6 +13,7 @@ export function FeedEditModal({ feed, closeModal }: Props): JSX.Element {
   const [title, setTitle] = useState(feed.title);
   const [url, setUrl] = useState(feed.url);
   const [category, setCategory] = useState(feed.category);
+  const [blockedWords, setBlockedWords] = useState(feed.blockedWords);
   const [scriptToParse, setScriptToParse] = useState(feed.scriptToParse);
   const [scriptToPaginate, setScriptToPaginate]
     = useState(feed.scriptToPaginate);
@@ -26,6 +27,7 @@ export function FeedEditModal({ feed, closeModal }: Props): JSX.Element {
       title,
       url,
       category,
+      blockedWords,
       scriptToParse,
       scriptToPaginate,
       scriptToInline,
@@ -59,6 +61,14 @@ export function FeedEditModal({ feed, closeModal }: Props): JSX.Element {
           placeholder="Category"
           value={category ?? ''}
           onChange={e => setCategory(e.target.value)}></input>
+      </div>
+      <div className="field">
+        <label>Blocked words</label>
+        <input
+          type="text"
+          placeholder="Blocked words"
+          value={blockedWords ?? ''}
+          onChange={e => setBlockedWords(e.target.value)}></input>
       </div>
       <div className="field-ta">
         <label title="Receives `body: string` and `url: string`">
