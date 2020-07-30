@@ -7,12 +7,16 @@ import { Sidebar } from './Sidebar';
 
 export const database = new Database();
 
+export let proxyUrl: string;
+
 export const App = () => {
   const [feedIds, setFeedIds] = useState(null as string[] | null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     database.initialize().then(async settings => {
+      proxyUrl = settings.proxyUrl;
+
       changeDarkMode(settings.darkMode);
 
       setLoading(false);

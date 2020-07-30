@@ -1,5 +1,6 @@
 import { DBFeed } from './db';
 import { nextPageUrl } from './feed-pagination';
+import { proxyUrl } from '../components/App';
 
 export interface UpstreamFeed {
   url: string;
@@ -17,8 +18,6 @@ export interface UpstreamFeedItem {
   contentEncoded: string;
 }
 
-const corsAnywhere = 'https://cors-anywheere.herokuapp.com';
-
 export async function loadFeedItems(
   { scriptToParse, scriptToPaginate }: DBFeed, url: string)
   : Promise<[UpstreamFeedItem[], string | null]> {
@@ -30,7 +29,7 @@ export async function loadFeedItems(
 }
 
 async function loadURL(url: string): Promise<string> {
-  const corsUrl = `${corsAnywhere}/${url}`;
+  const corsUrl = `${proxyUrl.replace(/\/$/, '')}/${url}`;
   const response = await fetch(corsUrl);
   if (response.status !== 200) throw 'could not load the feeed';
   return await response.text();

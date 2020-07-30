@@ -33,7 +33,7 @@ async function wordpress(db: DixieNonSense): Promise<void> {
 // BOOM already sent inline content for this item
 if (item.contentEncoded !== '') return Promise.resolve('');
 
-return fetch('https://cors-anywhere.herokuapp.com/' + url)
+return fetch('https://cors-anywheere.herokuapp.com/' + url)
   .then(r => r.text())
   .then(body => {
     const doc = new DOMParser().parseFromString(body, 'text/html');
@@ -128,7 +128,7 @@ return url + '?page=2';
 }
 `,
     scriptToInline: `
-return fetch('https://cors-anywhere.herokuapp.com/' + url)
+return fetch('https://cors-anywheere.herokuapp.com/' + url)
 .then(r => r.text())
 .then(body => {
   const doc = new DOMParser().parseFromString(body, 'text/html');
