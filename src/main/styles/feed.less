@@ -3,6 +3,7 @@
   margin: auto;
   overflow: auto;
   height: 100%;
+  position: relative;
 
   .feed-item:first-child {
     margin-top: 0;
@@ -13,7 +14,6 @@
     padding: 1em;
     background-color: var(--bg-color-lighter);
     border-left: .3em solid;
-    position: relative;
 
     &.unread {
       border-left-color: var(--border-color);
@@ -28,7 +28,7 @@
     }
 
     &.loading {
-      filter: hue-rotate(45deg);
+      filter: blur(1px);
 
       // I definitely didn't do this myself
       // http://www.menucool.com/9499/CSS-loading-spinner-with-a-semi-transparent-background
@@ -58,8 +58,8 @@
         position: absolute;
         left: 48%;
         top: 40%;
-        width: 40px;
-        height: 40px;
+        width: 20px;
+        height: 20px;
         border-style: solid;
         border-color: var(--bg-color);
         border-top-color: transparent;
