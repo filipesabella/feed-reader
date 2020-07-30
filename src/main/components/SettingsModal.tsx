@@ -3,11 +3,7 @@ import '../styles/settings-modal.less';
 import { useState, FormEvent, useEffect } from 'react';
 import { changeDarkMode, database } from './App';
 
-interface Props {
-  closeModal: () => void;
-}
-
-export function SettingsModal({ closeModal }: Props): JSX.Element {
+export function SettingsModal(): JSX.Element {
   const [darkMode, setDarkMode] = useState(false);
   const [proxyUrl, setProxyUrl] = useState('');
   const [gistUrl, setGistUrl] = useState('');

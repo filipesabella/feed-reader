@@ -120,8 +120,7 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
     <DefaultModal
       isOpen={showSettings}
       onRequestClose={() => setShowSettings(false)}>
-      <SettingsModal
-        closeModal={() => setShowSettings(false)} />
+      <SettingsModal />
     </DefaultModal>
   </div>;
 };
