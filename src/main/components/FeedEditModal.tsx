@@ -6,10 +6,11 @@ import { database } from './App';
 
 interface Props {
   feed: Feed;
+  saved: (feed: Feed) => void;
   closeModal: () => void;
 }
 
-export function FeedEditModal({ feed, closeModal }: Props): JSX.Element {
+export function FeedEditModal({ feed, saved, closeModal }: Props): JSX.Element {
   const [title, setTitle] = useState(feed.title);
   const [url, setUrl] = useState(feed.url);
   const [category, setCategory] = useState(feed.category);
@@ -36,6 +37,7 @@ export function FeedEditModal({ feed, closeModal }: Props): JSX.Element {
     });
 
     closeModal();
+    saved(feed);
   };
 
   const doDelete = async () => {

@@ -127,6 +127,7 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
       }}>
       {feedToEdit && <FeedEditModal
         feed={feedToEdit}
+        saved={feed => selectFeed([feed.id])}
         closeModal={closeModal} />}
     </ReactModal>
   </div>;
