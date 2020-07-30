@@ -48,9 +48,13 @@ export const FeedItemComponent = ({
     data-feed-id={feedItem.feedId}
     data-read={feedItem.read}>
     <h2><a href={feedItem.link} target="blank">{feedItem.title}</a></h2>
-    <div dangerouslySetInnerHTML={{ __html: unescape(feedItem.description) }}>
+    <div
+      className="description"
+      dangerouslySetInnerHTML={{ __html: unescape(feedItem.description) }}>
     </div>
-    <div dangerouslySetInnerHTML={{ __html: feedItem.contentEncoded }}></div>
+    <div
+      className="content"
+      dangerouslySetInnerHTML={{ __html: feedItem.contentEncoded }}></div>
     <div
       className="inlineContent"
       dangerouslySetInnerHTML={{ __html: inlineContent }}></div>
