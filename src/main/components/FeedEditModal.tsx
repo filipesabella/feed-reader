@@ -19,8 +19,8 @@ export function FeedEditModal({ feed, closeModal }: Props): JSX.Element {
     = useState(feed.scriptToPaginate);
   const [scriptToInline, setScriptToInline] = useState(feed.scriptToInline);
 
-  const save = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const save = (e: FormEvent<HTMLFormElement> | null) => {
+    e && e.preventDefault();
 
     database.updateFeed({
       ...feed,
@@ -99,7 +99,7 @@ export function FeedEditModal({ feed, closeModal }: Props): JSX.Element {
       </div>
     </div>
     <div className="actions">
-      <button>Save</button>
+      <input type="submit" value="Save" />
     </div>
   </form>;
 }
