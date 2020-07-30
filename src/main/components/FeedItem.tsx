@@ -15,6 +15,7 @@ export const FeedItemComponent = ({
   onItemClick, }: Props) => {
   const [read, setRead] = useState(feedItem.read);
   const [inlineContent, setInlineContent] = useState('');
+  const [loadingInlineContent, setLoadingInlineContent] = useState(false);
 
   const markAsRead = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     // this garbage is here because the button is inside the div, and this
@@ -30,16 +31,21 @@ export const FeedItemComponent = ({
 
   useEffect(() => {
     if (!feedItem.scriptToInline) return;
+    setLoadingInlineContent(true);
     // lol
     (window as any)
       .eval(`function __inline(url, item) { ${feedItem.scriptToInline} }`);
     (window as any).__inline(feedItem.link, feedItem)
-      ?.then((html: string) => html && setInlineContent(html));
+      ?.then((html: string) => {
+        setLoadingInlineContent(false);
+        html && setInlineContent(html);
+      });
   }, [feedItem]);
 
   const className = 'feed-item'
     + (selected ? ' selected' : '')
-    + (read ? ' read' : ' unread');
+    + (read ? ' read' : ' unread')
+    + (loadingInlineContent ? ' loading' : '');
 
   return <div
     className={className}
