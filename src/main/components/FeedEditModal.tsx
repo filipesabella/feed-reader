@@ -79,7 +79,7 @@ export function FeedEditModal({ feed, closeModal }: Props): JSX.Element {
           onChange={e => setScriptToPaginate(e.target.value)}></textarea>
       </div>
       <div className="field-ta">
-        <label title="Receives `url: string`">
+        <label title="Receives `url: string` and `item: {description, contentEncoded}`">
           Script to inline content from each item
         </label>
         <textarea

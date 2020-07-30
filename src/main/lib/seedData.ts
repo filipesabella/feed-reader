@@ -28,7 +28,22 @@ async function wordpress(db: DixieNonSense): Promise<void> {
     category: 'photography',
     readItemsIds: [],
     scriptToParse: '',
-    scriptToInline: '',
+    scriptToInline: `
+// BOOM already sent inline content for this item
+if (item.contentEncoded !== '') return Promise.resolve('');
+
+return fetch('https://cors-anywhere.herokuapp.com/' + url)
+  .then(r => r.text())
+  .then(body => {
+    const doc = new DOMParser().parseFromString(body, 'text/html');
+    doc.querySelectorAll(\`
+      .post-header-content,
+      .single-post__footer,
+      script,
+      .post-content ~ *\`).forEach(e => e.remove());
+    return doc.querySelector('.single-post-container').outerHTML;
+  });
+`,
     scriptToPaginate: '',
   });
 }

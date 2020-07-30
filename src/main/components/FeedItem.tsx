@@ -32,9 +32,9 @@ export const FeedItemComponent = ({
     if (!feedItem.scriptToInline) return;
     // lol
     (window as any)
-      .eval(`function __inline(url) { ${feedItem.scriptToInline} }`);
-    (window as any).__inline(feedItem.link)
-      ?.then((html: string) => setInlineContent(html));
+      .eval(`function __inline(url, item) { ${feedItem.scriptToInline} }`);
+    (window as any).__inline(feedItem.link, feedItem)
+      ?.then((html: string) => html && setInlineContent(html));
   }, [feedItem]);
 
   const className = 'feed-item'
