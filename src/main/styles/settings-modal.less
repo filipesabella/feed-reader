@@ -13,19 +13,24 @@
   }
 
   .actions {
-    width: 100%;
-    text-align: right;
     margin-top: 1em;
-    padding-right: 1em;
+    padding-top: 1em;
+    margin-right: 1em;
+    display: flex;
+    border-top: 1px solid var(--border-color);
 
-    span {
-      display: inline-block;
-      margin-right: 1em;
-      font-size: .8em;
-      cursor: pointer;
+    .syncData {
+      flex: 1;
+      line-height: 1.5em;
 
-      &:hover {
-        text-decoration: underline;
+      span {
+        display: inline-block;
+        font-size: .8em;
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
   }
