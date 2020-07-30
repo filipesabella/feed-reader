@@ -84,7 +84,10 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
           right: 'auto',
           bottom: 'auto',
           marginRight: '-50%',
-          transform: 'translate(-50%, -50%)'
+          transform: 'translate(-50%, -50%)',
+          padding: 0,
+          border: '1px solid var(--border-color)',
+          borderRadius: 0,
         }
       }}>
       {feedToEdit && <FeedEditModal

@@ -33,52 +33,54 @@ export function FeedEditModal({ feed, closeModal }: Props): JSX.Element {
   };
 
   return <form className="feed-edit-form" onSubmit={e => save(e)}>
-    <div className="field">
-      <label>Title</label>
-      <input
-        type="text"
-        placeholder="Title"
-        value={title}
-        onChange={e => setTitle(e.target.value)}
-        required={true}></input>
-    </div>
-    <div className="field">
-      <label>URL</label>
-      <input
-        type="text"
-        placeholder="URL"
-        value={url}
-        onChange={e => setUrl(e.target.value)}
-        required={true}></input>
-    </div>
-    <div className="field">
-      <label>Category</label>
-      <input
-        type="text"
-        placeholder="Category"
-        value={category ?? ''}
-        onChange={e => setCategory(e.target.value)}></input>
-    </div>
-    <div className="field-ta">
-      <label>Script to parse response</label>
-      <textarea
-        spellCheck={false}
-        value={scriptToParse}
-        onChange={e => setScriptToParse(e.target.value)}></textarea>
-    </div>
-    <div className="field-ta">
-      <label>Script to parse get next page URL</label>
-      <textarea
-        spellCheck={false}
-        value={scriptToPaginate}
-        onChange={e => setScriptToPaginate(e.target.value)}></textarea>
-    </div>
-    <div className="field-ta">
-      <label>Script to inline content from each item</label>
-      <textarea
-        spellCheck={false}
-        value={scriptToInline}
-        onChange={e => setScriptToInline(e.target.value)}></textarea>
+    <div className="container">
+      <div className="field">
+        <label>Title</label>
+        <input
+          type="text"
+          placeholder="Title"
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+          required={true}></input>
+      </div>
+      <div className="field">
+        <label>URL</label>
+        <input
+          type="text"
+          placeholder="URL"
+          value={url}
+          onChange={e => setUrl(e.target.value)}
+          required={true}></input>
+      </div>
+      <div className="field">
+        <label>Category</label>
+        <input
+          type="text"
+          placeholder="Category"
+          value={category ?? ''}
+          onChange={e => setCategory(e.target.value)}></input>
+      </div>
+      <div className="field-ta">
+        <label>Script to parse response</label>
+        <textarea
+          spellCheck={false}
+          value={scriptToParse}
+          onChange={e => setScriptToParse(e.target.value)}></textarea>
+      </div>
+      <div className="field-ta">
+        <label>Script to parse get next page URL</label>
+        <textarea
+          spellCheck={false}
+          value={scriptToPaginate}
+          onChange={e => setScriptToPaginate(e.target.value)}></textarea>
+      </div>
+      <div className="field-ta">
+        <label>Script to inline content from each item</label>
+        <textarea
+          spellCheck={false}
+          value={scriptToInline}
+          onChange={e => setScriptToInline(e.target.value)}></textarea>
+      </div>
     </div>
     <div className="actions">
       <button>Save</button>
