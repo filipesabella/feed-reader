@@ -19,10 +19,12 @@ export function FeedEditModal({ feed, closeModal }: Props): JSX.Element {
     = useState(feed.scriptToPaginate);
   const [scriptToInline, setScriptToInline] = useState(feed.scriptToInline);
 
-  const save = (e: FormEvent<HTMLFormElement> | null) => {
-    e && e.preventDefault();
+  const [confirmDeletion, setConfirmDeletion] = useState(false);
 
-    database.updateFeed({
+  const save = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    await database.updateFeed({
       ...feed,
       title,
       url,
@@ -31,7 +33,19 @@ export function FeedEditModal({ feed, closeModal }: Props): JSX.Element {
       scriptToParse,
       scriptToPaginate,
       scriptToInline,
-    }).then(closeModal);
+    });
+
+    closeModal();
+  };
+
+  const doDelete = async () => {
+    if (confirmDeletion === false) {
+      setConfirmDeletion(true);
+    } else {
+      // actually delete
+      await database.deleteFeed(feed);
+      closeModal();
+    }
   };
 
   return <form className="feed-edit-form" onSubmit={e => save(e)}>
@@ -99,7 +113,10 @@ export function FeedEditModal({ feed, closeModal }: Props): JSX.Element {
       </div>
     </div>
     <div className="actions">
+      <span onClick={() => doDelete()}>
+        {confirmDeletion ? 'Are you sure?' : 'Delete'}
+      </span>
       <input type="submit" value="Save" />
-    </div>
+    </div>;
   </form>;
 }

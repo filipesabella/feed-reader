@@ -75,6 +75,10 @@ export class Database {
       ...feed,
     });
   }
+
+  public async deleteFeed(feed: Feed): Promise<void> {
+    await db.feeds.delete(feed.id);
+  }
 }
 
 export interface DBFeed {
