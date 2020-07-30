@@ -11,7 +11,7 @@ export class Database {
     db = new DixieNonSense();
   }
 
-  public async initialize(): Promise<void> {
+  public async initialize(): Promise<DBSettings> {
     // next lines for dev mode
     const resetDb = window.location.hash.startsWith('#reset');
     resetDb && await Dexie.delete(dbName);
@@ -21,6 +21,8 @@ export class Database {
 
     // next lines for dev mode
     resetDb && await seed(db);
+
+    return this.initSettings();
   }
 
   public async markAsReadBatch(feedItemIdAndFeedIds: [string, string][])
@@ -82,6 +84,38 @@ export class Database {
   public async deleteFeed(feed: Feed): Promise<void> {
     await db.feeds.delete(feed.id);
   }
+
+  private async initSettings(): Promise<DBSettings> {
+    const maybeSettings = await db.settings.get('1');
+    if (!maybeSettings) {
+      const settings = {
+        id: '1',
+        darkMode: false,
+        proxyUrl: 'https://cors-anywhere.herokuapp.com/',
+        gistUrl: '',
+      };
+      await db.settings.put(settings);
+      return settings;
+    } else {
+      return maybeSettings;
+    }
+  }
+
+  public async loadSettings(): Promise<DBSettings> {
+    return (await db.settings.get('1'))!;
+  }
+
+  public async saveSettings(
+    darkMode: boolean,
+    proxyUrl: string,
+    gistUrl: string): Promise<void> {
+    db.settings.put({
+      id: '1',
+      darkMode,
+      proxyUrl,
+      gistUrl,
+    });
+  }
 }
 
 export interface DBFeed {
@@ -96,13 +130,22 @@ export interface DBFeed {
   scriptToInline: string;
 }
 
+export interface DBSettings {
+  id: string;
+  darkMode: boolean;
+  proxyUrl: string;
+  gistUrl: string;
+}
+
 export class DixieNonSense extends Dexie {
   feeds: Dexie.Table<DBFeed, string>;
+  settings: Dexie.Table<DBSettings, string>;
 
   constructor() {
     super(dbName);
     this.version(1).stores({
       feeds: '&id, title, url, category, blockedWords, *readItemsIds',
+      settings: 'id, darkMode, proxyUrl, gistUrl',
     });
   }
 }

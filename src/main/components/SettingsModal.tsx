@@ -1,6 +1,7 @@
 import * as React from 'react';
 import '../styles/settings-modal.less';
-import { useState } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
+import { changeDarkMode, database } from './App';
 
 interface Props {
   closeModal: () => void;
@@ -11,8 +12,25 @@ export function SettingsModal({ closeModal }: Props): JSX.Element {
   const [proxyUrl, setProxyUrl] = useState('');
   const [gistUrl, setGistUrl] = useState('');
 
+
+  useEffect(() => {
+    database.loadSettings()
+      .then(settings => {
+        setDarkMode(settings.darkMode);
+        setProxyUrl(settings.proxyUrl);
+        setGistUrl(settings.gistUrl);
+      });
+  }, []);
+
   const [confirmDownload, setConfirmDownload] = useState(false);
   const [confirmUpload, setConfirmUpload] = useState(false);
+
+  const save = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    database.saveSettings(darkMode, proxyUrl, gistUrl);
+
+    window.location.reload();
+  };
 
   const download = () => {
     if (!confirmDownload) {
@@ -32,21 +50,19 @@ export function SettingsModal({ closeModal }: Props): JSX.Element {
     }
   };
 
-  const changeDarkMode = (darkModeOn: boolean) => {
+  const doSetDarkMode = (darkModeOn: boolean) => {
     setDarkMode(darkModeOn);
-
-    document.body.classList.remove('light', 'dark');
-    document.body.classList.add(darkModeOn ? 'dark' : 'light');
+    changeDarkMode(darkModeOn);
   };
 
-  return <div className="settings-form">
+  return <form className="settings-form" onSubmit={e => save(e)}>
     <div className="container">
       <div className="field">
         <label>Dark Mode</label>
         <input
           type="checkbox"
           checked={darkMode}
-          onChange={e => changeDarkMode(e.target.checked)}></input>
+          onChange={e => doSetDarkMode(e.target.checked)}></input>
       </div>
       <div className="field">
         <label>Proxy URL<span>(for CORS)</span></label>
@@ -80,5 +96,5 @@ export function SettingsModal({ closeModal }: Props): JSX.Element {
       </div>
       <input type="submit" value="Save" />
     </div>
-  </div>;
+  </form>;
 }

@@ -12,7 +12,9 @@ export const App = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    database.initialize().then(async _ => {
+    database.initialize().then(async settings => {
+      changeDarkMode(settings.darkMode);
+
       setLoading(false);
 
       // dev mode
@@ -35,3 +37,8 @@ export const App = () => {
     {feedIds && <Content feedIds={feedIds} />}
   </>;
 };
+
+export function changeDarkMode(darkModeOn: boolean) {
+  document.body.classList.remove('light', 'dark');
+  document.body.classList.add(darkModeOn ? 'dark' : 'light');
+}
