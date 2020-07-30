@@ -100,11 +100,11 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
     </div>
     <div className="actions">
       <button
-        onClick={() => openSettings()}
-        title="Settings">⚙️</button>
-      <button
         onClick={() => openAddFeed()}
         title="Add a feed">➕</button>
+      <button
+        onClick={() => openSettings()}
+        title="Settings">⚙️</button>
     </div>
     <ReactModal
       isOpen={feedToEdit !== null}
