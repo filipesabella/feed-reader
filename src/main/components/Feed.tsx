@@ -35,6 +35,7 @@ export const FeedComponent = ({ feedIds }: Props) => {
     setLoading(true);
     setShouldLoadMorePages(true);
     scrolled();
+    setSelectedItemIndex(-1);
   }, [feedIds]);
 
   const nextPage = () => {
@@ -54,11 +55,6 @@ export const FeedComponent = ({ feedIds }: Props) => {
         setLoadingNextPage(false);
       });
   };
-
-
-  useEffect(() => {
-    setSelectedItemIndex(-1);
-  }, [currentItems]);
 
   useKeys({
     [Keys.J]: () => {
