@@ -7,6 +7,8 @@ import '../styles/sidebar.less';
 import { database } from './App';
 import { FeedEditModal } from './FeedEditModal';
 import { uuid } from '../lib/db';
+import { DefaultModal } from './DefaultModal';
+import { SettingsModal } from './SettingsModal';
 
 interface Props {
   feedIds: string[] | null;
@@ -37,14 +39,16 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
   };
   useEffect(load, []);
 
-  const closeModal = () => {
+  const closeEditModal = () => {
     load();
     setFeedToEdit(null);
   };
 
+  const [showSettings, setShowSettings] = useState(false);
   const openSettings = () => {
-    console.log(openSettings);
+    setShowSettings(true);
   };
+  useEffect(openSettings, []);
 
   const openAddFeed = () => {
     setFeedToEdit({
@@ -106,29 +110,19 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
         onClick={() => openSettings()}
         title="Settings">⚙️</button>
     </div>
-    <ReactModal
+    <DefaultModal
       isOpen={feedToEdit !== null}
-      onRequestClose={() => setFeedToEdit(null)}
-      style={{
-        content: {
-          top: '50%',
-          left: '50%',
-          right: 'auto',
-          bottom: 'auto',
-          marginRight: '-50%',
-          transform: 'translate(-50%, -50%)',
-          padding: 0,
-          border: '1px solid var(--border-color)',
-          borderRadius: 0,
-        },
-        overlay: {
-          zIndex: 1,
-        }
-      }}>
+      onRequestClose={() => setFeedToEdit(null)}>
       {feedToEdit && <FeedEditModal
         feed={feedToEdit}
         saved={feed => selectFeed([feed.id])}
-        closeModal={closeModal} />}
-    </ReactModal>
+        closeModal={closeEditModal} />}
+    </DefaultModal>
+    <DefaultModal
+      isOpen={showSettings}
+      onRequestClose={() => setShowSettings(false)}>
+      <SettingsModal
+        closeModal={() => setShowSettings(false)} />
+    </DefaultModal>
   </div>;
 };
