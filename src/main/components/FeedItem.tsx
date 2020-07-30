@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { FeedItem } from '../lib/types';
-import { database } from './App';
+import { useAppContext } from './App';
 
 interface Props {
   feedItem: FeedItem;
@@ -13,6 +13,8 @@ export const FeedItemComponent = ({
   feedItem,
   selected,
   onItemClick, }: Props) => {
+  const { database } = useAppContext();
+
   const [read, setRead] = useState(feedItem.read);
   const [inlineContent, setInlineContent] = useState('');
   const [loadingInlineContent, setLoadingInlineContent] = useState(false);

@@ -1,23 +1,15 @@
 import * as React from 'react';
 import '../styles/settings-modal.less';
 import { useState, FormEvent, useEffect } from 'react';
-import { changeDarkMode, database } from './App';
+import { changeDarkMode, useAppContext } from './App';
 
 export function SettingsModal(): JSX.Element {
-  const [darkMode, setDarkMode] = useState(false);
-  const [proxyUrl, setProxyUrl] = useState('');
-  const [gistUrl, setGistUrl] = useState('');
-  const [githubToken, setGithubToken] = useState('');
+  const { database, settings } = useAppContext();
 
-  useEffect(() => {
-    database.loadSettings()
-      .then(settings => {
-        setDarkMode(settings.darkMode);
-        setProxyUrl(settings.proxyUrl);
-        setGistUrl(settings.gistUrl);
-        setGithubToken(settings.githubToken);
-      });
-  }, []);
+  const [darkMode, setDarkMode] = useState(settings.darkMode);
+  const [proxyUrl, setProxyUrl] = useState(settings.proxyUrl);
+  const [gistUrl, setGistUrl] = useState(settings.gistUrl);
+  const [githubToken, setGithubToken] = useState(settings.githubToken);
 
   const [confirmDownload, setConfirmDownload] = useState(false);
   const [confirmUpload, setConfirmUpload] = useState(false);

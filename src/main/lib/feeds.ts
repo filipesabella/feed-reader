@@ -1,6 +1,5 @@
 import { DBFeed } from './db';
 import { nextPageUrl } from './feed-pagination';
-import { proxyUrl } from '../components/App';
 
 export interface UpstreamFeed {
   url: string;
@@ -19,16 +18,18 @@ export interface UpstreamFeedItem {
 }
 
 export async function loadFeedItems(
-  { scriptToParse, scriptToPaginate }: DBFeed, url: string)
+  { scriptToParse, scriptToPaginate }: DBFeed,
+  url: string,
+  proxyUrl: string,)
   : Promise<[UpstreamFeedItem[], string | null]> {
-  const responseBody = await loadURL(url);
+  const responseBody = await loadURL(url, proxyUrl);
   return [
     parseFeedItems(responseBody, url, scriptToParse),
     nextPageUrl(url, responseBody, scriptToPaginate)
   ];
 }
 
-async function loadURL(url: string): Promise<string> {
+async function loadURL(url: string, proxyUrl: string): Promise<string> {
   const corsUrl = `${proxyUrl.replace(/\/$/, '')}/${url}`;
   const response = await fetch(corsUrl);
   if (response.status !== 200) throw 'could not load the feeed';

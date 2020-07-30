@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
+import { uuid } from '../lib/db';
 import { AllFeedsId } from '../lib/feed-loader';
 import { Feed } from '../lib/types';
 import '../styles/sidebar.less';
-import { database } from './App';
-import { FeedEditModal } from './FeedEditModal';
-import { uuid } from '../lib/db';
 import { DefaultModal } from './DefaultModal';
+import { FeedEditModal } from './FeedEditModal';
 import { SettingsModal } from './SettingsModal';
+import { useAppContext } from './App';
 
 interface Props {
   feedIds: string[] | null;
@@ -20,6 +20,8 @@ const noCategory = '_';
 ReactModal.setAppElement('#app');
 
 export const Sidebar = ({ selectFeed, feedIds }: Props) => {
+  const { database } = useAppContext();
+
   const [feeds, setFeeds] = useState(null as { [key: string]: Feed[] } | null);
   const [feedToEdit, setFeedToEdit] = useState(null as Feed | null);
 

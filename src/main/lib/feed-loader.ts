@@ -10,13 +10,14 @@ export const AllFeedsId = 'all';
 
 export async function loadFeedsItems(
   database: Database,
-  feedIds: string[]): Promise<[FeedItem[], NextPageData[]]> {
+  feedIds: string[],
+  proxyUrl: string,): Promise<[FeedItem[], NextPageData[]]> {
   const dbFeeds = feedIds[0] === AllFeedsId
     ? await database.loadFeeds()
     : await database.loadFeedsById(feedIds);
 
   const feedItems = (await Promise.all(
-    dbFeeds.map(dbFeed => loadFeedItems(dbFeed, dbFeed.url)
+    dbFeeds.map(dbFeed => loadFeedItems(dbFeed, dbFeed.url, proxyUrl)
       .then<[FeedItem[], NextPageData | null]>(([upstreamFeedItems, nextPageUrl]) =>
         [upstreamFeedItems.map(upstreamToFeedItem(dbFeed)),
         nextPageUrl
@@ -31,7 +32,8 @@ export async function loadFeedsItems(
 
 export async function loadNextPages(
   database: Database,
-  nextPages: NextPageData[]): Promise<[FeedItem[], NextPageData[]]> {
+  nextPages: NextPageData[],
+  proxyUrl: string,): Promise<[FeedItem[], NextPageData[]]> {
   const urlForFeedId = (dbFeed: DBFeed) =>
     nextPages.find(p => p.feedId === dbFeed.id)!;
 
@@ -40,7 +42,9 @@ export async function loadNextPages(
     .filter(f => urlForFeedId(f) !== null);
 
   const feedItems = (await Promise.all(
-    dbFeeds.map(dbFeed => loadFeedItems(dbFeed, urlForFeedId(dbFeed).url!)
+    dbFeeds.map(dbFeed => loadFeedItems(dbFeed,
+      urlForFeedId(dbFeed).url!,
+      proxyUrl)
       .then<[FeedItem[], NextPageData | null]>(([feedItems, nextPageUrl]) =>
         [feedItems.map(upstreamToFeedItem(dbFeed)),
         nextPageUrl

@@ -7,15 +7,18 @@ import {
 } from '../lib/feed-loader';
 import { FeedItem } from '../lib/types';
 import '../styles/feed.less';
-import { database } from './App';
+import { useAppContext } from './App';
 import { FeedItemComponent } from './FeedItem';
 import { Keys, useKeys } from './useKeys';
+import { Database } from '../lib/db';
 
 interface Props {
   feedIds: string[];
 }
 
 export const FeedComponent = ({ feedIds }: Props) => {
+  const { database, settings } = useAppContext();
+
   const [selectedItemIndex, setSelectedItemIndex] = useState(-1);
   const [currentItems, setCurrentItems] = useState([] as FeedItem[]);
   const [loading, setLoading] = useState(true);
@@ -25,7 +28,7 @@ export const FeedComponent = ({ feedIds }: Props) => {
   const [nextPagesUrls, setNextPagesUrls] = useState([] as NextPageData[]);
 
   useEffect(() => {
-    loadFeedsItems(database, feedIds)
+    loadFeedsItems(database, feedIds, settings.proxyUrl)
       .then(([items, nextPagesUrls]) => {
         setCurrentItems(items);
         setNextPagesUrls(nextPagesUrls);
@@ -42,7 +45,7 @@ export const FeedComponent = ({ feedIds }: Props) => {
     if (loadingNextPage || !shouldLoadMorePages) return;
     setLoadingNextPage(true);
 
-    loadNextPages(database, nextPagesUrls)
+    loadNextPages(database, nextPagesUrls, settings.proxyUrl)
       .then(([nextItems, nextPagesUrls]) => {
         // this means the pagination has failed and the same page was loaded
         if (nextItems[0]?.id === currentItems[0].id) {
@@ -73,7 +76,7 @@ export const FeedComponent = ({ feedIds }: Props) => {
   });
 
   const scrolled = () => {
-    markScrolledItemsAsRead();
+    markScrolledItemsAsRead(database);
     const shouldLoadNextPage = hasReachedEnd() ||
       // this check is used when the last item is larger than the visible
       // screen area
@@ -118,7 +121,7 @@ function scrollIntoView(): void {
   document.querySelector('.feed-item.selected')?.scrollIntoView(true);
 }
 
-function markScrolledItemsAsRead(): void {
+function markScrolledItemsAsRead(database: Database): void {
   const container = document.querySelector('.feed')!;
   const toMarkAsRead = Array.from(document
     .querySelectorAll<HTMLDivElement>('.feed .feed-item[data-read=false]'))

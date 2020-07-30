@@ -1,8 +1,8 @@
 import * as React from 'react';
+import { FormEvent, useState } from 'react';
 import { Feed } from '../lib/types';
-import { useState, FormEvent } from 'react';
 import '../styles/feed-edit-modal.less';
-import { database } from './App';
+import { useAppContext } from './App';
 
 interface Props {
   feed: Feed;
@@ -11,6 +11,8 @@ interface Props {
 }
 
 export function FeedEditModal({ feed, saved, closeModal }: Props): JSX.Element {
+  const { database } = useAppContext();
+
   const [title, setTitle] = useState(feed.title);
   const [url, setUrl] = useState(feed.url);
   const [category, setCategory] = useState(feed.category);
