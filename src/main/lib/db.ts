@@ -69,7 +69,10 @@ export class Database {
   }
 
   public async updateFeed(feed: Feed): Promise<void> {
-    const dbFeed = (await db.feeds.get(feed.id))!;
+    const dbFeed = (await db.feeds.get(feed.id)) || {
+      readItemsIds: [],
+    };
+
     await db.feeds.put({
       ...dbFeed,
       ...feed,
@@ -102,4 +105,13 @@ export class DixieNonSense extends Dexie {
       feeds: '&id, title, url, category, blockedWords, *readItemsIds',
     });
   }
+}
+
+// stackoverflow.com/questions/105034/how-to-create-guid-uuid
+export function uuid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
 }

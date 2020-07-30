@@ -6,6 +6,7 @@ import { Feed } from '../lib/types';
 import '../styles/sidebar.less';
 import { database } from './App';
 import { FeedEditModal } from './FeedEditModal';
+import { uuid } from '../lib/db';
 
 interface Props {
   feedIds: string[] | null;
@@ -34,13 +35,29 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
       // setFeedToEdit(feeds[0]);
     });
   };
+  useEffect(load, []);
 
   const closeModal = () => {
     load();
     setFeedToEdit(null);
   };
 
-  useEffect(load, []);
+  const openSettings = () => {
+    console.log(openSettings);
+  };
+
+  const openAddFeed = () => {
+    setFeedToEdit({
+      id: uuid(),
+      title: '',
+      url: '',
+      category: '',
+      blockedWords: '',
+      scriptToInline: '',
+      scriptToPaginate: '',
+      scriptToParse: '',
+    });
+  };
 
   const feed = (f: Feed) => {
     return <li key={f.id} className="feed-item">
@@ -82,8 +99,12 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
       </ul>
     </div>
     <div className="actions">
-      <button title="Settings">⚙️</button>
-      <button title="Add a feed">➕</button>
+      <button
+        onClick={() => openSettings()}
+        title="Settings">⚙️</button>
+      <button
+        onClick={() => openAddFeed()}
+        title="Add a feed">➕</button>
     </div>
     <ReactModal
       isOpen={feedToEdit !== null}
