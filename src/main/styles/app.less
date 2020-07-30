@@ -40,14 +40,26 @@ body,
   color: var(--text-color);
 }
 
-textarea,
-input,
-button {
-  padding: .3em;
-  background-color: var(--bg-color-lighter);
-  color: var(--text-color);
-  border: var(--border-color);
-  outline: none;
+form {
+
+  textarea,
+  input,
+  button {
+    background-color: var(--bg-color-lighter);
+    color: var(--text-color);
+    border: var(--border-color);
+    outline: none;
+  }
+
+  textarea,
+  input {
+    padding: .3em;
+  }
+
+  button,
+  input[type=submit] {
+    padding: .3em 1em;
+  }
 }
 
 #app {
