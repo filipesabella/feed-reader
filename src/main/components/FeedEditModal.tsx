@@ -43,6 +43,8 @@ export function FeedEditModal({ feed, saved, closeModal }: Props): JSX.Element {
   const doDelete = async () => {
     if (confirmDeletion === false) {
       setConfirmDeletion(true);
+      setTimeout(() => setConfirmDeletion(false), 1000);
+
     } else {
       await database.deleteFeed(feed);
       closeModal();
