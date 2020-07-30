@@ -93,6 +93,7 @@ export class Database {
         darkMode: false,
         proxyUrl: 'https://cors-anywhere.herokuapp.com/',
         gistUrl: '',
+        githubToken: process.env.TOKEN || '',
       };
       await db.settings.put(settings);
       return settings;
@@ -108,12 +109,14 @@ export class Database {
   public async saveSettings(
     darkMode: boolean,
     proxyUrl: string,
-    gistUrl: string): Promise<void> {
+    gistUrl: string,
+    githubToken: string,): Promise<void> {
     db.settings.put({
       id: '1',
       darkMode,
       proxyUrl,
       gistUrl,
+      githubToken,
     });
   }
 }
@@ -135,6 +138,7 @@ export interface DBSettings {
   darkMode: boolean;
   proxyUrl: string;
   gistUrl: string;
+  githubToken: string;
 }
 
 export class DixieNonSense extends Dexie {
@@ -145,7 +149,7 @@ export class DixieNonSense extends Dexie {
     super(dbName);
     this.version(1).stores({
       feeds: '&id, title, url, category, blockedWords, *readItemsIds',
-      settings: 'id, darkMode, proxyUrl, gistUrl',
+      settings: 'id, darkMode, proxyUrl, gistUrl, githubToken',
     });
   }
 }

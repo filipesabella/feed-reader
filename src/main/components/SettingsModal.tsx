@@ -11,7 +11,7 @@ export function SettingsModal({ closeModal }: Props): JSX.Element {
   const [darkMode, setDarkMode] = useState(false);
   const [proxyUrl, setProxyUrl] = useState('');
   const [gistUrl, setGistUrl] = useState('');
-
+  const [githubToken, setGithubToken] = useState('');
 
   useEffect(() => {
     database.loadSettings()
@@ -19,6 +19,7 @@ export function SettingsModal({ closeModal }: Props): JSX.Element {
         setDarkMode(settings.darkMode);
         setProxyUrl(settings.proxyUrl);
         setGistUrl(settings.gistUrl);
+        setGithubToken(settings.githubToken);
       });
   }, []);
 
@@ -27,7 +28,7 @@ export function SettingsModal({ closeModal }: Props): JSX.Element {
 
   const save = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    database.saveSettings(darkMode, proxyUrl, gistUrl);
+    database.saveSettings(darkMode, proxyUrl, gistUrl, githubToken);
 
     window.location.reload();
   };
@@ -81,6 +82,15 @@ export function SettingsModal({ closeModal }: Props): JSX.Element {
           placeholder="Gist URL"
           value={gistUrl}
           onChange={e => setGistUrl(e.target.value)}></input>
+      </div>
+
+      <div className="field">
+        <label>Github Token<span>(for Upload & Download data)</span></label>
+        <input
+          type="text"
+          placeholder="Github Token"
+          value={githubToken}
+          onChange={e => setGithubToken(e.target.value)}></input>
       </div>
     </div>
 
