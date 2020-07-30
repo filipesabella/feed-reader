@@ -112,10 +112,10 @@ export function FeedEditModal({ feed, closeModal }: Props): JSX.Element {
       </div>
     </div>
     <div className="actions">
-      <span onClick={() => doDelete()}>
+      {title && <span onClick={() => doDelete()}>
         {confirmDeletion ? 'Are you sure?' : 'Delete'}
-      </span>
+      </span>}
       <input type="submit" value="Save" />
-    </div>;
+    </div>
   </form>;
 }
