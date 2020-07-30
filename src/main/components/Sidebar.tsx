@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
+import { AllFeedsId } from '../lib/feed-loader';
 import { Feed } from '../lib/types';
 import '../styles/sidebar.less';
 import { database } from './App';
@@ -71,6 +72,11 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
 
   return <div className="sidebar">
     <ul>
+      <li className="feed-item">
+        <span
+          className={'title'}
+          onClick={_ => selectFeed([AllFeedsId])}>All</span>
+      </li>
       {feeds && feedComponents}
     </ul>
     <ReactModal

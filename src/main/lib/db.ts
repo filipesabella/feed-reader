@@ -42,11 +42,8 @@ export class Database {
     });
   }
 
-  public async loadFeeds(): Promise<Feed[]> {
-    return (await db.feeds.toArray()).map(f => ({
-      ...f,
-      items: [],
-    }));
+  public async loadFeeds(): Promise<DBFeed[]> {
+    return await db.feeds.toArray();
   }
 
   public loadFeedsById(feedIds: string[]): Promise<DBFeed[]> {

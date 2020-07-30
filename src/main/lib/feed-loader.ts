@@ -6,10 +6,15 @@ import {
 } from './feeds';
 import { FeedItem } from './types';
 
+export const AllFeedsId = 'all';
+
 export async function loadFeedsItems(
   database: Database,
   feedIds: string[]): Promise<[FeedItem[], NextPageData[]]> {
-  const dbFeeds = await database.loadFeedsById(feedIds);
+  const dbFeeds = feedIds[0] === AllFeedsId
+    ? await database.loadFeeds()
+    : await database.loadFeedsById(feedIds);
+
   const feedItems = (await Promise.all(
     dbFeeds.map(dbFeed => loadFeedItems(dbFeed, dbFeed.url)
       .then<[FeedItem[], NextPageData | null]>(([upstreamFeedItems, nextPageUrl]) =>
