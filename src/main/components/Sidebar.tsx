@@ -48,7 +48,6 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
   const openSettings = () => {
     setShowSettings(true);
   };
-  useEffect(openSettings, []);
 
   const openAddFeed = () => {
     setFeedToEdit({
