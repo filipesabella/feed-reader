@@ -1,5 +1,5 @@
-import { nextPageUrl } from './feed-pagination';
 import { DBFeed } from './db';
+import { nextPageUrl } from './feed-pagination';
 
 export interface UpstreamFeed {
   url: string;
@@ -17,7 +17,7 @@ export interface UpstreamFeedItem {
   contentEncoded: string;
 }
 
-const corsAnywhere = 'https://cors-anywhere.herokuapp.com';
+const corsAnywhere = 'https://cors-anywheere.herokuapp.com';
 
 export async function loadFeedItems(
   { scriptToParse, scriptToPaginate }: DBFeed, url: string)
