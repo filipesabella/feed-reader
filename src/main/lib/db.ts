@@ -92,7 +92,7 @@ export class Database {
         id: '1',
         darkMode: false,
         proxyUrl: 'https://cors-anywhere.herokuapp.com/',
-        gistUrl: '',
+        gistId: process.env.GIST_ID || '',
         githubToken: process.env.TOKEN || '',
       };
       await db.settings.put(settings);
@@ -109,14 +109,28 @@ export class Database {
   public async saveSettings(
     darkMode: boolean,
     proxyUrl: string,
-    gistUrl: string,
+    gistId: string,
     githubToken: string,): Promise<void> {
     db.settings.put({
       id: '1',
       darkMode,
       proxyUrl,
-      gistUrl,
+      gistId,
       githubToken,
+    });
+  }
+
+  public async dump(): Promise<any> {
+    const feeds = await this.loadFeeds();
+    return {
+      feeds,
+    };
+  }
+
+  public async import(dump: any): Promise<void> {
+    db.transaction('rw', db.feeds, async () => {
+      await db.feeds.clear();
+      await db.feeds.bulkPut(dump.feeds);
     });
   }
 }
@@ -137,7 +151,7 @@ export interface DBSettings {
   id: string;
   darkMode: boolean;
   proxyUrl: string;
-  gistUrl: string;
+  gistId: string;
   githubToken: string;
 }
 
@@ -149,7 +163,7 @@ export class DixieNonSense extends Dexie {
     super(dbName);
     this.version(1).stores({
       feeds: '&id, title, url, category, blockedWords, *readItemsIds',
-      settings: 'id, darkMode, proxyUrl, gistUrl, githubToken',
+      settings: 'id, darkMode, proxyUrl, gistId, githubToken',
     });
   }
 }

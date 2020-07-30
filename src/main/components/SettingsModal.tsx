@@ -1,6 +1,7 @@
 import * as React from 'react';
+import { FormEvent, useState } from 'react';
+import { downloaData, uploadData } from '../lib/data-sync';
 import '../styles/settings-modal.less';
-import { useState, FormEvent, useEffect } from 'react';
 import { changeDarkMode, useAppContext } from './App';
 
 export function SettingsModal(): JSX.Element {
@@ -8,7 +9,7 @@ export function SettingsModal(): JSX.Element {
 
   const [darkMode, setDarkMode] = useState(settings.darkMode);
   const [proxyUrl, setProxyUrl] = useState(settings.proxyUrl);
-  const [gistUrl, setGistUrl] = useState(settings.gistUrl);
+  const [gistId, setGistId] = useState(settings.gistId);
   const [githubToken, setGithubToken] = useState(settings.githubToken);
 
   const [confirmDownload, setConfirmDownload] = useState(false);
@@ -16,26 +17,27 @@ export function SettingsModal(): JSX.Element {
 
   const save = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    database.saveSettings(darkMode, proxyUrl, gistUrl, githubToken);
+    database.saveSettings(darkMode, proxyUrl, gistId, githubToken);
 
     window.location.reload();
   };
 
-  const download = () => {
+  const download = async () => {
     if (!confirmDownload) {
       setConfirmDownload(true);
       setTimeout(() => setConfirmDownload(false), 1000);
     } else {
-      console.log('download');
+      await downloaData(database, settings);
+      window.location.reload();
     }
   };
 
-  const upload = () => {
+  const upload = async () => {
     if (!confirmUpload) {
       setConfirmUpload(true);
       setTimeout(() => setConfirmUpload(false), 1000);
     } else {
-      console.log('upload');
+      await uploadData(database, settings);
     }
   };
 
@@ -64,12 +66,12 @@ export function SettingsModal(): JSX.Element {
       </div>
 
       <div className="field">
-        <label>Gist URL<span>(for Upload & Download data)</span></label>
+        <label>Gist ID<span>(for Upload & Download data)</span></label>
         <input
           type="text"
-          placeholder="Gist URL"
-          value={gistUrl}
-          onChange={e => setGistUrl(e.target.value)}></input>
+          placeholder="Gist ID"
+          value={gistId}
+          onChange={e => setGistId(e.target.value)}></input>
       </div>
 
       <div className="field">
