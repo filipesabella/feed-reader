@@ -54,7 +54,7 @@ export const FeedItemComponent = ({
     onClick={e => markAsRead(e)}
     data-id={feedItem.id}
     data-feed-id={feedItem.feedId}>
-    <h2><a href={feedItem.link} target="blank">{feedItem.id}</a></h2>
+    <h2><a href={feedItem.link} target="blank">{feedItem.title}</a></h2>
     <div
       className="description"
       dangerouslySetInnerHTML={{ __html: unescape(feedItem.description) }}>
