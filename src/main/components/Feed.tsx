@@ -38,7 +38,6 @@ export const FeedComponent = ({ feedIds, scrollTop, }: Props) => {
 
     setLoading(true);
     setShouldLoadMorePages(true);
-    scrolled();
     setSelectedItemIndex(-1);
 
   }, [feedIds]);
@@ -62,7 +61,7 @@ export const FeedComponent = ({ feedIds, scrollTop, }: Props) => {
   };
 
   const scrolled = () => {
-    markScrolledItemsAsRead(database);
+    markScrolledItemsAsRead(database, scrollTop);
     const shouldLoadNextPage = hasReachedEnd(scrollTop) ||
       // this check is used when the last item is larger than the visible
       // screen area
@@ -125,19 +124,18 @@ function scrollIntoView(): void {
   document.querySelector('.feed-item.selected')?.scrollIntoView(true);
 }
 
-function markScrolledItemsAsRead(database: Database): void {
-  const container = document.querySelector('#app > .content')!;
+function markScrolledItemsAsRead(database: Database, scrollTop: number): void {
+  const viewport = document.querySelector('#app')!.clientHeight;
   const toMarkAsRead = Array.from(document
     .querySelectorAll<HTMLDivElement>(
-      '#app .content .feed .feed-item[data-read=false]'))
+      '#app .content .feed .feed-item:not(.read)'))
     .filter(e => {
-      const elementFullyInView = e.offsetTop + e.clientHeight - 10 <
-        container.scrollTop + (container.clientHeight / 2);
-      return elementFullyInView;
+      // items scrolling off the top should automatically be marked as read
+      const isElementOffTopOfScreen = e.offsetTop < scrollTop - viewport;
+      return isElementOffTopOfScreen;
     })
     .map<[string, string]>(e => {
       // should NOT be doing this here and use react instead
-      e.setAttribute('data-read', 'true');
       e.classList.remove('unread');
       e.classList.add('read');
       const id = e.getAttribute('data-id')!;
