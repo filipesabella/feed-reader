@@ -1,3 +1,8 @@
+@viewport {
+  width: device-width;
+  zoom: 1.0;
+}
+
 body {
   &.light {
     --bg-color: rgb(238, 238, 238);
@@ -65,17 +70,32 @@ form {
 #app {
   padding: 1em;
   height: 100vh;
-  display: grid;
-  grid-template-columns: 15em;
-  grid-template-areas: 'sidebar content';
-  column-gap: 1em;
+  display: flex;
+  flex-direction: row;
 
   >.sidebar {
-    grid-area: sidebar;
+    height: 100%;
   }
 
   >.content {
-    grid-area: content;
+    flex: 1;
     overflow: auto;
+    height: 100%;
+  }
+}
+
+@media (max-width: 500px) {
+  #app {
+    flex-direction: column;
+    height: 100%;
+
+    >.sidebar {
+      margin-bottom: 1em;
+
+      .actions {
+        text-align: right;
+      }
+    }
+
   }
 }
