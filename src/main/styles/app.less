@@ -37,12 +37,14 @@ body {
 
 html,
 body,
-#app,
+#root,
 .ReactModalPortal {
   margin: 0;
   font-family: 'Barlow';
   background-color: var(--bg-color);
   color: var(--text-color);
+  height: 100%;
+  overflow: hidden;
 }
 
 form {
@@ -70,26 +72,33 @@ form {
 #app {
   padding: 1em;
   height: 100vh;
-  display: flex;
-  flex-direction: row;
+  overflow: auto;
+}
 
-  >.sidebar {
-    height: 100%;
-  }
+@media (min-width: 800px) {
+  #app {
+    >.sidebar {
+      width: 10em;
+      position: fixed;
+      top: 1em;
+      left: 1em;
+      bottom: 1em;
+    }
 
-  >.content {
-    flex: 1;
-    overflow: auto;
-    height: 100%;
+    >.content {
+      margin-left: 11em;
+    }
   }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 800px) {
   #app {
     flex-direction: column;
     height: 100%;
 
     >.sidebar {
+      position: relative;
+      width: auto;
       margin-bottom: 1em;
 
       .actions {

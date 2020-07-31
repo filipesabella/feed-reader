@@ -4,16 +4,11 @@ import { useState } from 'react';
 
 interface Props {
   feedIds: string[];
+  scrollTop: number;
 }
 
-export const Content = ({ feedIds }: Props) => {
-  const [scrollTop, setScrollTop] = useState(0);
-  const scrolled = (event: React.UIEvent<HTMLDivElement>) => {
-    const e = event.target as HTMLDivElement;
-    setScrollTop(e.scrollTop + e.clientHeight);
-  };
-
-  return <div className="content" onScroll={e => scrolled(e)}>
+export const Content = ({ feedIds, scrollTop, }: Props) => {
+  return <div className="content">
     <FeedComponent
       feedIds={feedIds}
       scrollTop={scrollTop} />

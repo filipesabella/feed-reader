@@ -17,7 +17,7 @@ interface Props {
 
 const noCategory = '_';
 
-ReactModal.setAppElement('#app');
+ReactModal.setAppElement('#root');
 
 export const Sidebar = ({ selectFeed, feedIds }: Props) => {
   const { database } = useAppContext();

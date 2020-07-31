@@ -15,7 +15,7 @@ export const AppContext = createContext({
 export const App = () => {
   const [feedIds, setFeedIds] = useState(null as string[] | null);
   const [loading, setLoading] = useState(true);
-
+  const [scrollTop, setScrollTop] = useState(0);
   const [settings, setSettings] = useState(null as DBSettings | null);
 
   useEffect(() => {
@@ -37,7 +37,12 @@ export const App = () => {
     });
   }, []);
 
-  return <>
+  const onScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    const e = event.target as HTMLDivElement;
+    setScrollTop(e.scrollTop + e.clientHeight);
+  };
+
+  return <div id="app" onScroll={onScroll}>
     {loading && <p>Loading...</p>}
     {!loading && feedIds && <AppContext.Provider
       value={{
@@ -47,9 +52,9 @@ export const App = () => {
       <Sidebar
         selectFeed={setFeedIds}
         feedIds={feedIds} />
-      <Content feedIds={feedIds} />
+      <Content feedIds={feedIds} scrollTop={scrollTop} />
     </AppContext.Provider>}
-  </>;
+  </div>;
 };
 
 export const useAppContext = () => React.useContext(AppContext);
