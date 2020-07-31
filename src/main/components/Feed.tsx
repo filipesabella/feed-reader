@@ -93,7 +93,6 @@ export const FeedComponent = ({ feedIds, scrollTop, }: Props) => {
     const index = currentItems.findIndex(i => i.id === feedItemId);
     if (index) {
       setSelectedItemIndex(index);
-      window.setTimeout(scrollIntoView, 1);
     }
   };
 
