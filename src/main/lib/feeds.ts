@@ -159,7 +159,8 @@ function parseAtom(xml: Document): UpstreamFeedItem[] {
     });
 }
 
-export function upstreamFeedItemToDbFeedItemId(item: UpstreamFeedItem): string {
+export function upstreamFeedItemToDbFeedItemId(item: UpstreamFeedItem)
+  : string {
   const s = `${item.title.trim()}_${item.link}_${item.pubDate}`;
   let hash = 0;
   for (let i = 0; i < s.length; i++) {

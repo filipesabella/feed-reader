@@ -18,7 +18,8 @@ export async function loadFeedsItems(
 
   const feedItems = (await Promise.all(
     dbFeeds.map(dbFeed => loadFeedItems(dbFeed, dbFeed.url, proxyUrl)
-      .then<[FeedItem[], NextPageData | null]>(([upstreamFeedItems, nextPageUrl]) =>
+      .then<[FeedItem[], NextPageData | null]>
+      (([upstreamFeedItems, nextPageUrl]) =>
         [upstreamFeedItems.map(upstreamToFeedItem(dbFeed)),
         nextPageUrl
           ? {

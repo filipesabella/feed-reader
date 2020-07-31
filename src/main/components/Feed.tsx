@@ -146,8 +146,8 @@ function markScrolledItemsAsRead(database: Database, scrollTop: number): void {
 }
 
 function hasReachedEnd(scrollTop: number): boolean {
-  const lastItem = document
-    .querySelector<HTMLDivElement>('#app .content .feed .feed-item:last-child');
+  const lastItem = document.querySelector<HTMLDivElement>(
+    '#app .content .feed .feed-item:last-child');
 
   if (!lastItem) return false;
 

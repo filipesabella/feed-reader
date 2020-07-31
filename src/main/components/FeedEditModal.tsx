@@ -10,7 +10,8 @@ interface Props {
   closeModal: () => void;
 }
 
-export function FeedEditModal({ feed, saved, closeModal }: Props): JSX.Element {
+export function FeedEditModal({ feed, saved, closeModal }: Props)
+  : JSX.Element {
   const { database } = useAppContext();
 
   const [title, setTitle] = useState(feed.title);
@@ -108,7 +109,8 @@ export function FeedEditModal({ feed, saved, closeModal }: Props): JSX.Element {
           onChange={e => setScriptToPaginate(e.target.value)}></textarea>
       </div>
       <div className="field-ta">
-        <label title="Receives `url: string` and `item: {description, contentEncoded}`">
+        <label title={'Receives `url: string` and `item: ' +
+          '{description, contentEncoded}`'}>
           Script to inline content from each item
         </label>
         <textarea

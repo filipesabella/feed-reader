@@ -109,10 +109,11 @@ const doc = new DOMParser().parseFromString(body, 'text/html');
 const links = Array.from(doc.querySelectorAll('body > b > a'));
 return links.slice(currentPage * maxItems, currentPage * maxItems + maxItems)
 .map(link => {
+  const date = link.previousSibling?.textContent?.trim().slice(0, -1) || '';
   return {
     link: \`https://apod.nasa.gov/apod/\${link.getAttribute('href')}\`,
     title: link.innerHTML.replace('\\n', ''),
-    pubDate: new Date(link.previousSibling?.textContent?.trim().slice(0, -1) || ''),
+    pubDate: new Date(date),
     comments: '',
     description: '',
     contentEncoded: '',
