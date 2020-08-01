@@ -7,9 +7,9 @@ interface Props {
   removeItem: (f: DBSavedFeedItem) => void;
 }
 
-export const SavedFeedItemComponent = ({
+export function SavedFeedItemComponent({
   feedItem,
-  removeItem, }: Props) => {
+  removeItem, }: Props): JSX.Element {
   const { database } = useAppContext();
 
   const unsave = async () => {
@@ -38,4 +38,4 @@ export const SavedFeedItemComponent = ({
         onClick={unsave}>Unsave</button>
     </div>
   </div>;
-};
+}

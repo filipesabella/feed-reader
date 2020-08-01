@@ -11,11 +11,11 @@ interface Props {
   savedFeedItemIds: Set<string>;
 }
 
-export const FeedItemComponent = ({
+export function FeedItemComponent({
   feedItem,
   selected,
   onItemClick,
-  savedFeedItemIds, }: Props) => {
+  savedFeedItemIds, }: Props): JSX.Element {
   const { database } = useAppContext();
 
   const [read, setRead] = useState(feedItem.read);
@@ -101,4 +101,4 @@ export const FeedItemComponent = ({
         onClick={toggleSave}>{saved ? 'Unsave' : 'Save'}</button>}
     </div>
   </div>;
-};
+}

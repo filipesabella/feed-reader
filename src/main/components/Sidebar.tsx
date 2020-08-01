@@ -21,7 +21,10 @@ const noCategory = '_';
 
 ReactModal.setAppElement('#root');
 
-export const Sidebar = ({ selectFeed, feedIds, selectSaved }: Props) => {
+export function Sidebar({
+  selectFeed,
+  feedIds,
+  selectSaved, }: Props): JSX.Element {
   const { database, showUnreadItems, setShowUnreadItems } = useAppContext();
 
   const [feeds, setFeeds] = useState(null as { [key: string]: Feed[] } | null);
@@ -138,4 +141,4 @@ export const Sidebar = ({ selectFeed, feedIds, selectSaved }: Props) => {
       <SettingsModal />
     </DefaultModal>
   </div>;
-};
+}

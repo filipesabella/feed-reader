@@ -18,7 +18,7 @@ interface Props {
   scrollTop: number;
 }
 
-export const FeedComponent = ({ feedIds, scrollTop, }: Props) => {
+export function FeedComponent({ feedIds, scrollTop, }: Props): JSX.Element {
   const { database, settings, showUnreadItems } = useAppContext();
 
   const [selectedItemIndex, setSelectedItemIndex] = useState(-1);
@@ -132,7 +132,7 @@ export const FeedComponent = ({ feedIds, scrollTop, }: Props) => {
   return <div className="feed">
     {!loading && feedItemComponents()}
   </div>;
-};
+}
 
 function scrollIntoView(): void {
   // react doesn't like this type of stuff
