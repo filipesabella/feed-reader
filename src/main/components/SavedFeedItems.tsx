@@ -14,7 +14,7 @@ export function SavedFeedItems({ savedFeedItems }: Props): JSX.Element {
     items.filter(i => i.feedItemId !== item.feedItemId));
 
   return <div className="feed">
-    {items.length === 0} <h1>No saved items.</h1>
+    {items.length === 0 && <h1>No saved items.</h1>}
     {items.map(f => <SavedFeedItemComponent
       key={f.feedItemId}
       feedItem={f}
