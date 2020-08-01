@@ -58,7 +58,7 @@ export const App = () => {
 
   return <div id="app" onScroll={onScroll}>
     {loading && <p>Loading...</p>}
-    {!loading && (feedIds || savedFeedItems) && <AppContext.Provider
+    {!loading && <AppContext.Provider
       value={{
         database: database,
         settings: settings!,
@@ -69,10 +69,11 @@ export const App = () => {
         selectFeed={setFeedIds}
         selectSaved={selectSaved}
         feedIds={feedIds} />
-      <Content
-        feedIds={feedIds}
-        savedFeedItems={savedFeedItems}
-        scrollTop={scrollTop} />
+      {(feedIds || savedFeedItems) &&
+        <Content
+          feedIds={feedIds}
+          savedFeedItems={savedFeedItems}
+          scrollTop={scrollTop} />}
     </AppContext.Provider>}
     <ReactNotification />
   </div>;
