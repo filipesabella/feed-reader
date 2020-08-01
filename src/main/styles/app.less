@@ -109,10 +109,11 @@ form {
   }
 }
 
-.notification-container {
-  top: auto;
-  bottom: 1em;
-  width: auto;
+.react-notification-root {
+  >div {
+    width: auto;
+    position: fixed;
+  }
 
   .notification {
     padding: 1em;
@@ -120,11 +121,16 @@ form {
 
   .notification-info {
     background-color: var(--bg-color);
-    color: var(--text-color);
     border: 1px solid var(--border-color);
     box-shadow: none;
   }
 
+  .notification-item .notification-message {
+    color: var(--text-color);
+    max-width: 100%;
+  }
+
+  .notification-danger:before,
   .notification-info:before {
     content: '';
   }

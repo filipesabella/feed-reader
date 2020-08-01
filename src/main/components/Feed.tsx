@@ -11,8 +11,7 @@ import { useAppContext } from './App';
 import { FeedItemComponent } from './FeedItem';
 import { Keys, useKeys } from './useKeys';
 import { Database } from '../lib/db';
-
-const { NotificationManager } = require('react-notifications');
+import * as notifications from '../lib/notifications';
 
 interface Props {
   feedIds: string[];
@@ -33,6 +32,11 @@ export const FeedComponent = ({ feedIds, scrollTop, }: Props) => {
   const [savedFeedItemIds, setSavedFeedItemIds] = useState(new Set<string>());
 
   useEffect(() => {
+    const notificationId = notifications.loading();
+
+    setLoading(true);
+    setShouldLoadMorePages(true);
+    setSelectedItemIndex(-1);
 
     Promise.all([
       loadFeedsItems(database, feedIds, settings.proxyUrl),
@@ -44,26 +48,22 @@ export const FeedComponent = ({ feedIds, scrollTop, }: Props) => {
       setSavedFeedItemIds(savedFeedItemIds);
 
       setLoading(false);
+
+      notifications.remove(notificationId);
     });
-
-    NotificationManager.info('Loading ...', '', 1000);
-    setLoading(true);
-    setShouldLoadMorePages(true);
-    setSelectedItemIndex(-1);
-
   }, [feedIds]);
 
   const nextPage = () => {
     if (loadingNextPage || !shouldLoadMorePages) return;
 
-    NotificationManager.info('Loading ...', '', 1000);
+    const notificationId = notifications.loading();
     setLoadingNextPage(true);
+
     loadNextPages(database, nextPagesUrls, settings.proxyUrl)
       .then(([nextItems, nextPagesUrls]) => {
         // this means the pagination has failed and the same page was loaded
         if (nextItems[0]?.id === currentItems[0].id) {
-          NotificationManager.info(
-            'Pagination failed, not loading more items', '', 1000);
+          notifications.error('Pagination failed, not loading more items');
           setShouldLoadMorePages(false);
         } else {
           setCurrentItems(currentItems.concat(nextItems));
@@ -71,6 +71,7 @@ export const FeedComponent = ({ feedIds, scrollTop, }: Props) => {
           setShouldLoadMorePages(true);
         }
         setLoadingNextPage(false);
+        notifications.remove(notificationId);
       });
   };
 

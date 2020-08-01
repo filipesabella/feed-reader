@@ -3,8 +3,7 @@ import { FormEvent, useState } from 'react';
 import { downloaData, uploadData } from '../lib/data-sync';
 import '../styles/settings-modal.less';
 import { useAppContext } from './App';
-
-const { NotificationManager } = require('react-notifications');
+import * as notifications from '../lib/notifications';
 
 export function SettingsModal(): JSX.Element {
   const { database, settings } = useAppContext();
@@ -29,8 +28,12 @@ export function SettingsModal(): JSX.Element {
       setConfirmDownload(true);
       setTimeout(() => setConfirmDownload(false), 1000);
     } else {
-      await downloaData(database, settings);
-      window.location.reload();
+      try {
+        await downloaData(database, settings);
+        window.location.reload();
+      } catch (e) {
+        notifications.error(`Error downloading data: ${e}`);
+      }
     }
   };
 
@@ -39,8 +42,13 @@ export function SettingsModal(): JSX.Element {
       setConfirmUpload(true);
       setTimeout(() => setConfirmUpload(false), 1000);
     } else {
-      await uploadData(database, settings);
-      NotificationManager.info('Uploaded!');
+      try {
+        const response = await uploadData(database, settings);
+        notifications.info('Uploaded!');
+      } catch (e) {
+        notifications.error(`Error uploading: ${e}`);
+        console.error(e);
+      }
     }
   };
 
