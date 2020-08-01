@@ -54,7 +54,8 @@ export const FeedComponent = ({ feedIds, scrollTop, }: Props) => {
       .then(([nextItems, nextPagesUrls]) => {
         // this means the pagination has failed and the same page was loaded
         if (nextItems[0]?.id === currentItems[0].id) {
-          console.log('Pagination failed, not loading more items');
+          NotificationManager.info(
+            'Pagination failed, not loading more items', '', 1000);
           setShouldLoadMorePages(false);
         } else {
           setCurrentItems(currentItems.concat(nextItems));
