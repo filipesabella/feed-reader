@@ -19,16 +19,20 @@ export const FeedItemComponent = ({
   const [inlineContent, setInlineContent] = useState('');
   const [loadingInlineContent, setLoadingInlineContent] = useState(false);
 
-  const markAsRead = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    // this garbage is here because the button is inside the div, and this
-    // event was firing twice
-    const read = (e.target as HTMLElement).className === 'markUnreadButton'
-      ? false
-      : true;
+  const markAsUnread = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    changeRead(false);
+    e.stopPropagation();
+  };
+
+  const onClick = () => {
+    changeRead(true);
+  };
+
+  const changeRead = (read: boolean) => {
     setRead(read);
     database.markAsRead(feedItem.id, feedItem.feedId, read);
 
-    read && onItemClick(feedItem.id);
+    onItemClick(feedItem.id);
   };
 
   useEffect(() => {
@@ -51,7 +55,7 @@ export const FeedItemComponent = ({
 
   return <div
     className={className}
-    onClick={e => markAsRead(e)}
+    onClick={onClick}
     data-id={feedItem.id}
     data-feed-id={feedItem.feedId}>
     <h2><a href={feedItem.link} target="blank">{feedItem.title}</a></h2>
@@ -68,8 +72,9 @@ export const FeedItemComponent = ({
     {feedItem.comments &&
       <p><a href={feedItem.comments} target="blank">Comments</a></p>}
     <div className="actions">
-      {read && <button className="markUnreadButton">
-        Mark as unread</button>}
+      <button
+        className="markUnreadButton"
+        onClick={markAsUnread}>Mark as unread</button>
     </div>
   </div>;
 };
