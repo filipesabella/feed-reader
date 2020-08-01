@@ -51,6 +51,11 @@ export const App = () => {
     setScrollTop(e.scrollTop + e.clientHeight);
   };
 
+  const selectFeeds = (feedIds: string[]) => {
+    setFeedIds(feedIds);
+    setSavedFeedItems(null);
+  };
+
   const selectSaved = async () => {
     setSavedFeedItems(await database.loadSavedFeedItems());
     setFeedIds(null);
@@ -66,7 +71,7 @@ export const App = () => {
         showUnreadItems,
       }}>
       <Sidebar
-        selectFeed={setFeedIds}
+        selectFeed={selectFeeds}
         selectSaved={selectSaved}
         feedIds={feedIds} />
       {(feedIds || savedFeedItems) &&
