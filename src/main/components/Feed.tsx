@@ -107,7 +107,7 @@ export const FeedComponent = ({ feedIds, scrollTop, }: Props) => {
       ? currentItems
       : currentItems.filter(i => !i.read);
     if (eligibleItems.length === 0) {
-      return <div>No new items for this feed.</div>;
+      return <h1>No new items for this feed.</h1>;
     } else {
       return eligibleItems.map((item, i) =>
         <FeedItemComponent
