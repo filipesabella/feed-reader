@@ -122,24 +122,24 @@ return links.slice(currentPage * maxItems, currentPage * maxItems + maxItems)
 `,
     scriptToPaginate: `
 if (url.includes('page=')) {
-return url.replace(/(page=)(\\d+)/,
-  (_, prefix, n) => prefix + (parseInt(n) + 1));
+  return url.replace(/(page=)(\\d+)/,
+    (_, prefix, n) => prefix + (parseInt(n) + 1));
 } else {
-return url + '?page=2';
+  return url + '?page=2';
 }
 `,
     scriptToInline: `
 return fetch('https://cors-anywheere.herokuapp.com/' + url)
-.then(r => r.text())
-.then(body => {
-  const doc = new DOMParser().parseFromString(body, 'text/html');
-  const baseUrl = 'https://apod.nasa.gov/apod/';
-  doc.querySelectorAll('a').forEach(e => {
-    const href = e.getAttribute('href');
-    if (!href.startsWith('http')) {
-      e.setAttribute('href', baseUrl + href);
-    }
-  })
+  .then(r => r.text())
+  .then(body => {
+    const doc = new DOMParser().parseFromString(body, 'text/html');
+    const baseUrl = 'https://apod.nasa.gov/apod/';
+    doc.querySelectorAll('a').forEach(e => {
+      const href = e.getAttribute('href');
+      if (!href.startsWith('http')) {
+        e.setAttribute('href', baseUrl + href);
+      }
+    })
   doc.querySelectorAll('img').forEach(e => {
     const src = e.getAttribute('src');
     if (!src.startsWith('http')) {

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { FeedItem } from '../lib/types';
 import { useAppContext } from './App';
+import { execOnWindow } from '../lib/window-functions';
 
 interface Props {
   feedItem: FeedItem;
@@ -58,11 +59,12 @@ export const FeedItemComponent = ({
   useEffect(() => {
     if (!feedItem.scriptToInline) return;
     setLoadingInlineContent(true);
-    // lol
-    (window as any)
-      .eval(`function __inline(url, item) { ${feedItem.scriptToInline} }`);
-    (window as any).__inline(feedItem.link, feedItem)
-      ?.then((html: string) => {
+    execOnWindow(
+      `__inline${feedItem.id}`,
+      `(url, item) => {
+        ${feedItem.scriptToInline}
+      }`,
+      feedItem.link, feedItem)?.then((html: string) => {
         setLoadingInlineContent(false);
         html && setInlineContent(html);
       });

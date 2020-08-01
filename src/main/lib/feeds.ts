@@ -1,5 +1,6 @@
 import { DBFeed } from './db';
 import { nextPageUrl } from './feed-pagination';
+import { execOnWindow } from './window-functions';
 
 export interface UpstreamFeed {
   url: string;
@@ -132,9 +133,9 @@ function parseCustom(
   scriptToParse: string,
   responseBody: string,
   url: string): UpstreamFeedItem[] {
-  // lol
-  (window as any).eval(`function __parse(body, url) { ${scriptToParse} } `);
-  return (window as any).__parse(responseBody, url);
+  return execOnWindow(`__parse${url}`, `(url, body) => {
+    ${scriptToParse}
+  }`, url, responseBody);
 }
 
 function parseAtom(xml: Document): UpstreamFeedItem[] {

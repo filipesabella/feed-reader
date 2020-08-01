@@ -91,7 +91,8 @@ export function FeedEditModal({ feed, saved, closeModal }: Props)
           onChange={e => setBlockedWords(e.target.value)}></input>
       </div>
       <div className="field-ta">
-        <label title="Receives `body: string` and `url: string`">
+        <label title={'Receives `url: string` and `body: string`. Returns ' +
+          'an FeedItem'}>
           Script to parse response
         </label>
         <textarea
@@ -100,7 +101,8 @@ export function FeedEditModal({ feed, saved, closeModal }: Props)
           onChange={e => setScriptToParse(e.target.value)}></textarea>
       </div>
       <div className="field-ta">
-        <label title="Receives `url: string` and `body: string`">
+        <label title={'Receives `url: string` and `body: string`. Returns ' +
+          'a url string'}>
           Script to parse get next page URL
         </label>
         <textarea
@@ -110,7 +112,8 @@ export function FeedEditModal({ feed, saved, closeModal }: Props)
       </div>
       <div className="field-ta">
         <label title={'Receives `url: string` and `item: ' +
-          '{description, contentEncoded}`'}>
+          '{description, contentEncoded}`. Returns Promise<string> with the ' +
+          'content'}>
           Script to inline content from each item
         </label>
         <textarea

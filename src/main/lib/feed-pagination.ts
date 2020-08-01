@@ -1,14 +1,16 @@
+import { execOnWindow } from "./window-functions";
+
 export function nextPageUrl(
   url: string,
   responseBody: string,
   scriptToPaginate: string | null): string | null {
   if (scriptToPaginate) {
-    // lol
-    (window as any).eval(`function __paginate(url, body) {
-      ${scriptToPaginate}
-    }`);
-
-    return (window as any).__paginate(url, responseBody);
+    return execOnWindow(
+      `__paginate${url}`,
+      `(url, body) => {
+        ${scriptToPaginate}
+      }`,
+      url, responseBody);
   } else {
     const isRedditJson = () => !!url.match(/reddit\.com.*\.json/);
 
