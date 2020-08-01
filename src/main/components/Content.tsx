@@ -9,9 +9,12 @@ interface Props {
   scrollTop: number;
 }
 
-export const Content = ({ feedIds, savedFeedItems, scrollTop, }: Props) => {
+export function Content({
+  feedIds,
+  savedFeedItems,
+  scrollTop, }: Props): JSX.Element {
   return <div className="content">
     {feedIds && <FeedComponent feedIds={feedIds} scrollTop={scrollTop} />}
     {savedFeedItems && <SavedFeedItems savedFeedItems={savedFeedItems} />}
   </div>;
-};
+}
