@@ -92,11 +92,11 @@ export const FeedItemComponent = ({
     {feedItem.comments &&
       <p><a href={feedItem.comments} target="blank">Comments</a></p>}
     <div className="actions">
-      {!loadingInlineContent && <button
-        onClick={toggleSave}>{saved ? 'Unsave' : 'Save'}</button>}
       <button
         className="markUnreadButton"
         onClick={markAsUnread}>Mark as unread</button>
+      {!loadingInlineContent && <button
+        onClick={toggleSave}>{saved ? 'Unsave' : 'Save'}</button>}
     </div>
   </div>;
 };

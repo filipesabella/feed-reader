@@ -30,13 +30,21 @@ export const FeedComponent = ({ feedIds, scrollTop, }: Props) => {
   const [loadingNextPage, setLoadingNextPage] = useState(false);
   const [nextPagesUrls, setNextPagesUrls] = useState([] as NextPageData[]);
 
+  const [savedFeedItemIds, setSavedFeedItemIds] = useState(new Set<string>());
+
   useEffect(() => {
-    loadFeedsItems(database, feedIds, settings.proxyUrl)
-      .then(([items, nextPagesUrls]) => {
-        setCurrentItems(items);
-        setNextPagesUrls(nextPagesUrls);
-        setLoading(false);
-      });
+
+    Promise.all([
+      loadFeedsItems(database, feedIds, settings.proxyUrl),
+      database.loadSavedFeedItemIds(),
+    ]).then(([[items, nextPagesUrls], savedFeedItemIds]) => {
+      setCurrentItems(items);
+      setNextPagesUrls(nextPagesUrls);
+
+      setSavedFeedItemIds(savedFeedItemIds);
+
+      setLoading(false);
+    });
 
     NotificationManager.info('Loading ...', '', 1000);
     setLoading(true);
@@ -115,7 +123,7 @@ export const FeedComponent = ({ feedIds, scrollTop, }: Props) => {
           feedItem={item}
           onItemClick={onItemClick}
           selected={i === selectedItemIndex}
-          savedFeedItemIds={new Set()}
+          savedFeedItemIds={savedFeedItemIds}
         />);
     }
   };

@@ -60,7 +60,7 @@
     }
 
     &:hover .actions {
-      display: block;
+      display: flex;
     }
 
     .actions {
@@ -68,6 +68,17 @@
       position: absolute;
       right: 1em;
       bottom: 1em;
+
+      button {
+        padding: .3em 1em;
+        background-color: var(--bg-color);
+        border: 1px solid var(--border-color);
+        margin-left: 1em;
+
+        &:hover {
+          background-color: var(--bg-color-lighter);
+        }
+      }
 
       .markUnreadButton {
         display: none;

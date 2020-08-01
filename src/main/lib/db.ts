@@ -128,6 +128,10 @@ export class Database {
     await db.savedFeedItems.put(item);
   }
 
+  public async loadSavedFeedItemIds(): Promise<Set<string>> {
+    return new Set((await db.savedFeedItems.toArray()).map(f => f.feedItemId));
+  }
+
   public async dump(): Promise<any> {
     const feeds = await this.loadFeeds();
     return {
