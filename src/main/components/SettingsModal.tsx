@@ -46,7 +46,6 @@ export function SettingsModal(): JSX.Element {
 
   const doSetDarkMode = (darkModeOn: boolean) => {
     setDarkMode(darkModeOn);
-    changeDarkMode(darkModeOn);
   };
 
   return <form className="settings-form" onSubmit={e => save(e)}>

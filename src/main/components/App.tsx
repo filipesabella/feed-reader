@@ -68,7 +68,7 @@ export const App = () => {
 
 export const useAppContext = () => React.useContext(AppContext);
 
-export function changeDarkMode(darkModeOn: boolean) {
+function changeDarkMode(darkModeOn: boolean) {
   document.body.classList.remove('light', 'dark');
   document.body.classList.add(darkModeOn ? 'dark' : 'light');
 }
