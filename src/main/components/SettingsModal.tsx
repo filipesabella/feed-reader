@@ -2,7 +2,7 @@ import * as React from 'react';
 import { FormEvent, useState } from 'react';
 import { downloaData, uploadData } from '../lib/data-sync';
 import '../styles/settings-modal.less';
-import { changeDarkMode, useAppContext } from './App';
+import { useAppContext } from './App';
 
 const { NotificationManager } = require('react-notifications');
 
