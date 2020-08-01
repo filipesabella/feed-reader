@@ -20,7 +20,7 @@ interface Props {
 }
 
 export const FeedComponent = ({ feedIds, scrollTop, }: Props) => {
-  const { database, settings } = useAppContext();
+  const { database, settings, showUnreadItems } = useAppContext();
 
   const [selectedItemIndex, setSelectedItemIndex] = useState(-1);
   const [currentItems, setCurrentItems] = useState([] as FeedItem[]);
@@ -103,7 +103,9 @@ export const FeedComponent = ({ feedIds, scrollTop, }: Props) => {
   };
 
   const feedItemComponents = () => {
-    const eligibleItems = currentItems.filter(i => !i.read);
+    const eligibleItems = showUnreadItems
+      ? currentItems
+      : currentItems.filter(i => !i.read);
     if (eligibleItems.length === 0) {
       return <div>No new items for this feed.</div>;
     } else {

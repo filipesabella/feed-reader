@@ -21,7 +21,7 @@ const noCategory = '_';
 ReactModal.setAppElement('#root');
 
 export const Sidebar = ({ selectFeed, feedIds }: Props) => {
-  const { database } = useAppContext();
+  const { database, showUnreadItems, setShowUnreadItems } = useAppContext();
 
   const [feeds, setFeeds] = useState(null as { [key: string]: Feed[] } | null);
   const [feedToEdit, setFeedToEdit] = useState(null as Feed | null);
@@ -53,9 +53,8 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
     setShowSettings(true);
   };
 
-  const [showReadItems, setShowReadItems] = useState(false);
   const toggleShowReadItems = () => {
-    setShowReadItems(!showReadItems);
+    setShowUnreadItems(!showUnreadItems);
   };
 
   const openAddFeed = () => {
@@ -120,7 +119,7 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
       <span
         onClick={() => toggleShowReadItems()}
         title="Toggle show read items">
-        {showReadItems ? icons.eye : icons.eyeCrossed}
+        {showUnreadItems ? icons.eye : icons.eyeCrossed}
       </span>
     </div>
     <DefaultModal

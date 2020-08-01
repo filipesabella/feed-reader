@@ -10,9 +10,11 @@ const { NotificationContainer } = require('react-notifications');
 
 const database = new Database();
 
-export const AppContext = createContext({
+const AppContext = createContext({
   settings: {} as DBSettings,
   database: database,
+  setShowUnreadItems: (show: boolean) => { },
+  showUnreadItems: false,
 });
 
 export const App = () => {
@@ -20,6 +22,7 @@ export const App = () => {
   const [loading, setLoading] = useState(true);
   const [scrollTop, setScrollTop] = useState(0);
   const [settings, setSettings] = useState(null as DBSettings | null);
+  const [showUnreadItems, setShowUnreadItems] = useState(false);
 
   useEffect(() => {
     database.initialize().then(async settings => {
@@ -51,6 +54,8 @@ export const App = () => {
       value={{
         database: database,
         settings: settings!,
+        setShowUnreadItems: setShowUnreadItems!,
+        showUnreadItems,
       }}>
       <Sidebar
         selectFeed={setFeedIds}
