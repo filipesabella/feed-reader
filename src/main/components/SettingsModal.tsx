@@ -4,6 +4,8 @@ import { downloaData, uploadData } from '../lib/data-sync';
 import '../styles/settings-modal.less';
 import { changeDarkMode, useAppContext } from './App';
 
+const { NotificationManager } = require('react-notifications');
+
 export function SettingsModal(): JSX.Element {
   const { database, settings } = useAppContext();
 
@@ -38,6 +40,7 @@ export function SettingsModal(): JSX.Element {
       setTimeout(() => setConfirmUpload(false), 1000);
     } else {
       await uploadData(database, settings);
+      NotificationManager.info('Uploaded!');
     }
   };
 
