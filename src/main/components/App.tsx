@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { createContext, useEffect, useState } from 'react';
-import { Database, DBSettings } from '../lib/db';
+import { Database, DBSettings, DBSavedFeedItem } from '../lib/db';
 import '../styles/app.less';
 import { Content } from './Content';
 import { Sidebar } from './Sidebar';
 import 'react-notifications-component/dist/theme.css';
+import { SavedFeedItems } from './SavedFeedItems';
 
 const ReactNotification = require('react-notifications-component').default;
 
@@ -23,6 +24,8 @@ export const App = () => {
   const [scrollTop, setScrollTop] = useState(0);
   const [settings, setSettings] = useState(null as DBSettings | null);
   const [showUnreadItems, setShowUnreadItems] = useState(false);
+  const [savedFeedItems, setSavedFeedItems] =
+    useState(null as DBSavedFeedItem[] | null);
 
   useEffect(() => {
     database.initialize().then(async settings => {
@@ -38,7 +41,7 @@ export const App = () => {
         if (resetId.length > 1) setFeedIds([resetId[1]]);
         else setFeedIds([(await database.loadFeeds())[0].id]);
       } else {
-        setFeedIds([(await database.loadFeeds())[0].id]);
+        // setFeedIds([(await database.loadFeeds())[3].id]);
       }
     });
   }, []);
@@ -48,9 +51,14 @@ export const App = () => {
     setScrollTop(e.scrollTop + e.clientHeight);
   };
 
+  const selectSaved = async () => {
+    setSavedFeedItems(await database.loadSavedFeedItems());
+    setFeedIds(null);
+  };
+
   return <div id="app" onScroll={onScroll}>
     {loading && <p>Loading...</p>}
-    {!loading && feedIds && <AppContext.Provider
+    {!loading && (feedIds || savedFeedItems) && <AppContext.Provider
       value={{
         database: database,
         settings: settings!,
@@ -59,8 +67,12 @@ export const App = () => {
       }}>
       <Sidebar
         selectFeed={setFeedIds}
+        selectSaved={selectSaved}
         feedIds={feedIds} />
-      <Content feedIds={feedIds} scrollTop={scrollTop} />
+      <Content
+        feedIds={feedIds}
+        savedFeedItems={savedFeedItems}
+        scrollTop={scrollTop} />
     </AppContext.Provider>}
     <ReactNotification />
   </div>;

@@ -132,6 +132,10 @@ export class Database {
     return new Set((await db.savedFeedItems.toArray()).map(f => f.feedItemId));
   }
 
+  public async loadSavedFeedItems(): Promise<DBSavedFeedItem[]> {
+    return db.savedFeedItems.toArray();
+  }
+
   public async dump(): Promise<any> {
     const feeds = await this.loadFeeds();
     return {
@@ -167,7 +171,7 @@ export interface DBSettings {
   githubToken: string;
 }
 
-interface DBSavedFeedItem {
+export interface DBSavedFeedItem {
   feedItemId: string;
   inlineContent: string;
   title: string;

@@ -14,13 +14,14 @@ import * as icons from './icons';
 interface Props {
   feedIds: string[] | null;
   selectFeed: (feedIds: string[]) => void;
+  selectSaved: () => void;
 }
 
 const noCategory = '_';
 
 ReactModal.setAppElement('#root');
 
-export const Sidebar = ({ selectFeed, feedIds }: Props) => {
+export const Sidebar = ({ selectFeed, feedIds, selectSaved }: Props) => {
   const { database, showUnreadItems, setShowUnreadItems } = useAppContext();
 
   const [feeds, setFeeds] = useState(null as { [key: string]: Feed[] } | null);
@@ -35,10 +36,6 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
       }, {} as { [key: string]: Feed[] });
 
       setFeeds(grouped);
-
-      // to test the edit modal, delete me
-      // setFeedToEdit(feeds[0]);
-      // setShowSettings(true);
     });
   };
   useEffect(load, []);
@@ -101,6 +98,11 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
   return <div className="sidebar">
     <div className="container">
       <ul>
+        <li className="feed-item">
+          <span
+            className={'title'}
+            onClick={_ => selectSaved()}>Saved</span>
+        </li>
         <li className="feed-item">
           <span
             className={'title'}
