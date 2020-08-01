@@ -108,3 +108,24 @@ form {
 
   }
 }
+
+.notification-container {
+  top: auto;
+  bottom: 1em;
+  width: auto;
+
+  .notification {
+    padding: 1em;
+  }
+
+  .notification-info {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    box-shadow: none;
+  }
+
+  .notification-info:before {
+    content: '';
+  }
+}

@@ -1,9 +1,12 @@
 import * as React from 'react';
 import { createContext, useEffect, useState } from 'react';
+import 'react-notifications/lib/notifications.css';
 import { Database, DBSettings } from '../lib/db';
 import '../styles/app.less';
 import { Content } from './Content';
 import { Sidebar } from './Sidebar';
+
+const { NotificationContainer } = require('react-notifications');
 
 const database = new Database();
 
@@ -54,6 +57,7 @@ export const App = () => {
         feedIds={feedIds} />
       <Content feedIds={feedIds} scrollTop={scrollTop} />
     </AppContext.Provider>}
+    <NotificationContainer />
   </div>;
 };
 

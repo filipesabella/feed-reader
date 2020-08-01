@@ -12,6 +12,8 @@ import { FeedItemComponent } from './FeedItem';
 import { Keys, useKeys } from './useKeys';
 import { Database } from '../lib/db';
 
+const { NotificationManager } = require('react-notifications');
+
 interface Props {
   feedIds: string[];
   scrollTop: number;
@@ -36,6 +38,7 @@ export const FeedComponent = ({ feedIds, scrollTop, }: Props) => {
         setLoading(false);
       });
 
+    NotificationManager.info('Loading ...', '', 1000);
     setLoading(true);
     setShouldLoadMorePages(true);
     setSelectedItemIndex(-1);
@@ -44,6 +47,8 @@ export const FeedComponent = ({ feedIds, scrollTop, }: Props) => {
 
   const nextPage = () => {
     if (loadingNextPage || !shouldLoadMorePages) return;
+
+    NotificationManager.info('Loading ...', '', 1000);
     setLoadingNextPage(true);
     loadNextPages(database, nextPagesUrls, settings.proxyUrl)
       .then(([nextItems, nextPagesUrls]) => {
@@ -112,9 +117,7 @@ export const FeedComponent = ({ feedIds, scrollTop, }: Props) => {
   };
 
   return <div className="feed">
-    {loading && <div>Loading ... </div>}
     {!loading && feedItemComponents()}
-    {loadingNextPage && <div>Loading more ... </div>}
   </div>;
 };
 
