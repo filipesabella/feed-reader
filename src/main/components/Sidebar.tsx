@@ -111,12 +111,12 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
       </ul>
     </div>
     <div className="actions">
-      <button
+      <span
         onClick={() => openAddFeed()}
-        title="Add a feed">➕</button>
-      <button
+        title="Add a feed">{icons.add}</span>
+      <span
         onClick={() => openSettings()}
-        title="Settings">⚙️</button>
+        title="Settings">{icons.settings}</span>
       <span
         onClick={() => toggleShowReadItems()}
         title="Toggle show read items">
