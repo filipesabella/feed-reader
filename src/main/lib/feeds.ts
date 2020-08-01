@@ -32,7 +32,7 @@ export async function loadFeedItems(
 async function loadURL(url: string, proxyUrl: string): Promise<string> {
   const corsUrl = `${proxyUrl.replace(/\/$/, '')}/${url}`;
   const response = await fetch(corsUrl);
-  if (response.status !== 200) throw 'could not load the feeed';
+  if (response.status !== 200) throw 'Could not load the feed';
   return await response.text();
 }
 
