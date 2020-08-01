@@ -9,6 +9,7 @@ import { DefaultModal } from './DefaultModal';
 import { FeedEditModal } from './FeedEditModal';
 import { SettingsModal } from './SettingsModal';
 import { useAppContext } from './App';
+import * as icons from './icons';
 
 interface Props {
   feedIds: string[] | null;
@@ -50,6 +51,11 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
   const [showSettings, setShowSettings] = useState(false);
   const openSettings = () => {
     setShowSettings(true);
+  };
+
+  const [showReadItems, setShowReadItems] = useState(false);
+  const toggleShowReadItems = () => {
+    setShowReadItems(!showReadItems);
   };
 
   const openAddFeed = () => {
@@ -111,6 +117,11 @@ export const Sidebar = ({ selectFeed, feedIds }: Props) => {
       <button
         onClick={() => openSettings()}
         title="Settings">⚙️</button>
+      <span
+        onClick={() => toggleShowReadItems()}
+        title="Toggle show read items">
+        {showReadItems ? icons.eye : icons.eyeCrossed}
+      </span>
     </div>
     <DefaultModal
       isOpen={feedToEdit !== null}

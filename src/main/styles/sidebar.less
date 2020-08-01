@@ -3,6 +3,8 @@
   flex-direction: column;
 
   .actions {
+    display: flex;
+
     button {
       font-size: 1.3em;
       border-style: none;
@@ -16,6 +18,17 @@
       }
 
       margin-right: .5em;
+    }
+
+    span {
+      svg {
+        width: 1.8em;
+      }
+
+      &:hover {
+        fill: var(--intense-color);
+        cursor: pointer;
+      }
     }
   }
 
