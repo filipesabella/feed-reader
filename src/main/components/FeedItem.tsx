@@ -7,32 +7,52 @@ interface Props {
   feedItem: FeedItem;
   selected: boolean;
   onItemClick: (feedItemId: string) => void;
+  savedFeedItemIds: Set<string>;
 }
 
 export const FeedItemComponent = ({
   feedItem,
   selected,
-  onItemClick, }: Props) => {
+  onItemClick,
+  savedFeedItemIds, }: Props) => {
   const { database } = useAppContext();
 
   const [read, setRead] = useState(feedItem.read);
   const [inlineContent, setInlineContent] = useState('');
   const [loadingInlineContent, setLoadingInlineContent] = useState(false);
 
+  const [saved, setSaved] = useState(savedFeedItemIds.has(feedItem.id));
+
   const markAsUnread = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     changeRead(false);
     e.stopPropagation();
   };
 
-  const onClick = () => {
-    changeRead(true);
-  };
+  const onClick = () => changeRead(true);
 
   const changeRead = (read: boolean) => {
     setRead(read);
     database.markAsRead(feedItem.id, feedItem.feedId, read);
 
     onItemClick(feedItem.id);
+  };
+
+  const toggleSave = async () => {
+    if (saved) {
+      await database.deleteSavedItem(feedItem.id);
+    } else {
+      await database.saveItem({
+        feedItemId: feedItem.id,
+        inlineContent,
+        title: feedItem.title,
+        link: feedItem.link,
+        pubDate: feedItem.pubDate,
+        comments: feedItem.comments,
+        description: feedItem.description,
+        contentEncoded: feedItem.contentEncoded,
+      });
+    }
+    setSaved(!saved);
   };
 
   useEffect(() => {
@@ -72,6 +92,8 @@ export const FeedItemComponent = ({
     {feedItem.comments &&
       <p><a href={feedItem.comments} target="blank">Comments</a></p>}
     <div className="actions">
+      {!loadingInlineContent && <button
+        onClick={toggleSave}>{saved ? 'Unsave' : 'Save'}</button>}
       <button
         className="markUnreadButton"
         onClick={markAsUnread}>Mark as unread</button>

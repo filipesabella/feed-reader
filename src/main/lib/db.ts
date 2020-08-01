@@ -120,6 +120,14 @@ export class Database {
     });
   }
 
+  public async deleteSavedItem(feedItemId: string): Promise<void> {
+    await db.savedFeedItems.delete(feedItemId);
+  }
+
+  public async saveItem(item: DBSavedFeedItem): Promise<void> {
+    await db.savedFeedItems.put(item);
+  }
+
   public async dump(): Promise<any> {
     const feeds = await this.loadFeeds();
     return {
@@ -155,15 +163,29 @@ export interface DBSettings {
   githubToken: string;
 }
 
+interface DBSavedFeedItem {
+  feedItemId: string;
+  inlineContent: string;
+  title: string;
+  link: string;
+  pubDate: Date;
+  comments: string;
+  description: string;
+  contentEncoded: string;
+}
+
 export class DixieNonSense extends Dexie {
   feeds: Dexie.Table<DBFeed, string>;
   settings: Dexie.Table<DBSettings, string>;
+  savedFeedItems: Dexie.Table<DBSavedFeedItem, string>;
 
   constructor() {
     super(dbName);
     this.version(1).stores({
       feeds: '&id, title, url, category, blockedWords, *readItemsIds',
-      settings: 'id, darkMode, proxyUrl, gistId, githubToken',
+      settings: '&id, darkMode, proxyUrl, gistId, githubToken',
+      savedFeedItems: '&feedItemId, inlineContent, title, link, pubDate, ' +
+        'comments,description,contentEncoded',
     });
   }
 }

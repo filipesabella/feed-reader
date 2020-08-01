@@ -115,6 +115,7 @@ export const FeedComponent = ({ feedIds, scrollTop, }: Props) => {
           feedItem={item}
           onItemClick={onItemClick}
           selected={i === selectedItemIndex}
+          savedFeedItemIds={new Set()}
         />);
     }
   };
