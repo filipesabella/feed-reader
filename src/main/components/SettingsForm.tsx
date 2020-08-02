@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { FormEvent, useState } from 'react';
 import { downloaData, uploadData } from '../lib/data-sync';
-import '../styles/settings-modal.less';
+import '../styles/settings-form.less';
 import { useAppContext } from './App';
 import * as notifications from '../lib/notifications';
 
-export function SettingsModal(): JSX.Element {
+export function SettingsForm(): JSX.Element {
   const { database, settings } = useAppContext();
 
   const [darkMode, setDarkMode] = useState(settings.darkMode);

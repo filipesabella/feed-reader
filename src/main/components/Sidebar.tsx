@@ -5,11 +5,11 @@ import { uuid } from '../lib/db';
 import { AllFeedsId } from '../lib/feed-loader';
 import { Feed } from '../lib/types';
 import '../styles/sidebar.less';
+import { useAppContext } from './App';
 import { DefaultModal } from './DefaultModal';
 import { FeedUpsertForm } from './FeedUpsertForm';
-import { SettingsModal } from './SettingsModal';
-import { useAppContext } from './App';
 import * as icons from './icons';
+import { SettingsForm } from './SettingsForm';
 
 interface Props {
   feedIds: string[] | null;
@@ -137,7 +137,7 @@ export function Sidebar({
     <DefaultModal
       isOpen={showSettings}
       onRequestClose={() => setShowSettings(false)}>
-      <SettingsModal />
+      <SettingsForm />
     </DefaultModal>
   </div>;
 }
