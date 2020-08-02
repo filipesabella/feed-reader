@@ -70,7 +70,7 @@ export class Database {
     });
   }
 
-  public async updateFeed(feed: Feed): Promise<void> {
+  public async upsertFeed(feed: Feed): Promise<void> {
     const dbFeed = (await db.feeds.get(feed.id)) || {
       readItemsIds: [],
     };

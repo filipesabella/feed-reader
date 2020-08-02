@@ -28,7 +28,7 @@ export function FeedEditModal({ feed, saved, closeModal }: Props)
   const save = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    await database.updateFeed({
+    await database.upsertFeed({
       ...feed,
       title,
       url,
