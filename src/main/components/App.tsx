@@ -71,7 +71,7 @@ export const App = () => {
         showUnreadItems,
       }}>
       <Sidebar
-        selectFeed={selectFeeds}
+        selectFeeds={selectFeeds}
         selectSaved={selectSaved}
         feedIds={feedIds} />
       {(feedIds || savedFeedItems) &&

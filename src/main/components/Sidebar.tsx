@@ -13,7 +13,7 @@ import * as icons from './icons';
 
 interface Props {
   feedIds: string[] | null;
-  selectFeed: (feedIds: string[]) => void;
+  selectFeeds: (feedIds: string[]) => void;
   selectSaved: () => void;
 }
 
@@ -22,7 +22,7 @@ const noCategory = '_';
 ReactModal.setAppElement('#root');
 
 export function Sidebar({
-  selectFeed,
+  selectFeeds,
   feedIds,
   selectSaved, }: Props): JSX.Element {
   const { database, showUnreadItems, setShowUnreadItems } = useAppContext();
@@ -74,7 +74,7 @@ export function Sidebar({
     return <li key={f.id} className="feed-item">
       <span
         className={'title' + (feedIds?.includes(f.id) ? ' selected' : '')}
-        onClick={_ => selectFeed([f.id])}>{f.title}</span>
+        onClick={_ => selectFeeds([f.id])}>{f.title}</span>
       <span
         className="edit"
         onClick={_ => setFeedToEdit(f)}>edit</span>
@@ -90,7 +90,7 @@ export function Sidebar({
       return <li key={category}>
         <span
           className="category"
-          onClick={_ => selectFeed(feedIds)}>{category}</span>
+          onClick={_ => selectFeeds(feedIds)}>{category}</span>
         <ul>
           {items.map(feed)}
         </ul>
@@ -109,7 +109,7 @@ export function Sidebar({
         <li className="feed-item">
           <span
             className={'title'}
-            onClick={_ => selectFeed([AllFeedsId])}>All</span>
+            onClick={_ => selectFeeds([AllFeedsId])}>All</span>
         </li>
         {feeds && feedComponents}
       </ul>
@@ -132,7 +132,7 @@ export function Sidebar({
       onRequestClose={() => setFeedToEdit(null)}>
       {feedToEdit && <FeedEditModal
         feed={feedToEdit}
-        saved={feed => selectFeed([feed.id])}
+        saved={feed => selectFeeds([feed.id])}
         closeModal={closeEditModal} />}
     </DefaultModal>
     <DefaultModal
