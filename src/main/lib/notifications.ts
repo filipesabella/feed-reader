@@ -19,6 +19,9 @@ export function loading(): string {
   return NotificationStore.addNotification({
     ...defaultParams,
     message: 'Loading ...',
+    dismiss: {
+      duration: 10000,
+    },
   });
 }
 
