@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FormEvent, useState } from 'react';
 import { Feed } from '../lib/types';
-import '../styles/feed-edit-modal.less';
+import '../styles/feed-upsert-form.less';
 import { useAppContext } from './App';
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
   closeModal: () => void;
 }
 
-export function FeedEditModal({ feed, saved, closeModal }: Props)
+export function FeedUpsertForm({ feed, saved, closeModal }: Props)
   : JSX.Element {
   const { database } = useAppContext();
 
@@ -54,7 +54,7 @@ export function FeedEditModal({ feed, saved, closeModal }: Props)
     }
   };
 
-  return <form className="feed-edit-form" onSubmit={e => save(e)}>
+  return <form className="feed-upsert-form" onSubmit={e => save(e)}>
     <div className="container">
       <div className="field">
         <label>Title</label>

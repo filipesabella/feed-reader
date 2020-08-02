@@ -6,7 +6,7 @@ import { AllFeedsId } from '../lib/feed-loader';
 import { Feed } from '../lib/types';
 import '../styles/sidebar.less';
 import { DefaultModal } from './DefaultModal';
-import { FeedEditModal } from './FeedEditModal';
+import { FeedUpsertForm } from './FeedUpsertForm';
 import { SettingsModal } from './SettingsModal';
 import { useAppContext } from './App';
 import * as icons from './icons';
@@ -26,9 +26,8 @@ export function Sidebar({
   feedIds,
   selectSaved, }: Props): JSX.Element {
   const { database, showUnreadItems, setShowUnreadItems } = useAppContext();
-
   const [feeds, setFeeds] = useState(null as { [key: string]: Feed[] } | null);
-  const [feedToEdit, setFeedToEdit] = useState(null as Feed | null);
+  const [feedToUpsert, setFeedToUpsert] = useState(null as Feed | null);
 
   const load = () => {
     database.loadFeeds().then(feeds => {
@@ -43,9 +42,9 @@ export function Sidebar({
   };
   useEffect(load, []);
 
-  const closeEditModal = () => {
+  const closeUpsertModal = () => {
     load();
-    setFeedToEdit(null);
+    setFeedToUpsert(null);
   };
 
   const [showSettings, setShowSettings] = useState(false);
@@ -58,7 +57,7 @@ export function Sidebar({
   };
 
   const openAddFeed = () => {
-    setFeedToEdit({
+    setFeedToUpsert({
       id: uuid(),
       title: '',
       url: '',
@@ -77,7 +76,7 @@ export function Sidebar({
         onClick={_ => selectFeeds([f.id])}>{f.title}</span>
       <span
         className="edit"
-        onClick={_ => setFeedToEdit(f)}>edit</span>
+        onClick={_ => setFeedToUpsert(f)}>edit</span>
     </li>;
   };
 
@@ -128,12 +127,12 @@ export function Sidebar({
       </span>
     </div>
     <DefaultModal
-      isOpen={feedToEdit !== null}
-      onRequestClose={() => setFeedToEdit(null)}>
-      {feedToEdit && <FeedEditModal
-        feed={feedToEdit}
+      isOpen={feedToUpsert !== null}
+      onRequestClose={() => setFeedToUpsert(null)}>
+      {feedToUpsert && <FeedUpsertForm
+        feed={feedToUpsert}
         saved={feed => selectFeeds([feed.id])}
-        closeModal={closeEditModal} />}
+        closeModal={closeUpsertModal} />}
     </DefaultModal>
     <DefaultModal
       isOpen={showSettings}
