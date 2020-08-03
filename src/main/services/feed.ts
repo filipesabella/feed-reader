@@ -14,7 +14,7 @@ export async function loadFeedsItems(
   database: Database,
   feedIds: string[],
   proxyUrl: string,
-  showUnreadItems: boolean,)
+  showUnreadItems: boolean)
   : Promise<[[FeedItem[], NextPageData[]], Set<string>]> {
   const dbFeeds = feedIds[0] === AllFeedsId
     ? await database.loadFeeds()
@@ -46,7 +46,7 @@ export async function loadNextPages(
   database: Database,
   nextPages: NextPageData[],
   proxyUrl: string,
-  showUnreadItems: boolean,)
+  showUnreadItems: boolean)
   : Promise<[FeedItem[], NextPageData[]]> {
   const urlForFeedId = (dbFeed: DBFeed) =>
     nextPages.find(p => p.feedId === dbFeed.id)!;

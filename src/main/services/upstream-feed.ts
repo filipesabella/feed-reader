@@ -21,7 +21,7 @@ export interface UpstreamFeedItem {
 export async function loadFeedItems(
   { scriptToParse, scriptToPaginate }: DBFeed,
   url: string,
-  proxyUrl: string,)
+  proxyUrl: string)
   : Promise<[UpstreamFeedItem[], string | null]> {
   const responseBody = await loadURL(url, proxyUrl);
   return [

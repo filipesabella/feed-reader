@@ -95,7 +95,7 @@ export class Database {
     darkMode: boolean,
     proxyUrl: string,
     gistId: string,
-    githubToken: string,): Promise<void> {
+    githubToken: string): Promise<void> {
     db.settings.put({
       id: '1',
       darkMode,
