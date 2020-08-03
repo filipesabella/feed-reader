@@ -144,7 +144,9 @@ export function Sidebar({
         title="Settings">{icons.settings}</span>
       <span
         onClick={() => setShowUnreadItems(!showUnreadItems)}
-        title="Toggle show read items">
+        title={showUnreadItems
+          ? 'Click to hide unread items'
+          : 'Click to show unread items'}>
         {showUnreadItems ? icons.eye : icons.eyeCrossed}
       </span>
     </div>
