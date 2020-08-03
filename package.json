@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "author": "Filipe Sabella <filipe.sabella@gmail.com>",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "scripts": {
     "dev": "DEV_MODE=true TOKEN=`cat token` GIST_ID=`cat gistid` parcel src/main/index.html"
   },
