@@ -74,7 +74,8 @@ const expectedItems = [{
   'contentEncoded': '<video loop muted controls>\n      <source\n        src="https://v.redd.it/z107bfdrrse51/DASH_1080.mp4?source=fallback"\n        type="video/mp4"/>\n    </video>',
   'id': '-1566550442',
   'feedId': 'redditaww',
-  'read': false, 'scriptToInline': ''
+  'read': false,
+  'scriptToInline': ''
 }, {
   'link': 'https://apod.nasa.gov/apod/ap200802.html',
   'title': 'APOD: 2020 August 2 – Two Worlds One      Sun',
@@ -84,7 +85,8 @@ const expectedItems = [{
   'contentEncoded': '',
   'id': '1145313922',
   'feedId': 'apod',
-  'read': false, 'scriptToInline': '\nreturn fetch(\'https://cors-anywheere.herokuapp.com/\' + url)\n  .then(r => r.text())\n  .then(body => {\n    const doc = new DOMParser().parseFromString(body, \'text/html\');\n    const baseUrl = \'https://apod.nasa.gov/apod/\';\n    doc.querySelectorAll(\'a\').forEach(e => {\n      const href = e.getAttribute(\'href\');\n      if (!href.startsWith(\'http\')) {\n        e.setAttribute(\'href\', baseUrl + href);\n      }\n    })\n    doc.querySelectorAll(\'img\').forEach(e => {\n      const src = e.getAttribute(\'src\');\n      if (!src.startsWith(\'http\')) {\n        e.setAttribute(\'src\', baseUrl + src);\n      }\n    });\n\n    // remove header and footer\n    doc.querySelector(\'center p\')?.remove();\n    doc.querySelector(\'center:last-child\').remove();\n    doc.querySelectorAll(\'script\').forEach(e => e.remove());\n    return doc.body.outerHTML;\n  });\n'
+  'read': false,
+  'scriptToInline': ''
 }, {
   'link': 'https://apod.nasa.gov/apod/ap200801.html',
   'title': 'The Elephant\'s Trunk Nebula in      Cepheus',
@@ -95,7 +97,7 @@ const expectedItems = [{
   'id': '680875158',
   'feedId': 'apod',
   'read': false,
-  'scriptToInline': '\nreturn fetch(\'https://cors-anywheere.herokuapp.com/\' + url)\n  .then(r => r.text())\n  .then(body => {\n    const doc = new DOMParser().parseFromString(body, \'text/html\');\n    const baseUrl = \'https://apod.nasa.gov/apod/\';\n    doc.querySelectorAll(\'a\').forEach(e => {\n      const href = e.getAttribute(\'href\');\n      if (!href.startsWith(\'http\')) {\n        e.setAttribute(\'href\', baseUrl + href);\n      }\n    })\n    doc.querySelectorAll(\'img\').forEach(e => {\n      const src = e.getAttribute(\'src\');\n      if (!src.startsWith(\'http\')) {\n        e.setAttribute(\'src\', baseUrl + src);\n      }\n    });\n\n    // remove header and footer\n    doc.querySelector(\'center p\')?.remove();\n    doc.querySelector(\'center:last-child\').remove();\n    doc.querySelectorAll(\'script\').forEach(e => e.remove());\n    return doc.body.outerHTML;\n  });\n'
+  'scriptToInline': ''
 }];
 
 const expectedNextPages = [{
