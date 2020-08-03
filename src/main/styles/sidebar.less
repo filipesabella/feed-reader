@@ -5,6 +5,12 @@
   .actions {
     display: flex;
 
+    // align to the right on touch devices
+    @media (hover: none) {
+      justify-content: flex-end;
+      margin-top: .5em;
+    }
+
     span {
       display: inline-block;
       margin-right: .7em;
