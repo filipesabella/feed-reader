@@ -1,5 +1,7 @@
 import { execOnWindow } from '../lib/window-functions';
 
+// There's no standard for paginating feeds, so we get this dumpster fire
+
 export function nextPageUrl(
   url: string,
   responseBody: string,
