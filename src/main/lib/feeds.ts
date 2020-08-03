@@ -84,7 +84,7 @@ function parseRedditJson(url: string, body: string): UpstreamFeedItem[] {
   const json = JSON.parse(body);
 
   const img = (src: string) =>
-    `<img style="max-width: 600px" src="${src}"/>`;
+    `<img src="${src}"/>`;
 
   const video = (src: string) => `<video loop muted controls>
       <source
