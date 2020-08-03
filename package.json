@@ -5,7 +5,7 @@
   "author": "Filipe Sabella <filipe.sabella@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "TOKEN=`cat token` GIST_ID=`cat gistid` parcel src/main/index.html"
+    "dev": "DEV_MODE=true TOKEN=`cat token` GIST_ID=`cat gistid` parcel src/main/index.html"
   },
   "devDependencies": {
     "@types/node": "^14.0.27",

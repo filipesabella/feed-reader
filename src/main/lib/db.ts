@@ -5,21 +5,25 @@ import { Feed } from './types';
 const dbName = 'Feed-Reader-DB';
 let db: DixieNonSense;
 
+const devMode = process.env.DEV_MODE;
+const resetDb = window.location.hash.startsWith('#reset');
+
 export class Database {
   constructor() {
     db = new DixieNonSense();
   }
 
   public async initialize(): Promise<DBSettings> {
-    // next lines for dev mode
-    const resetDb = window.location.hash.startsWith('#reset');
-    resetDb && await Dexie.delete(dbName);
+    if (devMode && resetDb) {
+      await Dexie.delete(dbName);
+    }
 
     db = new DixieNonSense();
     await db.open();
 
-    // next lines for dev mode
-    resetDb && await seed(db);
+    if (devMode && resetDb) {
+      await seed(db);
+    }
 
     return this.initSettings();
   }
