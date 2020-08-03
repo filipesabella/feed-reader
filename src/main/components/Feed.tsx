@@ -38,7 +38,11 @@ export function FeedComponent({ feedIds, scrollTop, }: Props): JSX.Element {
     setShouldLoadMorePages(true);
     setSelectedItemIndex(-1);
 
-    loadFeedsItems(database, feedIds, settings.proxyUrl)
+    loadFeedsItems(
+      database,
+      feedIds,
+      settings.proxyUrl,
+      showUnreadItems)
       .then(([[items, nextPagesUrls], savedFeedItemIds]) => {
         setCurrentItems(items);
         setNextPagesUrls(nextPagesUrls);
@@ -49,7 +53,7 @@ export function FeedComponent({ feedIds, scrollTop, }: Props): JSX.Element {
 
         notifications.remove(notificationId);
       });
-  }, [feedIds]);
+  }, [feedIds, showUnreadItems]);
 
   const nextPage = () => {
     if (loadingNextPage || !shouldLoadMorePages) return;
@@ -57,7 +61,11 @@ export function FeedComponent({ feedIds, scrollTop, }: Props): JSX.Element {
     const notificationId = notifications.loading();
     setLoadingNextPage(true);
 
-    loadNextPages(database, nextPagesUrls, settings.proxyUrl)
+    loadNextPages(
+      database,
+      nextPagesUrls,
+      settings.proxyUrl,
+      showUnreadItems)
       .then(([nextItems, nextPagesUrls]) => {
         // this means the pagination has failed and the same page was loaded
         if (nextItems[0]?.id === currentItems[0].id) {
@@ -110,14 +118,10 @@ export function FeedComponent({ feedIds, scrollTop, }: Props): JSX.Element {
   };
 
   const feedItemComponents = () => {
-    // this logic should not be here
-    const eligibleItems = showUnreadItems
-      ? currentItems
-      : currentItems.filter(i => !i.read);
-    if (eligibleItems.length === 0) {
+    if (currentItems.length === 0) {
       return <h1>No new items for this feed.</h1>;
     } else {
-      return eligibleItems.map((item, i) =>
+      return currentItems.map((item, i) =>
         <FeedItemComponent
           key={item.id}
           feedItem={item}

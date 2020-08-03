@@ -8,10 +8,14 @@ import { FeedItem } from '../lib/types';
 
 export const AllFeedsId = 'all';
 
+// I'm not touching the duplication between this and the next function
+// until I add some tests.
 export async function loadFeedsItems(
   database: Database,
   feedIds: string[],
-  proxyUrl: string,): Promise<[[FeedItem[], NextPageData[]], Set<string>]> {
+  proxyUrl: string,
+  showUnreadItems: boolean,)
+  : Promise<[[FeedItem[], NextPageData[]], Set<string>]> {
   const dbFeeds = feedIds[0] === AllFeedsId
     ? await database.loadFeeds()
     : await database.loadFeedsById(feedIds);
@@ -20,13 +24,17 @@ export async function loadFeedsItems(
     dbFeeds.map(dbFeed => loadFeedItems(dbFeed, dbFeed.url, proxyUrl)
       .then<[FeedItem[], NextPageData | null]>
       (([upstreamFeedItems, nextPageUrl]) =>
-        [upstreamFeedItems.map(upstreamToFeedItem(dbFeed)),
-        nextPageUrl
-          ? {
-            feedId: dbFeed.id,
-            url: nextPageUrl,
-          }
-          : null]))));
+        [
+          filterItems(
+            showUnreadItems,
+            upstreamFeedItems.map(upstreamToFeedItem(dbFeed))),
+          nextPageUrl
+            ? {
+              feedId: dbFeed.id,
+              url: nextPageUrl,
+            }
+            : null
+        ]))));
 
   return Promise.all([
     result(dbFeedsById(dbFeeds), feedItems),
@@ -37,7 +45,9 @@ export async function loadFeedsItems(
 export async function loadNextPages(
   database: Database,
   nextPages: NextPageData[],
-  proxyUrl: string,): Promise<[FeedItem[], NextPageData[]]> {
+  proxyUrl: string,
+  showUnreadItems: boolean,)
+  : Promise<[FeedItem[], NextPageData[]]> {
   const urlForFeedId = (dbFeed: DBFeed) =>
     nextPages.find(p => p.feedId === dbFeed.id)!;
 
@@ -46,19 +56,31 @@ export async function loadNextPages(
     .filter(f => urlForFeedId(f) !== null);
 
   const feedItems = (await Promise.all(
-    dbFeeds.map(dbFeed => loadFeedItems(dbFeed,
+    dbFeeds.map(dbFeed => loadFeedItems(
+      dbFeed,
       urlForFeedId(dbFeed).url!,
       proxyUrl)
-      .then<[FeedItem[], NextPageData | null]>(([feedItems, nextPageUrl]) =>
-        [feedItems.map(upstreamToFeedItem(dbFeed)),
-        nextPageUrl
-          ? {
-            feedId: dbFeed.id,
-            url: nextPageUrl,
-          }
-          : null]))));
+      .then<[FeedItem[], NextPageData | null]>
+      (([upstreamFeedItems, nextPageUrl]) =>
+        [
+          filterItems(
+            showUnreadItems,
+            upstreamFeedItems.map(upstreamToFeedItem(dbFeed))),
+          nextPageUrl
+            ? {
+              feedId: dbFeed.id,
+              url: nextPageUrl,
+            }
+            : null
+        ]))));
 
   return result(dbFeedsById(dbFeeds), feedItems);
+}
+
+function filterItems(showUnreadItems: boolean, items: FeedItem[]): FeedItem[] {
+  return showUnreadItems
+    ? items
+    : items.filter(i => !i.read);
 }
 
 function result(
