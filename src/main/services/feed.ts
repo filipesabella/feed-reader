@@ -37,7 +37,7 @@ export async function loadFeedsItems(
         ]))));
 
   return Promise.all([
-    result(dbFeedsById(dbFeeds), feedItems),
+    result(dbFeeds, feedItems),
     database.loadSavedFeedItemIds(),
   ]);
 }
@@ -74,7 +74,7 @@ export async function loadNextPages(
             : null
         ]))));
 
-  return result(dbFeedsById(dbFeeds), feedItems);
+  return result(dbFeeds, feedItems);
 }
 
 function filterItems(showUnreadItems: boolean, items: FeedItem[]): FeedItem[] {
@@ -84,29 +84,32 @@ function filterItems(showUnreadItems: boolean, items: FeedItem[]): FeedItem[] {
 }
 
 function result(
-  feedsById: FeedBlockedWordsById,
+  dbFeeds: DBFeed[],
   feedItems: [FeedItem[], NextPageData | null][])
   : [FeedItem[], NextPageData[]] {
-  const result =
+  const blockedWords = blockedWordsByFeedId(dbFeeds);
+
+  const [items, nextPages] =
     feedItems.reduce<[FeedItem[], NextPageData[]]>
       ((acc, [feedItems, nextPageData]) => [
         acc[0].concat(feedItems),
         nextPageData ? acc[1].concat(nextPageData) : acc[1]],
         [[], []] as [FeedItem[], NextPageData[]]);
 
-  const eligibleItems = result[0]
+  const eligibleItems = items
     .filter(item => {
-      const regexp = feedsById[item.feedId];
+      const regexp = blockedWords[item.feedId];
       if (!regexp) return true;
       return !item.title.match(regexp);
     })
     .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
 
-  return [eligibleItems, result[1]];
+  return [eligibleItems, nextPages];
 }
 
 type FeedBlockedWordsById = { [id: string]: RegExp | null };
-function dbFeedsById(dbFeeds: DBFeed[]): FeedBlockedWordsById {
+
+function blockedWordsByFeedId(dbFeeds: DBFeed[]): FeedBlockedWordsById {
   return dbFeeds.reduce(
     (acc, f) => {
       if (f.blockedWords) {
@@ -114,7 +117,6 @@ function dbFeedsById(dbFeeds: DBFeed[]): FeedBlockedWordsById {
           '(' + f.blockedWords.replace(/\s/g, '|') + ')', 'i');
       }
       return acc;
-
     },
     {} as FeedBlockedWordsById);
 }

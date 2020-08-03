@@ -29,7 +29,7 @@ export function FeedItemComponent({
     // well, this is embarrasing.
     // since we're doing naughty stuff with document.querySelector
     // in Feed.tsx to mark items as read, that information doesn't
-    // here. Therefore, when an item is marked as read because the
+    // get here. Therefore, when an item is marked as read because the
     // user scrolled it off the screen, this component doesn't know
     // that it's now `read`.
     // By forcing a state change and by using wonderful window.setTimeout
