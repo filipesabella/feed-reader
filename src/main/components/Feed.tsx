@@ -112,6 +112,7 @@ export function FeedComponent({ feedIds, scrollTop, }: Props): JSX.Element {
   };
 
   const feedItemComponents = () => {
+    // this logic should not be here
     const eligibleItems = showUnreadItems
       ? currentItems
       : currentItems.filter(i => !i.read);
