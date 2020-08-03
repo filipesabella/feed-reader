@@ -73,6 +73,7 @@ export function Sidebar({
     return <li key={f.id} className="feed-item">
       <span
         className={'title' + (feedIds?.includes(f.id) ? ' selected' : '')}
+        title={f.title}
         onClick={_ => selectFeeds([f.id])}>{f.title}</span>
       <span
         className="edit"
