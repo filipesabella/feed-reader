@@ -104,16 +104,20 @@ function parseRedditJson(url: string, body: string): UpstreamFeedItem[] {
     .filter((e: any) => !e.data.stickied) // ignore announcements
     .map((e: any) => {
       const content = () => {
-        if (e.data.url.includes('gfycat')) {
+        const data = e.data.crosspost_parent_list
+          ? e.data.crosspost_parent_list[0]
+          : e.data;
+
+        if (data.url.includes('gfycat')) {
           const doc = new DOMParser().parseFromString(
-            e.data.secure_media_embed.content, 'text/html');
+            data.secure_media_embed.content, 'text/html');
           return doc.documentElement.textContent || '';
         } else {
-          return e.data.secure_media?.reddit_video?.fallback_url
-            ? video(e.data.secure_media.reddit_video.fallback_url)
-            : !!(e.data.url?.match(/imgur.*gifv/))
-              ? video(e.data.url.replace('.gifv', '.mp4'))
-              : img(imgUrl(e.data.url));
+          return data.secure_media?.reddit_video?.fallback_url
+            ? video(data.secure_media.reddit_video.fallback_url)
+            : !!(data.url?.match(/imgur.*gifv/))
+              ? video(data.url.replace('.gifv', '.mp4'))
+              : img(imgUrl(data.url));
         }
       };
 
