@@ -18,6 +18,8 @@ export async function seed(db: DixieNonSense): Promise<void> {
   await Promise.all(feeds
     .filter(shouldInsert)
     .map(([_, fn]) => fn(db)));
+
+  localStorage.setItem('categories-collapsed-state', '{}');
 }
 
 async function wordpress(db: DixieNonSense): Promise<void> {
