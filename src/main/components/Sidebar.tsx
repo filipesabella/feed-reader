@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
 import { uuid } from '../lib/db';
 import { AllFeedsId } from '../lib/feed-loader';
-import { Feed } from '../lib/types';
+import { Feed, FeedForSidebar } from '../lib/types';
 import '../styles/sidebar.less';
 import { useAppContext } from './App';
 import { DefaultModal } from './DefaultModal';
@@ -26,18 +26,25 @@ export function Sidebar({
   feedIds,
   selectSaved, }: Props): JSX.Element {
   const { database, showUnreadItems, setShowUnreadItems } = useAppContext();
-  const [feeds, setFeeds] = useState(null as { [key: string]: Feed[] } | null);
+  const [feeds, setFeeds] = useState(null as
+    { [key: string]: FeedForSidebar[] } | null);
   const [feedToUpsert, setFeedToUpsert] = useState(null as Feed | null);
+
+  const [collapsedState, setCollapsedState] = useState(loadCollapseState());
 
   const load = () => {
     database.loadFeeds().then(feeds => {
-      const grouped = feeds.reduce((acc, f) => {
-        acc[f.category || noCategory] = (acc[f.category || noCategory] || [])
-          .concat(f);
-        return acc;
-      }, {} as { [key: string]: Feed[] });
 
-      setFeeds(grouped);
+      const groupedByCategory = feeds.reduce((acc, f) => {
+        acc[f.category || noCategory] = (acc[f.category || noCategory] || [])
+          .concat({
+            ...f,
+            collapsed: collapsedState[f.category || ''] ?? false,
+          });
+        return acc;
+      }, {} as { [key: string]: FeedForSidebar[] });
+
+      setFeeds(groupedByCategory);
     });
   };
   useEffect(load, []);
@@ -69,7 +76,18 @@ export function Sidebar({
     });
   };
 
-  const feed = (f: Feed) => {
+  const loadFeedToUpsert = (feed: FeedForSidebar) => {
+    database.loadFeedsById([feed.id])
+      .then(dbFeeds => setFeedToUpsert({
+        ...dbFeeds[0]
+      } as Feed));
+  };
+
+  const setCollapsed = (category: string, collapsed: boolean) => {
+    setCollapsedState(storeCollapseState(category, collapsed));
+  };
+
+  const feed = (f: FeedForSidebar) => {
     return <li key={f.id} className="feed-item">
       <span
         className={'title' + (feedIds?.includes(f.id) ? ' selected' : '')}
@@ -77,7 +95,7 @@ export function Sidebar({
         onClick={_ => selectFeeds([f.id])}>{f.title}</span>
       <span
         className="edit"
-        onClick={_ => setFeedToUpsert(f)}>edit</span>
+        onClick={_ => loadFeedToUpsert(f)}>edit</span>
     </li>;
   };
 
@@ -87,12 +105,20 @@ export function Sidebar({
       return items.map(feed);
     } else {
       const feedIds = items.map(f => f.id);
+      const isCollapsed = !!collapsedState[category];
       return <li key={category}>
-        <span
-          className="category"
-          onClick={_ => selectFeeds(feedIds)}>{category}</span>
+        <div className="category">
+          <span
+            className="name"
+            onClick={_ => selectFeeds(feedIds)}>{category}</span>
+          <span
+            className="collapse"
+            onClick={() => setCollapsed(category, !isCollapsed)}>
+            {collapsedState[category] ? '▿' : '▵'}
+          </span>
+        </div>
         <ul>
-          {items.map(feed)}
+          {!isCollapsed && items.map(feed)}
         </ul>
       </li>;
     }
@@ -141,4 +167,19 @@ export function Sidebar({
       <SettingsForm />
     </DefaultModal>
   </div>;
+}
+
+const localStorageKey = 'categories-collapsed-state';
+
+function loadCollapseState(): { [category: string]: boolean } {
+  return JSON.parse(localStorage.getItem(localStorageKey) ?? '{}');
+}
+
+function storeCollapseState(category: string, collapsed: boolean)
+  : { [category: string]: boolean } {
+  const state = { ...loadCollapseState(), [category]: collapsed, };
+  localStorage.setItem(
+    localStorageKey,
+    JSON.stringify(state));
+  return state;
 }

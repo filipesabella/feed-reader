@@ -30,15 +30,15 @@
 
     ul>li>ul>li {
       margin-left: 1em;
+    }
 
-      &:first-child {
-        margin-top: -.5em;
-      }
+    span.title {
+      width: 100%;
     }
 
     span.title,
-    span.category {
-      width: 100%;
+    .category .name,
+    .category .collapse {
       display: inline-block;
       white-space: nowrap;
       overflow: hidden;
@@ -49,17 +49,36 @@
       &.selected {
         color: var(--intense-color);
       }
+    }
 
-      &.category {
+    .category {
+      display: flex;
+      flex-direction: row;
+
+      span {
         font-size: .9em;
       }
+
+      .name {
+        flex: 1;
+      }
+
+      @media (hover: hover) {
+        .collapse {
+          display: none;
+        }
+
+        &:hover .collapse {
+          display: inline-block;
+        }
+      }
     }
+
 
     .feed-item {
       position: relative;
 
       span.edit {
-        display: none;
         position: absolute;
         right: 0;
         top: 0;
@@ -68,8 +87,12 @@
         padding-left: 1em;
         font-size: .8em;
 
-        &:hover {
-          color: var(--intense-color);
+        @media (hover: hover) {
+          display: none;
+
+          &:hover {
+            color: var(--intense-color);
+          }
         }
       }
 

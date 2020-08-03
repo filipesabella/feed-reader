@@ -1,3 +1,10 @@
+export interface FeedForSidebar {
+  id: string;
+  title: string;
+  category: string | null;
+  collapsed: boolean;
+}
+
 export interface Feed {
   id: string;
   title: string;
