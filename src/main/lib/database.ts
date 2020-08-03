@@ -5,7 +5,6 @@ import { Feed } from './types';
 const dbName = 'Feed-Reader-DB';
 let db: DixieNonSense;
 
-const devMode = process.env.DEV_MODE;
 const resetDb = window.location.hash.startsWith('#reset');
 
 export class Database {
@@ -14,15 +13,16 @@ export class Database {
   }
 
   public async initialize(): Promise<DBSettings> {
-    if (devMode && resetDb) {
-      await Dexie.delete(dbName);
+
+    if (process.env.NODE_ENV === 'development') {
+      resetDb && await Dexie.delete(dbName);
     }
 
     db = new DixieNonSense();
     await db.open();
 
-    if (devMode && resetDb) {
-      await seed(db);
+    if (process.env.NODE_ENV === 'development') {
+      resetDb && await seed(db);
     }
 
     return this.initSettings();

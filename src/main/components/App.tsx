@@ -34,7 +34,7 @@ export const App = () => {
       setSettings(settings);
       setLoading(false);
 
-      if (process.env.DEV_MODE) {
+      if (process.env.NODE_ENV === 'development') {
         const resetDb = window.location.hash.startsWith('#reset');
         if (resetDb) {
           const resetId = window.location.hash.split('=');
