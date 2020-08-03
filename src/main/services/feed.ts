@@ -1,10 +1,10 @@
-import { Database, DBFeed } from './db';
+import { Database, DBFeed } from '../lib/db';
 import {
   loadFeedItems,
   UpstreamFeedItem,
   upstreamFeedItemToDbFeedItemId
-} from './feeds';
-import { FeedItem } from './types';
+} from './upstream-feed';
+import { FeedItem } from '../lib/types';
 
 export const AllFeedsId = 'all';
 

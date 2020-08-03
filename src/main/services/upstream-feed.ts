@@ -1,6 +1,6 @@
-import { DBFeed } from './db';
+import { DBFeed } from '../lib/db';
 import { nextPageUrl } from './feed-pagination';
-import { execOnWindow } from './window-functions';
+import { execOnWindow } from '../lib/window-functions';
 
 export interface UpstreamFeed {
   url: string;

@@ -4,7 +4,7 @@ import {
   loadFeedsItems,
   loadNextPages,
   NextPageData
-} from '../lib/feed-loader';
+} from '../services/feed';
 import { FeedItem } from '../lib/types';
 import '../styles/feed.less';
 import { useAppContext } from './App';

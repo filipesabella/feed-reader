@@ -1,4 +1,4 @@
-import { execOnWindow } from "./window-functions";
+import { execOnWindow } from '../lib/window-functions';
 
 export function nextPageUrl(
   url: string,

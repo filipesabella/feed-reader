@@ -1,5 +1,4 @@
 import Dexie from 'dexie';
-import { UpstreamFeed } from './feeds';
 import { seed } from './seedData';
 import { Feed } from './types';
 
@@ -50,24 +49,6 @@ export class Database {
 
   public loadFeedsById(feedIds: string[]): Promise<DBFeed[]> {
     return db.feeds.where('id').anyOf(feedIds).toArray();
-  }
-
-  public async insertFeed(
-    feedId: string,
-    url: string,
-    category: string | null,
-    feed: UpstreamFeed): Promise<void> {
-    await db.feeds.put({
-      id: feedId,
-      title: feed.title,
-      url,
-      category,
-      blockedWords: '',
-      readItemsIds: [],
-      scriptToParse: '',
-      scriptToInline: '',
-      scriptToPaginate: '',
-    });
   }
 
   public async upsertFeed(feed: Feed): Promise<void> {
