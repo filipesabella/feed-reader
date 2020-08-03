@@ -103,7 +103,7 @@ export function FeedUpsertForm({ feed, saved, closeModal }: Props)
               'Date, comments: string, description: string, contentEncoded: ' +
               'string}.\n' +
               'You MUST use the `return` keyword on the last line.'}>
-            Script to parse response
+            Script to parse the response
           </label>
           <textarea
             spellCheck={false}
@@ -114,7 +114,7 @@ export function FeedUpsertForm({ feed, saved, closeModal }: Props)
           <label title={'Has `url: string` and `body: string` in context.\n' +
             'Returns a url string.\n' +
             'You MUST use the `return` keyword on the last line.'}>
-            Script to parse get next page URL
+            Script to get the next page URL
           </label>
           <textarea
             spellCheck={false}
@@ -126,7 +126,7 @@ export function FeedUpsertForm({ feed, saved, closeModal }: Props)
             'string, contentEncoded: string in context.\n' +
             'Returns  Promise<string> with the content.\n' +
             'You MUST use the `return` keyword on the last line.'}>
-            Script to inline content from each item
+            Script to inline the contents of each item
           </label>
           <textarea
             spellCheck={false}
