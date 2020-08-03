@@ -109,7 +109,7 @@ export function Sidebar({
           <span
             className="collapse"
             onClick={() => setCollapsed(category, !isCollapsed)}>
-            {collapsedState[category] ? '▿' : '▵'}
+            {collapsedState[category] ? '⌄' : '⌃'}
           </span>
         </div>
         <ul>

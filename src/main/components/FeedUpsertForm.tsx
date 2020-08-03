@@ -93,7 +93,7 @@ export function FeedUpsertForm({ feed, saved, closeModal }: Props)
           onChange={e => setBlockedWords(e.target.value)}></input>
       </div>
       <h2 onClick={() => setShowScripting(!showScripting)}>
-        Scripting {showScripting ? '▴' : '▾'}
+        Scripting {showScripting ? '⌃' : '⌄'}
       </h2>
       <div className={'section' + (showScripting ? '' : ' hidden')}>
         <div className="field-ta">
