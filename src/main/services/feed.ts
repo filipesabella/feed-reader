@@ -8,8 +8,6 @@ import { FeedItem } from '../lib/types';
 
 export const AllFeedsId = 'all';
 
-// I'm not touching the duplication between this and the next function
-// until I add some tests.
 export async function loadFeedsItems(
   database: Database,
   feedIds: string[],
@@ -20,24 +18,11 @@ export async function loadFeedsItems(
     ? await database.loadFeeds()
     : await database.loadFeedsById(feedIds);
 
-  const feedItems = (await Promise.all(
-    dbFeeds.map(dbFeed => loadFeedItems(dbFeed, dbFeed.url, proxyUrl)
-      .then<[FeedItem[], NextPageData | null]>
-      (([upstreamFeedItems, nextPageUrl]) =>
-        [
-          filterItems(
-            showUnreadItems,
-            upstreamFeedItems.map(upstreamToFeedItem(dbFeed))),
-          nextPageUrl
-            ? {
-              feedId: dbFeed.id,
-              url: nextPageUrl,
-            }
-            : null
-        ]))));
+  const feedItems = await load(
+    dbFeeds, f => f.url, proxyUrl, showUnreadItems);
 
   return Promise.all([
-    result(dbFeeds, feedItems),
+    feedItems,
     database.loadSavedFeedItemIds(),
   ]);
 }
@@ -48,24 +33,30 @@ export async function loadNextPages(
   proxyUrl: string,
   showUnreadItems: boolean)
   : Promise<[FeedItem[], NextPageData[]]> {
-  const urlForFeedId = (dbFeed: DBFeed) =>
-    nextPages.find(p => p.feedId === dbFeed.id)!;
+  const urlForFeed = (dbFeed: DBFeed) =>
+    nextPages.find(p => p.feedId === dbFeed.id)!.url;
 
   const dbFeeds = (await database
     .loadFeedsById(nextPages.map(({ feedId }) => feedId)))
-    .filter(f => urlForFeedId(f) !== null);
+    .filter(f => urlForFeed(f) !== null);
 
+  return load(dbFeeds, urlForFeed, proxyUrl, showUnreadItems);
+}
+
+async function load(
+  dbFeeds: DBFeed[],
+  urlForFeed: (f: DBFeed) => string,
+  proxyUrl: string,
+  showUnreadItems: boolean) {
   const feedItems = (await Promise.all(
     dbFeeds.map(dbFeed => loadFeedItems(
       dbFeed,
-      urlForFeedId(dbFeed).url!,
+      urlForFeed(dbFeed),
       proxyUrl)
       .then<[FeedItem[], NextPageData | null]>
       (([upstreamFeedItems, nextPageUrl]) =>
         [
-          filterItems(
-            showUnreadItems,
-            upstreamFeedItems.map(upstreamToFeedItem(dbFeed))),
+          upstreamFeedItems.map(upstreamToFeedItem(dbFeed)),
           nextPageUrl
             ? {
               feedId: dbFeed.id,
@@ -74,18 +65,13 @@ export async function loadNextPages(
             : null
         ]))));
 
-  return result(dbFeeds, feedItems);
-}
-
-function filterItems(showUnreadItems: boolean, items: FeedItem[]): FeedItem[] {
-  return showUnreadItems
-    ? items
-    : items.filter(i => !i.read);
+  return result(dbFeeds, feedItems, showUnreadItems);
 }
 
 function result(
   dbFeeds: DBFeed[],
-  feedItems: [FeedItem[], NextPageData | null][])
+  feedItems: [FeedItem[], NextPageData | null][],
+  showUnreadItems: boolean)
   : [FeedItem[], NextPageData[]] {
   const blockedWords = blockedWordsByFeedId(dbFeeds);
 
@@ -102,7 +88,8 @@ function result(
       if (!regexp) return true;
       return !item.title.match(regexp);
     })
-    .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
+    .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime())
+    .filter(i => showUnreadItems ? i : !i.read);
 
   return [eligibleItems, nextPages];
 }
