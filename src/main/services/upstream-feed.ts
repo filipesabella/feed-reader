@@ -1,4 +1,4 @@
-import { DBFeed } from '../lib/db';
+import { DBFeed } from '../lib/database';
 import { nextPageUrl } from './feed-pagination';
 import { execOnWindow } from '../lib/window-functions';
 

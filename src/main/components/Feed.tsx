@@ -10,7 +10,7 @@ import '../styles/feed.less';
 import { useAppContext } from './App';
 import { FeedItemComponent } from './FeedItem';
 import { Keys, useKeys } from './useKeys';
-import { Database } from '../lib/db';
+import { Database } from '../lib/database';
 import * as notifications from '../lib/notifications';
 
 interface Props {

@@ -1,4 +1,4 @@
-import { Database, DBFeed } from '../lib/db';
+import { Database, DBFeed } from '../lib/database';
 import {
   loadFeedItems,
   UpstreamFeedItem,

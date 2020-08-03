@@ -1,4 +1,4 @@
-import { Database } from '../lib/db';
+import { Database } from '../lib/database';
 import { FeedForSidebar } from '../lib/types';
 
 export const noCategory = '_';

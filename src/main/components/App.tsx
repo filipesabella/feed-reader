@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { createContext, useEffect, useState } from 'react';
-import { Database, DBSettings, DBSavedFeedItem } from '../lib/db';
+import { Database, DBSettings, DBSavedFeedItem } from '../lib/database';
 import '../styles/app.less';
 import { Content } from './Content';
 import { Sidebar } from './Sidebar';

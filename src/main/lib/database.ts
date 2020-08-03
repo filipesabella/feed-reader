@@ -30,6 +30,8 @@ export class Database {
 
   public async markAsReadBatch(feedItemIdAndFeedIds: [string, string][])
     : Promise<void> {
+    // no simple way to sequentially execute a collection of promises
+    // other than this
     for (let [feedItemId, feedId] of feedItemIdAndFeedIds) {
       await this.markAsRead(feedItemId, feedId, true);
     }
@@ -178,7 +180,7 @@ export class DixieNonSense extends Dexie {
       feeds: '&id, title, url, category, blockedWords, *readItemsIds',
       settings: '&id, darkMode, proxyUrl, gistId, githubToken',
       savedFeedItems: '&feedItemId, inlineContent, title, link, pubDate, ' +
-        'comments,description,contentEncoded',
+        'comments, description, contentEncoded',
     });
   }
 }

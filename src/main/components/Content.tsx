@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { FeedComponent } from './Feed';
-import { DBSavedFeedItem } from '../lib/db';
+import { DBSavedFeedItem } from '../lib/database';
 import { SavedFeedItems } from './SavedFeedItems';
 
 interface Props {

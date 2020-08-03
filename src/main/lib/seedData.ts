@@ -1,4 +1,4 @@
-import { DixieNonSense } from './db';
+import { DixieNonSense } from './database';
 
 export async function seed(db: DixieNonSense): Promise<void> {
   const resetId = window.location.hash.split('=');

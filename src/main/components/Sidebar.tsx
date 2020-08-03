@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
-import { uuid } from '../lib/db';
+import { uuid } from '../lib/database';
 import { AllFeedsId } from '../services/feed';
 import { Feed, FeedForSidebar } from '../lib/types';
 import {

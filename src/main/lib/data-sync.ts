@@ -1,4 +1,4 @@
-import { DBSettings, Database } from '../lib/db';
+import { DBSettings, Database } from '../lib/database';
 
 const fileName = 'feed-reader';
 export async function downloaData(database: Database, settings: DBSettings)
