@@ -43,7 +43,7 @@ For example, the [Astronomy Picture of the Day Archive](https://apod.nasa.gov/ap
 To be able to load, inline, and paginate this feed, I use the following scripts, which you can configure in the _scripting_ section of the edit/add feed modal.
 
 Script to parse the response:
-```
+```javascript
 const maxItems = 5;
 const currentPage = url.includes('page=')
   ? parseInt(url.split('=').slice(-1)[0]) - 1
@@ -66,14 +66,14 @@ return links.slice(currentPage * maxItems, currentPage * maxItems + maxItems)
 ```
 
 Script to get the next page's URL:
-```
+```javascript
 return url.includes('page=')
   ? url.replace(/(page=)(\d+)/, (_, prefix, n) => prefix + (parseInt(n) + 1))
   : url + '?page=2';
 ```
 
 Script to inline the contents of each item:
-```
+```javascript
 return fetch('https://cors-anywhere.herokuapp.com/' + url)
   .then(r => r.text())
   .then(body => {
