@@ -26,7 +26,19 @@ export function FeedItemComponent({
   const [saved, setSaved] = useState(savedFeedItemIds.has(feedItem.id));
 
   const markAsUnread = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    changeRead(false);
+    // well, this is embarrasing.
+    // since we're doing naughty stuff with document.querySelector
+    // in Feed.tsx to mark items as read, that information doesn't
+    // here. Therefore, when an item is marked as read because the
+    // user scrolled it off the screen, this component doesn't know
+    // that it's now `read`.
+    // By forcing a state change and by using wonderful window.setTimeout
+    // it works.
+    // The correct way would be to figure out how to mark items as read
+    // once they're scrolled off the screen, and thus update the state
+    // here.
+    setRead(true);
+    window.setTimeout(() => changeRead(false), 1);
     e.stopPropagation();
   };
 
