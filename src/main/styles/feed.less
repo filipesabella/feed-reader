@@ -64,32 +64,61 @@
       margin-top: 1em;
     }
 
-    &:hover .actions {
-      display: flex;
+    @media (hover: hover) {
+      .actions {
+        display: none;
+        position: absolute;
+        right: 1em;
+        bottom: 1em;
+      }
+
+      &:hover .actions {
+        display: flex;
+      }
+    }
+
+    @media (hover: none) {
+      .actions {
+        display: flex;
+        justify-content: flex-end;
+      }
     }
 
     .actions {
-      display: none;
-      position: absolute;
-      right: 1em;
-      bottom: 1em;
-
-      button {
-        padding: .3em 1em;
-        background-color: var(--bg-color);
-        border: 1px solid var(--border-color);
+      span {
         margin-left: 1em;
+        cursor: pointer;
+        display: inline-block;
 
-        &:hover {
-          background-color: var(--bg-color-lighter);
+        svg {
+          width: 1em;
+          fill: var(--text-color);
+        }
+
+        &:hover svg {
+          fill: var(--intense-color);
         }
       }
 
-      .markUnreadButton {
+      span.unsave {
+        position: relative;
+      }
+
+      span.unsave::after {
+        border-top: 1px solid var(--text-color);
+        border-bottom: 1px solid var(--bg-color);
+        position: absolute;
+        content: "";
+        left: -.3em;
+        top: .4em;
+        right: -.4em;
+        transform: rotate(45deg);
+      }
+
+      span.markUnreadButton {
         display: none;
       }
     }
-
 
     &.loading {
       filter: blur(1px);

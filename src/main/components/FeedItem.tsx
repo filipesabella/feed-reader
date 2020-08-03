@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { FeedItem } from '../lib/types';
 import { useAppContext } from './App';
 import { execOnWindow } from '../lib/window-functions';
+import * as icons from './icons';
 
 interface Props {
   feedItem: FeedItem;
@@ -94,11 +95,14 @@ export function FeedItemComponent({
     {feedItem.comments &&
       <p><a href={feedItem.comments} target="blank">Comments</a></p>}
     <div className="actions">
-      <button
+      <span
         className="markUnreadButton"
-        onClick={markAsUnread}>Mark as unread</button>
-      {!loadingInlineContent && <button
-        onClick={toggleSave}>{saved ? 'Unsave' : 'Save'}</button>}
+        onClick={markAsUnread}>{icons.eyeCrossed}</span>
+      {!loadingInlineContent && <span
+        className={'save' + (saved ? ' unsave' : '')}
+        onClick={toggleSave}>
+        {icons.save}
+      </span>}
     </div>
   </div>;
 }
