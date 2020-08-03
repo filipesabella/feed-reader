@@ -25,7 +25,7 @@ export function FeedUpsertForm({ feed, saved, closeModal }: Props)
 
   const [confirmDeletion, setConfirmDeletion] = useState(false);
 
-  const [showScripting, setShowScripting] = useState(true);
+  const [showScripting, setShowScripting] = useState(false);
 
   const save = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
