@@ -30,7 +30,8 @@ export function Sidebar({
   selectFeeds,
   feedIds,
   selectSaved, }: Props): JSX.Element {
-  const { database,
+  const {
+    database,
     showUnreadItems,
     setShowUnreadItems, } = useAppContext();
 
@@ -56,13 +57,6 @@ export function Sidebar({
   };
 
   const [showSettings, setShowSettings] = useState(false);
-  const openSettings = () => {
-    setShowSettings(true);
-  };
-
-  const toggleShowReadItems = () => {
-    setShowUnreadItems(!showUnreadItems);
-  };
 
   const openAddFeed = () => {
     setFeedToUpsert({
@@ -146,10 +140,10 @@ export function Sidebar({
         onClick={() => openAddFeed()}
         title="Add a feed">{icons.add}</span>
       <span
-        onClick={() => openSettings()}
+        onClick={() => setShowSettings(true)}
         title="Settings">{icons.settings}</span>
       <span
-        onClick={() => toggleShowReadItems()}
+        onClick={() => setShowUnreadItems(!showUnreadItems)}
         title="Toggle show read items">
         {showUnreadItems ? icons.eye : icons.eyeCrossed}
       </span>
