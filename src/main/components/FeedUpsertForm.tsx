@@ -25,6 +25,8 @@ export function FeedUpsertForm({ feed, saved, closeModal }: Props)
 
   const [confirmDeletion, setConfirmDeletion] = useState(false);
 
+  const [showScripting, setShowScripting] = useState(true);
+
   const save = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -90,36 +92,47 @@ export function FeedUpsertForm({ feed, saved, closeModal }: Props)
           value={blockedWords ?? ''}
           onChange={e => setBlockedWords(e.target.value)}></input>
       </div>
-      <div className="field-ta">
-        <label title={'Receives `url: string` and `body: string`. Returns ' +
-          'an FeedItem'}>
-          Script to parse response
-        </label>
-        <textarea
-          spellCheck={false}
-          value={scriptToParse}
-          onChange={e => setScriptToParse(e.target.value)}></textarea>
-      </div>
-      <div className="field-ta">
-        <label title={'Receives `url: string` and `body: string`. Returns ' +
-          'a url string'}>
-          Script to parse get next page URL
-        </label>
-        <textarea
-          spellCheck={false}
-          value={scriptToPaginate}
-          onChange={e => setScriptToPaginate(e.target.value)}></textarea>
-      </div>
-      <div className="field-ta">
-        <label title={'Receives `url: string` and `item: ' +
-          '{description, contentEncoded}`. Returns Promise<string> with the ' +
-          'content'}>
-          Script to inline content from each item
-        </label>
-        <textarea
-          spellCheck={false}
-          value={scriptToInline}
-          onChange={e => setScriptToInline(e.target.value)}></textarea>
+      <h2 onClick={() => setShowScripting(!showScripting)}>
+        Scripting {showScripting ? '▴' : '▾'}
+      </h2>
+      <div className={'section' + (showScripting ? '' : ' hidden')}>
+        <div className="field-ta">
+          <label
+            title={'Has `url: string` and `body: string` in context.\n' +
+              'Returns a FeedItem {link: string, title: string, pubDate: ' +
+              'Date, comments: string, description: string, contentEncoded: ' +
+              'string}.\n' +
+              'You MUST use the `return` keyword on the last line.'}>
+            Script to parse response
+          </label>
+          <textarea
+            spellCheck={false}
+            value={scriptToParse}
+            onChange={e => setScriptToParse(e.target.value)}></textarea>
+        </div>
+        <div className="field-ta">
+          <label title={'Has `url: string` and `body: string` in context.\n' +
+            'Returns a url string.\n' +
+            'You MUST use the `return` keyword on the last line.'}>
+            Script to parse get next page URL
+          </label>
+          <textarea
+            spellCheck={false}
+            value={scriptToPaginate}
+            onChange={e => setScriptToPaginate(e.target.value)}></textarea>
+        </div>
+        <div className="field-ta">
+          <label title={'Has `url: string` and `item: {description: ' +
+            'string, contentEncoded: string in context.\n' +
+            'Returns  Promise<string> with the content.\n' +
+            'You MUST use the `return` keyword on the last line.'}>
+            Script to inline content from each item
+          </label>
+          <textarea
+            spellCheck={false}
+            value={scriptToInline}
+            onChange={e => setScriptToInline(e.target.value)}></textarea>
+        </div>
       </div>
     </div>
     <div className="actions">
