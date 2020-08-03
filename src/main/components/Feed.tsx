@@ -38,19 +38,17 @@ export function FeedComponent({ feedIds, scrollTop, }: Props): JSX.Element {
     setShouldLoadMorePages(true);
     setSelectedItemIndex(-1);
 
-    Promise.all([
-      loadFeedsItems(database, feedIds, settings.proxyUrl),
-      database.loadSavedFeedItemIds(),
-    ]).then(([[items, nextPagesUrls], savedFeedItemIds]) => {
-      setCurrentItems(items);
-      setNextPagesUrls(nextPagesUrls);
+    loadFeedsItems(database, feedIds, settings.proxyUrl)
+      .then(([[items, nextPagesUrls], savedFeedItemIds]) => {
+        setCurrentItems(items);
+        setNextPagesUrls(nextPagesUrls);
 
-      setSavedFeedItemIds(savedFeedItemIds);
+        setSavedFeedItemIds(savedFeedItemIds);
 
-      setLoading(false);
+        setLoading(false);
 
-      notifications.remove(notificationId);
-    });
+        notifications.remove(notificationId);
+      });
   }, [feedIds]);
 
   const nextPage = () => {

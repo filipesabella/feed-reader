@@ -11,7 +11,7 @@ export const AllFeedsId = 'all';
 export async function loadFeedsItems(
   database: Database,
   feedIds: string[],
-  proxyUrl: string,): Promise<[FeedItem[], NextPageData[]]> {
+  proxyUrl: string,): Promise<[[FeedItem[], NextPageData[]], Set<string>]> {
   const dbFeeds = feedIds[0] === AllFeedsId
     ? await database.loadFeeds()
     : await database.loadFeedsById(feedIds);
@@ -28,7 +28,10 @@ export async function loadFeedsItems(
           }
           : null]))));
 
-  return result(dbFeedsById(dbFeeds), feedItems);
+  return Promise.all([
+    result(dbFeedsById(dbFeeds), feedItems),
+    database.loadSavedFeedItemIds(),
+  ]);
 }
 
 export async function loadNextPages(
