@@ -5,7 +5,7 @@
   "author": "Filipe Sabella <filipe.sabella@gmail.com>",
   "license": "UNLICENSED",
   "scripts": {
-    "dev": "TOKEN=`cat token` GIST_ID=`cat gistid` parcel src/main/index.html",
+    "dev": "CORS=`cat cors` TOKEN=`cat token` GIST_ID=`cat gistid` parcel src/main/index.html",
     "test": "mocha --require ts-node/register src/test/**/*.test.ts",
     "test:watch": "mocha --require jsdom-global/register --require ts-node/register --watch --watch-files src, src/test/**/*.test.ts"
   },

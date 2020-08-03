@@ -3,6 +3,8 @@ import { DixieNonSense } from './database';
 export let seed: (db: DixieNonSense) => Promise<void> = async () => { };
 
 if (process.env.NODE_ENV === 'development') {
+  const corsUrl = process.env.CORS || 'https://cors-anywhere.herokuapp.com/';
+
   seed = async (db: DixieNonSense) => {
     const resetId = window.location.hash.split('=');
 
@@ -38,7 +40,7 @@ if (process.env.NODE_ENV === 'development') {
 // BOOM already sent inline content for this item
 if (item.contentEncoded !== '') return Promise.resolve('');
 
-return fetch('https://cors-anywheere.herokuapp.com/' + url)
+return fetch('${corsUrl}' + url)
   .then(r => r.text())
   .then(body => {
     const doc = new DOMParser().parseFromString(body, 'text/html');
@@ -134,7 +136,7 @@ if (url.includes('page=')) {
 }
 `,
       scriptToInline: `
-return fetch('https://cors-anywheere.herokuapp.com/' + url)
+return fetch('${corsUrl}' + url)
   .then(r => r.text())
   .then(body => {
     const doc = new DOMParser().parseFromString(body, 'text/html');
