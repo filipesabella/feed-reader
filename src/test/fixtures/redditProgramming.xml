@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"
+  xmlns:media="http://search.yahoo.com/mrss/">
+  <category term="programming"
+    label="r/programming" />
+  <updated>2020-08-04T00:35:51+00:00</updated>
+  <icon>https://www.redditstatic.com/icon.png/</icon>
+  <id>/r/programming.rss?limit=2</id>
+  <link rel="self"
+    href="https://www.reddit.com/r/programming.rss?limit=2"
+    type="application/atom+xml" />
+  <link rel="alternate"
+    href="https://www.reddit.com/r/programming?limit=2"
+    type="text/html" />
+  <logo>https://b.thumbs.redditmedia.com/2rTE46grzsr-Ll3Q.png</logo>
+  <subtitle>Computer Programming</subtitle>
+  <title>programming</title>
+  <entry>
+    <author>
+      <name>/u/pcuchi</name>
+      <uri>https://www.reddit.com/user/pcuchi</uri>
+    </author>
+    <category term="programming"
+      label="r/programming" />
+    <content type="html">&amp;#32; submitted by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/pcuchi&quot;&gt; /u/pcuchi &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://cuchi.me/posts/go-vs-rust&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt; &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/programming/comments/i3529m/writing_the_same_cli_application_twice_using_go/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;</content>
+    <id>t3_i3529m</id>
+    <link href="https://www.reddit.com/r/programming/comments/i3529m/writing_the_same_cli_application_twice_using_go/" />
+    <updated>2020-08-03T20:37:50+00:00</updated>
+    <title>Writing the same CLI application twice using Go and Rust: a personal experience</title>
+  </entry>
+  <entry>
+    <author>
+      <name>/u/dayanruben</name>
+      <uri>https://www.reddit.com/user/dayanruben</uri>
+    </author>
+    <category term="programming"
+      label="r/programming" />
+    <content type="html">&amp;#32; submitted by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/dayanruben&quot;&gt; /u/dayanruben &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://github.blog/2020-08-03-github-actions-improvements-for-fork-and-pull-request-workflows/&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt; &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/programming/comments/i34ub3/github_actions_improvements_for_fork_and_pull/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;</content>
+    <id>t3_i34ub3</id>
+    <link href="https://www.reddit.com/r/programming/comments/i34ub3/github_actions_improvements_for_fork_and_pull/" />
+    <updated>2020-08-03T20:26:36+00:00</updated>
+    <title>GitHub Actions improvements for fork and pull request workflows - The GitHub Blog</title>
+  </entry>
+</feed>

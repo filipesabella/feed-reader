@@ -1,7 +1,11 @@
 let mocks = {} as { [url: string]: string };
 
-export function mockFetch(url: string, responseBody: string) {
+export function mockFetch(url: string, responseBody: string): void {
   mocks[url] = responseBody;
+}
+
+export function clearMockedFetches(): void {
+  mocks = {};
 }
 
 (global as any).fetch = (url: string) => {
