@@ -20,7 +20,7 @@ It does support out of the box:
 * Pagination is a hot mess in the feed world, but it supports Reddit (json and xml), Wordpress, and Tumblr pagination without custom scripts
 
 ## If you insist on using it
-You can open it [here TODO] and start using it right away.  
+You can open it [here](https://www.filipesabella.com/feed-reader/) and start using it right away.  
 As mentioned, everything is on the client side, using the browser's database.
 
 Click on very hard to spot (+) button on the bottom left corner, and add, for example:
