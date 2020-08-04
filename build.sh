@@ -1,6 +1,7 @@
 rm -rf docs/
 
 ./node_modules/.bin/parcel build src/main/index.html \
+  --public-url '.' \
   --out-dir docs/ \
   --no-source-maps
 
