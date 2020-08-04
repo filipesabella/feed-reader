@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "CORS=`cat cors` TOKEN=`cat token` GIST_ID=`cat gistid` parcel src/main/index.html",
     "test": "mocha --require ts-node/register ${TEST:-src/**/*.test.ts}",
-    "test:watch": "mocha --require ts-node/register --watch --watch-files src, ${TEST:-src/**/*.test.ts}"
+    "test:watch": "mocha --require ts-node/register --watch --watch-files src, ${TEST:-src/**/*.test.ts}",
+    "build": "./build.sh"
   },
   "devDependencies": {
     "@types/chai": "^4.2.12",
