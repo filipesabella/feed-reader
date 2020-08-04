@@ -1,16 +1,16 @@
-rm -rf build/
+rm -rf docs/
 
 ./node_modules/.bin/parcel build src/main/index.html \
-  --out-dir build/ \
+  --out-dir docs/ \
   --no-source-maps
 
 # we don't use italics and no other weights other than 400 (default) and 500
-rm build/*italic*.woff
-rm build/*.woff2
-rm build/*100*
-rm build/*200*
-rm build/*300*
-rm build/*600*
-rm build/*700*
-rm build/*800*
-rm build/*900*
+rm docs/*italic*.woff
+rm docs/*.woff2
+rm docs/*100*
+rm docs/*200*
+rm docs/*300*
+rm docs/*600*
+rm docs/*700*
+rm docs/*800*
+rm docs/*900*
