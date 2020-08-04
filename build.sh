@@ -8,4 +8,4 @@ rm -rf docs/
 # the build process generates quite a few woff and woff2 files for the font
 # we use. this line deletes all of them but the two we use,
 # barlow-latin-400.woff2 and barlow-latin-500.woff2
-ls *.woff* | grep -Pv "(barlow-latin-400\..*woff2|barlow-latin-500\..*.woff2)" | xargs rm
+ls docs/*.woff* | grep -Pv "(barlow-latin-400\..*woff2?|barlow-latin-500\..*.woff2?)" | xargs rm
