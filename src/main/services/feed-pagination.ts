@@ -14,9 +14,9 @@ export function nextPageUrl(
       }`,
       url, responseBody);
   } else {
-    const isRedditJson = () => !!url.match(/reddit\.com.*\.json/);
+    const isRedditJson = !!url.match(/reddit\.com.*\.json/);
 
-    if (isRedditJson()) {
+    if (isRedditJson) {
       return redditJson(url, responseBody);
     } else {
       const xml = new DOMParser().parseFromString(responseBody, 'text/xml');
@@ -31,13 +31,12 @@ export function nextPageUrl(
         return wordpress(url);
       } else if (isTumblr()) {
         return tumblr(url, xml);
-      } else if (isRedditJson()) {
-        return redditJson(url, responseBody);
       } else if (isReddit()) {
         return reddit(url, xml);
       }
     }
   }
+
   console.log('Don\'t know how to page for ' + url);
   return null;
 }
@@ -67,7 +66,6 @@ function redditJson(url: string, body: string): string | null {
   if (url.includes('after=')) {
     return url.replace(/after=.*?$/, `after=${lastItemId}`);
   } else {
-
     return (!url.includes('?') ? url + '?' : url + '&')
       + `after=${lastItemId}`;
   }
@@ -76,6 +74,7 @@ function redditJson(url: string, body: string): string | null {
 function reddit(url: string, xml: Document): string | null {
   const lastItemId = xml
     .querySelector('feed > entry:last-child > id')?.innerHTML;
+
   if (!lastItemId) return null;
 
   if (url.includes('?after=')) {
