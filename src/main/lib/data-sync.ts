@@ -2,7 +2,9 @@ import { DBSettings, Database } from '../lib/database';
 
 const fileName = 'feed-reader';
 export async function downloaData(database: Database, settings: DBSettings)
-  : Promise<any> {
+  : Promise<void> {
+  if (!settings.gistId || !settings.githubToken) return;
+
   const response =
     await fetch(`https://api.github.com/gists/${settings.gistId}`);
 
@@ -17,6 +19,8 @@ export async function downloaData(database: Database, settings: DBSettings)
 
 export async function uploadData(database: Database, settings: DBSettings)
   : Promise<void> {
+  if (!settings.gistId || !settings.githubToken) return;
+
   const dump = await database.dump();
 
   const resp = await fetch(`https://api.github.com/gists/${settings.gistId}`, {

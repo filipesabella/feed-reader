@@ -6,6 +6,7 @@ import { Content } from './Content';
 import { Sidebar } from './Sidebar';
 import 'react-notifications-component/dist/theme.css';
 import { SavedFeedItems } from './SavedFeedItems';
+import { uploadData, downloaData } from '../lib/data-sync';
 
 const ReactNotification = require('react-notifications-component').default;
 
@@ -34,6 +35,10 @@ export const App = () => {
       setSettings(settings);
       setLoading(false);
 
+      if (process.env.NODE_ENV === 'production') {
+        await downloaData(database, settings);
+      }
+
       if (process.env.NODE_ENV === 'development') {
         const resetDb = window.location.hash.startsWith('#reset');
         if (resetDb) {
@@ -55,6 +60,10 @@ export const App = () => {
   const selectFeeds = (feedIds: string[]) => {
     setFeedIds(feedIds);
     setSavedFeedItems(null);
+
+    if (process.env.NODE_ENV === 'production') {
+      uploadData(database, settings!);
+    }
   };
 
   const selectSaved = async () => {
