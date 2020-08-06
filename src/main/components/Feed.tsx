@@ -134,6 +134,8 @@ export function FeedComponent({ feedIds, scrollTop, }: Props): JSX.Element {
 
   return <div className="feed">
     {!loading && feedItemComponents()}
+    {/* to be able to always scroll the last item over the top */}
+    <div className="spacer"></div>
   </div>;
 }
 
