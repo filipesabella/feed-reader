@@ -6,7 +6,8 @@
     display: flex;
 
     // align to the right on touch devices
-    @media (hover: none) {
+    @media (hover: none),
+    (max-width: 800px) {
       justify-content: flex-end;
       margin-top: .5em;
     }
@@ -69,7 +70,7 @@
         flex: 1;
       }
 
-      @media (hover: hover) {
+      @media (hover: hover) and (min-width: 800px) {
         .collapse {
           display: none;
         }
