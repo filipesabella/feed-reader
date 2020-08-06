@@ -62,7 +62,7 @@ export const App = () => {
     setSavedFeedItems(null);
 
     if (process.env.NODE_ENV === 'production') {
-      settings.autoSync && uploadData(database, settings!);
+      settings?.autoSync && uploadData(database, settings!);
     }
   };
 
