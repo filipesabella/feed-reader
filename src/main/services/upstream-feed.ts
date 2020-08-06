@@ -1,6 +1,7 @@
 import { DBFeed } from '../lib/database';
 import { nextPageUrl } from './feed-pagination';
 import { execOnWindow } from '../lib/window-functions';
+import * as notifications from '../lib/notifications';
 
 export interface UpstreamFeed {
   url: string;
@@ -23,16 +24,21 @@ export async function loadFeedItems(
   url: string,
   proxyUrl: string)
   : Promise<[UpstreamFeedItem[], string | null]> {
-  const responseBody = await loadURL(url, proxyUrl);
-  return [
-    parseFeedItems(responseBody, url, scriptToParse),
-    nextPageUrl(url, responseBody, scriptToPaginate)
-  ];
+  try {
+    const responseBody = await loadURL(url, proxyUrl);
+    return [
+      parseFeedItems(responseBody, url, scriptToParse),
+      nextPageUrl(url, responseBody, scriptToPaginate)
+    ];
+  } catch (e) {
+    notifications.error(`Could not load ${url}. ${e}`);
+    return [[], null];
+  }
 }
 
 async function loadURL(url: string, proxyUrl: string): Promise<string> {
   const corsUrl = `${proxyUrl.replace(/\/$/, '')}/${url}`;
-  const response = await fetch(corsUrl);
+  const response = await timeout(5000, fetch(corsUrl));
   if (response.status !== 200) throw 'Could not load the feed';
   return await response.text();
 }
@@ -190,4 +196,11 @@ function cleanUp(s: string): string {
 function htmlDecode(input: string) {
   const doc = new DOMParser().parseFromString(input, 'text/html');
   return doc.documentElement.textContent || '';
+}
+
+function timeout<T>(ms: number, promise: Promise<T>): Promise<T> {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => reject(new Error('timeout')), ms);
+    promise.then(resolve, reject);
+  });
 }
