@@ -12,13 +12,19 @@ export function SettingsForm(): JSX.Element {
   const [proxyUrl, setProxyUrl] = useState(settings.proxyUrl);
   const [gistId, setGistId] = useState(settings.gistId);
   const [githubToken, setGithubToken] = useState(settings.githubToken);
+  const [autoSync, setAutoSync] = useState(settings.autoSync);
 
   const [confirmDownload, setConfirmDownload] = useState(false);
   const [confirmUpload, setConfirmUpload] = useState(false);
 
   const save = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    database.saveSettings(darkMode, proxyUrl, gistId, githubToken);
+    database.saveSettings(
+      darkMode,
+      proxyUrl,
+      gistId,
+      githubToken,
+      autoSync);
 
     window.location.reload();
   };
@@ -91,6 +97,17 @@ export function SettingsForm(): JSX.Element {
           placeholder="Github Token"
           value={githubToken}
           onChange={e => setGithubToken(e.target.value)}></input>
+      </div>
+      <div className="field">
+        <label>Auto sync settings
+          <span>
+            (Download when opening the app and upload when switching feeds)
+          </span>
+        </label>
+        <input
+          type="checkbox"
+          checked={autoSync}
+          onChange={e => setAutoSync(e.target.checked)}></input>
       </div>
     </div>
 

@@ -36,7 +36,7 @@ export const App = () => {
       setLoading(false);
 
       if (process.env.NODE_ENV === 'production') {
-        await downloaData(database, settings);
+        settings.autoSync && await downloaData(database, settings);
       }
 
       if (process.env.NODE_ENV === 'development') {
@@ -62,7 +62,7 @@ export const App = () => {
     setSavedFeedItems(null);
 
     if (process.env.NODE_ENV === 'production') {
-      uploadData(database, settings!);
+      settings.autoSync && uploadData(database, settings!);
     }
   };
 

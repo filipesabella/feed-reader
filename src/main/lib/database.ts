@@ -81,6 +81,7 @@ export class Database {
         proxyUrl: 'https://cors-anywhere.herokuapp.com/',
         gistId: process.env.GIST_ID || '',
         githubToken: process.env.TOKEN || '',
+        autoSync: false,
       };
       await db.settings.put(settings);
       return settings;
@@ -97,13 +98,15 @@ export class Database {
     darkMode: boolean,
     proxyUrl: string,
     gistId: string,
-    githubToken: string): Promise<void> {
+    githubToken: string,
+    autoSync: boolean): Promise<void> {
     db.settings.put({
       id: '1',
       darkMode,
       proxyUrl,
       gistId,
       githubToken,
+      autoSync,
     });
   }
 
@@ -156,6 +159,7 @@ export interface DBSettings {
   proxyUrl: string;
   gistId: string;
   githubToken: string;
+  autoSync: boolean;
 }
 
 export interface DBSavedFeedItem {
