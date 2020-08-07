@@ -1,17 +1,17 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { Database } from '../lib/database';
+import * as notifications from '../lib/notifications';
+import { FeedItem } from '../lib/types';
 import {
   loadFeedsItems,
   loadNextPages,
   NextPageData
 } from '../services/feed';
-import { FeedItem } from '../lib/types';
 import '../styles/feed.less';
 import { useAppContext } from './App';
 import { FeedItemComponent } from './FeedItem';
 import { Keys, useKeys } from './useKeys';
-import { Database } from '../lib/database';
-import * as notifications from '../lib/notifications';
 
 interface Props {
   feedIds: string[];
@@ -167,8 +167,10 @@ function markScrolledItemsAsRead(database: Database, scrollTop: number): void {
 }
 
 function hasReachedEnd(scrollTop: number): boolean {
-  const lastItem = document.querySelector<HTMLDivElement>(
-    '#app .content .feed .feed-item:last-child');
+
+  const items = document.querySelectorAll<HTMLDivElement>(
+    '#app .content .feed .feed-item');
+  const lastItem = items[items.length - 1];
 
   if (!lastItem) return false;
 
