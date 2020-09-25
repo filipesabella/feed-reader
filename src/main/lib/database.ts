@@ -43,8 +43,8 @@ export class Database {
     await db.feeds.put({
       ...feed,
       readItemsIds: read
-        // only store the past 100 read items, no need for more
-        ? [...new Set(feed.readItemsIds.concat(feedItemId))].slice(-100)
+        // only store the past 1000 read items, no need for more
+        ? [...new Set(feed.readItemsIds.concat(feedItemId))].slice(-1000)
         : feed.readItemsIds.filter(i => i !== feedItemId)
     });
   }
